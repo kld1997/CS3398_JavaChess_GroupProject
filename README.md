@@ -16,10 +16,11 @@
 
 ## General info
 
-Add more general information about project. What the purpose of the project is? Motivation?
+> We strive to be the first developers of a new kind of chess game. With added intensity and dynamic gameplay!
+As the semester progresses, we will add features as wel as new ideas within development.
 
 ## Screenshots
-![Example screenshot](./img/screenshot.png)
+![Example screenshot](https://i.pinimg.com/736x/98/7b/0b/987b0b6fcc6987ada88a448b2ddbe10a--cool-wallpaper-chess.jpg)
 
 ## Technologies
 * Tech 1 - JRE version 1.8
@@ -35,9 +36,9 @@ Show examples of usage:
 
 ## Features
 List of features ready and TODOs for future development
-* Awesome feature 1
-* Awesome feature 2
-* Awesome feature 3
+* Aweome GUI and graphics for fun chess!
+* Abtract pieces as well as larger board games!
+* Achievements and unlocks!
 
 To-do list:
 * Wow improvement to be done 1
