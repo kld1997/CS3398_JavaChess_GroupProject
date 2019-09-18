@@ -2,7 +2,7 @@
 
 # Chess++
 
-> This will be our redesigned chess game that will include additional pieces, goals, unlocks, as well as extended boards. We will begin by making the standard game of chess at first. Eventually, our team, Guillermo, Roy, Kody, Felipe, and Kieren, will add more pieces, spaces, goals, and achievements in-game. Our goal is to test our own personal skills by creating something similar yet different. This chess will be a perfect example, and will test our capabilities as well as test our team work. We hope to create an intresting and dynamic chess game that will be user friendly, challenging, fun, and unique.  
+> This will be our redesigned chess game that will include additional pieces, goals, unlocks, as well as extended boards. We will begin by making the standard game of chess at first. Eventually, our team, Guillermo Gomez, Roy Grady, Kody Davis, Felipe Rodriguez, and Kieran Hsieh, will add more pieces, spaces, goals, and achievements in-game. Our goal is to test our own personal skills by creating something similar yet different. This project will be for chess enthusiasts who want some variety in their gameplay. We hope to create an interesting and dynamic chess game that will be user friendly, challenging, fun, and unique.  
 
 ## Table of contents
 * [General info](#general-info)
@@ -16,7 +16,7 @@
 
 ## General info
 
-> We strive to be the first developers of a new kind of chess game. With added intensity and dynamic gameplay!
+> We strive to create a new kind of chess game.
 As the semester progresses, we will add features as wel as new ideas within development.
 
 ## Screenshots
@@ -35,15 +35,35 @@ Show examples of usage:
 `put-your-code-here`
 
 ## Features
-List of features ready and TODOs for future development
-* Aweome GUI and graphics for fun chess!
-* Abtract pieces as well as larger board games!
-* Achievements and unlocks!
+List of features ready and TODOs for future development       
+* -
 
 To-do list:
-* Wow improvement to be done 1
-* Wow improvement to be done 2
-
+* Fundamental movement/position mechanics of the chess engine
+           This lays the foundations of the game so that the base rules of chess are established.
+           This feature is vital for any playability and necessary for most future features.
+           It corresponds with the story on offline playability.
+           
+* Implementing classic chess pieces
+           Chess pieces are another necessary component of chess playability.
+           This feature assigns valid movement options to each chess piece.
+           This feature is a prerequisite for the user stories on new and customizable chess pieces.
+           
+* Menus
+           Menus allow users to navigate settings, modes, and other options.
+           A successful implementation will be user friendly and visually appealing.
+           This corresponds with the user story on intuitive visual interfaces.
+           
+* Player info
+           This feature stores player data such as username, match history, rank, etc...
+           It will be used by frequent users and features that rely on metadata.
+           This feature corresponds to the user stories on competitive ranking systems.
+           
+* Board graphics and chess piece sprites
+           Basic graphic designs for each essential component of chess.
+           The first step in creating an interactive graphic interface for players.
+           This also corresponds to the user story on visual interfaces.
+           
 ## Status
 Project is: in progress. Will be finished by the end of the semester.
 
