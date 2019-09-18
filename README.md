@@ -16,8 +16,7 @@
 
 ## General info
 
-> We strive to create a new kind of chess game.
-As the semester progresses, we will add features as wel as new ideas within development.
+> We wish we had the knowledge and experience to implement this game into a web browser with online functionality.
 
 ## Screenshots
 ![Example screenshot](https://i.pinimg.com/736x/98/7b/0b/987b0b6fcc6987ada88a448b2ddbe10a--cool-wallpaper-chess.jpg)
