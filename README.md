@@ -1,8 +1,8 @@
 # CS3398--Maggia--F2019
 
-# Abstract Chess!
+# Chess++
 
-> This will be our abstract chess game that will include additional pieces, goals, unlocks, as well as extended boards. We will begin by making the standard game of chess at first. Eventually, our team, Guillermo, Roy, Kody, Felipe, and Kieren, will add more pieces, spaces, goals, and achievements in-game. Our goal is to test our own personal skills by creating something similar yet different. This chess will be a perfect example, and will test our capabilities as well as test our team work. We hope to create an intresting and dynamic chess game that will be user friendly, challenging, fun, and different.  
+> This will be our redesigned chess game that will include additional pieces, goals, unlocks, as well as extended boards. We will begin by making the standard game of chess at first. Eventually, our team, Guillermo, Roy, Kody, Felipe, and Kieren, will add more pieces, spaces, goals, and achievements in-game. Our goal is to test our own personal skills by creating something similar yet different. This chess will be a perfect example, and will test our capabilities as well as test our team work. We hope to create an intresting and dynamic chess game that will be user friendly, challenging, fun, and unique.  
 
 ## Table of contents
 * [General info](#general-info)
