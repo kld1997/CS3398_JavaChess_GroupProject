@@ -6,9 +6,6 @@ import java.io.*;
 
 class Board {
 	
-	//squares of the board
-	long square;
-	
 	//white pieces
 	long whiteKing;
 	long whiteQueens;
@@ -27,9 +24,18 @@ class Board {
 	long blackPawns;	
 	long blackPieces;
 	
-	private void init() {                                                   //initializes all of the bitboards
-		
-		this.square = 0;
+	//misc
+	long notWhite;
+	long notBlack;
+	long empty;
+	
+	long row2 = 71776119061217280L;
+	long row7 = 65280L;
+	long row8 = 255L;
+	long colA = 72340172838076673L;
+	long colH = -9187201950435737472L;
+	
+	public void Board() {                                                   //initializes all of the bitboards
 		
 		this.whiteKing = 0;
 		this.whiteQueens = 0;
@@ -46,6 +52,12 @@ class Board {
 		this.blackKnights = 0;
 		this.blackPawns = 0;
 		this.blackPieces = 0;
+		
+		this.notWhite = 0;
+		this.notBlack = 0;
+		this.empty = 0;
+		
+		currentState();
 	}
 	
 	public void standardChess() {                                           //sets up the positions of a standard chess game
@@ -58,7 +70,7 @@ class Board {
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
-				{"wr","wk","ww","wq","wK","ww","wk","wr"}};
+				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
 		
 		arrayToBitboards(standardChessBoard);
 	}
@@ -97,6 +109,7 @@ class Board {
             }
         }
         
+        currentState();
     }
 	
 	public long convertStringToBitboard(String Binary) {                    //converts the string of binary numbers into actual binary fit for bitboards
@@ -107,5 +120,230 @@ class Board {
             return Long.parseLong("1"+Binary.substring(2), 2)*2;
         }
     }
+	
+	public void currentState() {
+		
+		this.whitePieces = whiteQueens|whiteRooks|whiteKnights|whiteBishops|whitePawns;
+		this.blackPieces = blackQueens|blackRooks|blackKnights|blackBishops|blackPawns;
+		
+		this.notWhite = ~(whitePieces|whiteKing|blackKing);
+		this.notBlack = ~(blackPieces|blackKing|whiteKing);
+		
+		this.empty = ~(whitePieces|blackPieces|whiteKing|blackKing);
+	}
+	
+	public void displayArray() {
+		
+		String displayChessBoard[][] = {
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "}};
+		
+		for(int i = 0; i < 8; i++) {
+			for(int j = 0; j < 8; j++) {
+				//white pieces
+				if(((this.whiteKing>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "wK";
+				else if(((this.whiteQueens>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "wq";
+				else if(((this.whiteRooks>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "wr";
+				else if(((this.whiteKnights>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "wk";
+				else if(((this.whiteBishops>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "wb";
+				else if(((this.whitePawns>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "wp";
+				
+				//black pieces
+				else if(((this.blackKing>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "bK";
+				else if(((this.blackQueens>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "bq";
+				else if(((this.blackRooks>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "br";
+				else if(((this.blackKnights>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "bk";
+				else if(((this.blackBishops>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "bb";
+				else if(((this.blackPawns>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "bp";
+			}
+		}
+		
+		for(int i = 0; i < 8; i++) {
+			for(int j = 0; j < 8; j++) {
+				System.out.print("[" + displayChessBoard[i][j] + "]");
+			}
+			System.out.println();
+		}
+		System.out.println();
+	}
+	
+public void displayArray(long bitboard) {
+		
+		String displayChessBoard[][] = {
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "}};
+		
+		for(int i = 0; i < 8; i++) {
+			for(int j = 0; j < 8; j++) {
+				//white pieces
+				if(((this.whiteKing>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "wK";
+				else if(((this.whiteQueens>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "wq";
+				else if(((this.whiteRooks>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "wr";
+				else if(((this.whiteKnights>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "wk";
+				else if(((this.whiteBishops>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "wb";
+				else if(((this.whitePawns>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "wp";
+				
+				//black pieces
+				else if(((this.blackKing>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "bK";
+				else if(((this.blackQueens>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "bq";
+				else if(((this.blackRooks>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "br";
+				else if(((this.blackKnights>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "bk";
+				else if(((this.blackBishops>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "bb";
+				else if(((this.blackPawns>>(i*8)+j)&1) == 1)
+					displayChessBoard[i][j] = "bp";
+			}
+		}
+		
+		for(int i = 0; i < 8; i++) {
+			for(int j = 0; j < 8; j++) {
+				if(((bitboard>>(i*8)+j)&1) == 0)
+					System.out.print("[" + displayChessBoard[i][j] + "]");
+				else
+					System.out.print("{" + displayChessBoard[i][j] + "}");
+			}
+			System.out.println();
+		}
+		System.out.println();
+	}
+	
+	public void movePawn(int action, int x, int y) {
+		
+		currentState();
+		
+		long change = 0;
+		long coord = (long)1<<((y*8)+x);
+		
+		if((this.whitePawns&coord) != 0) {	
+			if(action == 0) {
+				change = coord|(coord>>8);
+				this.whitePawns = this.whitePawns^change;
+			}
+			else if(action == 1) {
+				if(((coord>>9)&this.blackPieces) != 0) {
+					change = coord|(coord>>9);
+					removePiece(coord>>9);
+					this.whitePawns = this.whitePawns^change;
+				}
+			}
+			else if(action == 2) {
+				if(((coord>>7)&this.blackPieces) != 0) {
+					change = coord|(coord>>7);
+					removePiece(coord>>7);
+					this.whitePawns = this.whitePawns^change;
+				}
+			}
+		}	
+		else if((this.blackPawns&coord) != 0) {
+			if(action == 0) {
+				change = coord|(coord<<8);
+				this.blackPawns = this.blackPawns^change;
+			}
+			else if(action == 1) {
+				if(((coord<<9)&this.whitePieces) != 0) {
+					change = coord|(coord<<9);
+					removePiece(coord<<9);
+					this.blackPawns = this.blackPawns^change;
+				}
+			}
+			else if(action == 2) {
+				if(((coord<<7)&this.whitePieces) != 0) {
+					change = coord|(coord<<7);
+					removePiece(coord<<7);
+					this.blackPawns = this.blackPawns^change;
+				}
+			}
+		}
+		
+		currentState();
+	}
+	
+	public void removePiece(long coord) {
+		if((this.whitePieces&coord) != 0) {
+			if((this.whitePawns&coord) != 0) {
+				this.whitePawns = this.whitePawns^coord;
+			}
+			else if((this.whiteBishops&coord) != 0) {
+				this.whiteBishops = this.whiteBishops^coord;
+			}
+			else if((this.whiteKnights&coord) != 0) {
+				this.whiteKnights = this.whiteKnights^coord;
+			}
+			else if((this.whiteRooks&coord) != 0) {
+				this.whiteRooks = this.whiteRooks^coord;
+			}
+			else if((this.whiteQueens&coord) != 0) {
+				this.whiteQueens = this.whiteQueens^coord;
+			}
+		}
+		else if((this.blackPieces&coord) != 0) {
+			if((this.blackPawns&coord) != 0) {
+				this.blackPawns = this.blackPawns^coord;
+			}
+			else if((this.blackBishops&coord) != 0) {
+				this.blackBishops = this.blackBishops^coord;
+			}
+			else if((this.blackKnights&coord) != 0) {
+				this.blackKnights = this.blackKnights^coord;
+			}
+			else if((this.blackRooks&coord) != 0) {
+				this.blackRooks = this.blackRooks^coord;
+			}
+			else if((this.blackQueens&coord) != 0) {
+				this.blackQueens = this.blackQueens^coord;
+			}
+		}
+	}
+	
+	public void displayBitboard(long bitBoard) {
+		
+		String display = Long.toBinaryString(bitBoard);
+		
+		while(display.length() <= 64) {
+			display = "0" + display;
+		}
+		
+		for(int i = 7; i >= 0; i--) {
+			for(int j = 8; j > 0; j--) {
+				System.out.print(display.charAt(8*i+j) + " ");
+			}
+			System.out.println();
+		}
+		System.out.println();
+	}
 	
 }
