@@ -37,14 +37,14 @@ public void movePiece(Board board, int x, int y) {
 			else if(action == 1) {
 				if(((coord<<9)&board.whitePieces) == (coord<<9)) {
 					change = coord|(coord<<9);
-					removePiece(coord<<9);
+					board.removePiece(coord<<9);
 					board.blackPawns = board.blackPawns^change;
 				}
 			}
 			else if(action == 2) {
 				if(((coord<<7)&board.whitePieces) == (coord<<7)) {
 					change = coord|(coord<<7);
-					removePiece(coord<<7);
+					board.removePiece(coord<<7);
 					board.blackPawns = board.blackPawns^change;
 				}
 			}
