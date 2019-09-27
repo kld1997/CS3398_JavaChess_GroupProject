@@ -242,7 +242,7 @@ public void displayArray(long bitboard) {
 		System.out.println();
 	}
 	
-	public void movePawn(int action, int x, int y) {
+	/*public void movePawn(int action, int x, int y) {
 		
 		currentState();
 		
@@ -291,7 +291,7 @@ public void displayArray(long bitboard) {
 		}
 		
 		currentState();
-	}
+	}*/
 	
 	public void removePiece(long coord) {
 		if((this.whitePieces&coord) != 0) {
