@@ -29,14 +29,16 @@ class Board {
 	long notBlack;
 	long empty;
 	
-	long row1 = -72057594037927936L;
-	long row2 = 71776119061217280L;
-	long row7 = 65280L;
-	long row8 = 255L;
-	long colA = 72340172838076673L;
-	long colH = -9187201950435737472L;
+	static long row1 = -72057594037927936L;
+	static long row2 = 71776119061217280L;
+	static long row4 = 1095216660480L;
+	static long row5 = 4278190080L;
+	static long row7 = 65280L;
+	static long row8 = 255L;
+	static long colA = 72340172838076673L;
+	static long colH = -9187201950435737472L;
 	
-	public void Board() {                                                   //initializes all of the bitboards
+	public Board() {                                                   //initializes all of the bitboards
 		
 		this.whiteKing = 0;
 		this.whiteQueens = 0;
@@ -177,12 +179,16 @@ class Board {
 			}
 		}
 		
+		int rows = 9;
+		
 		for(int i = 0; i < 8; i++) {
+			System.out.print(--rows + " ");
 			for(int j = 0; j < 8; j++) {
 				System.out.print("[" + displayChessBoard[i][j] + "]");
 			}
 			System.out.println();
 		}
+		System.out.println("   a   b   c   d   e   f   g   h");
 		System.out.println();
 	}
 	
@@ -230,7 +236,10 @@ public void displayArray(long bitboard) {
 			}
 		}
 		
+		int rows = 9;
+		
 		for(int i = 0; i < 8; i++) {
+			System.out.print(--rows + " ");
 			for(int j = 0; j < 8; j++) {
 				if(((bitboard>>(i*8)+j)&1) == 0)
 					System.out.print("[" + displayChessBoard[i][j] + "]");
@@ -239,6 +248,7 @@ public void displayArray(long bitboard) {
 			}
 			System.out.println();
 		}
+		System.out.println("   a   b   c   d   e   f   g   h");
 		System.out.println();
 	}
 	
@@ -345,6 +355,15 @@ public void displayArray(long bitboard) {
 			System.out.println();
 		}
 		System.out.println();
+	}
+	
+	public static long convertToCoord(String pos) {
+		
+		int x = pos.charAt(0) - 97;
+		int y = 8 - Integer.parseInt(pos.substring(1,2));
+		long coord = 1L<<((y*8)+x);
+		
+		return coord;
 	}
 	
 }
