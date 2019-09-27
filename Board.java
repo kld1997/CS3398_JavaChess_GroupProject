@@ -29,6 +29,7 @@ class Board {
 	long notBlack;
 	long empty;
 	
+	long row1 = -72057594037927936L;
 	long row2 = 71776119061217280L;
 	long row7 = 65280L;
 	long row8 = 255L;
@@ -234,7 +235,7 @@ public void displayArray(long bitboard) {
 				if(((bitboard>>(i*8)+j)&1) == 0)
 					System.out.print("[" + displayChessBoard[i][j] + "]");
 				else
-					System.out.print("{" + displayChessBoard[i][j] + "}");
+					System.out.print("<" + displayChessBoard[i][j] + ">");
 			}
 			System.out.println();
 		}
