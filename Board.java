@@ -36,7 +36,15 @@ class Board {
 	static long row7 = 65280L;
 	static long row8 = 255L;
 	static long colA = 72340172838076673L;
+	static long colB = 144680345676153346L;
+	static long colG = 4629771061636907072L;
 	static long colH = -9187201950435737472L;
+	
+	WhitePawn pawnW = new WhitePawn();
+	BlackPawn pawnB = new BlackPawn();
+	
+	WhiteKnight knightW = new WhiteKnight();
+	BlackKnight knightB = new BlackKnight();
 	
 	public Board() {                                                   //initializes all of the bitboards
 		
@@ -366,4 +374,100 @@ public void displayArray(long bitboard) {
 		return coord;
 	}
 	
+	public void makeMove(int team, String pos) {
+		
+		long coord1 = convertToCoord(pos.substring(0,2));
+		long coord2 = convertToCoord(pos.substring(2,4));
+		
+		if(team == 0 && (coord1&this.whitePieces) != 0) {
+			if((coord1&this.whitePawns) != 0) {
+				pawnW.movePiece(this, coord1, coord2, false);
+			}
+			else if((coord1&this.whiteKnights) != 0) {
+				knightW.movePiece(this, coord1, coord2, false);
+			}
+		}
+		else if(team == 1 && (coord1&this.blackPieces) != 0) {
+			if((coord1&this.blackPawns) != 0) {
+				pawnB.movePiece(this, coord1, coord2, false);
+			}
+			else if((coord1&this.blackKnights) != 0) {
+				knightB.movePiece(this, coord1, coord2, false);
+			}
+		}
+	}
+	
+	public long showMoves(String pos) {
+		
+		long coord = convertToCoord(pos);
+		long moves = 0L;
+		
+		if((coord&this.whitePieces) != 0) {
+			if((coord&this.whitePawns) != 0) {
+				moves = pawnW.possibleMoves(this, coord);
+			}
+			else if((coord&this.whiteKnights) != 0) {
+				moves = knightW.possibleMoves(this, coord);
+			}
+		}
+		else if((coord&this.blackPieces) != 0) {
+			if((coord&this.blackPawns) != 0) {
+				moves = pawnB.possibleMoves(this, coord);
+			}
+			else if((coord&this.blackKnights) != 0) {
+				moves = knightB.possibleMoves(this, coord);
+			}
+		}
+		
+		return moves;
+	}
+	
+	public long showAllMoves(String type) {
+		
+		long moves = 0L;
+		
+		switch(type) {
+		case "wA":
+			moves |= pawnW.getAllPM(this);
+			moves |= knightW.getAllPM(this);
+			break;
+		case "wp":
+			moves = pawnW.getAllPM(this);
+			break;
+		case "wk":
+			moves = knightW.getAllPM(this);
+			break;
+		case "wb":
+			break;
+		case "wr":
+			break;
+		case "wq":
+			break;
+		case "wK":
+			break;
+			
+		case "bA":
+			moves |= pawnB.getAllPM(this);
+			moves |= knightB.getAllPM(this);
+			break;
+		case "bp":
+			moves = pawnB.getAllPM(this);
+			break;
+		case "bk":
+			moves = knightB.getAllPM(this);
+			break;
+		case "bb":
+			break;
+		case "br":
+			break;
+		case "bq":
+			break;
+		case "bK":
+			break;
+		default:
+			System.out.println("Invalid syntax");
+		}
+		
+		return moves;
+	}
 }

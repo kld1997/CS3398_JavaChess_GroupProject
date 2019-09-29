@@ -1,11 +1,14 @@
-//Roy Grady, preliminary pawn version
+//Roy Grady, pawn without en passant or promotion
 public class WhitePawn implements Piece
 {
+	
+	private long moves;
+	
 	public long possibleMoves(Board board, long coord) {
 		
 		board.currentState();
 		
-		long moves = 0L;
+		moves = 0L;
 		
 		if((board.whitePawns&coord) != 0) {	
 			if((coord&Board.row8) == 0 && ((coord>>8)&board.empty) != 0) {     //push up by 1
@@ -14,10 +17,10 @@ public class WhitePawn implements Piece
 			if((coord&Board.row2) != 0 && ((coord>>8)&board.empty) != 0 && ((coord>>16)&board.empty) != 0) {  //push up by 2
 				moves |= coord>>16;
 			}
-			if(((coord>>9)&board.blackPieces&~Board.colA) != 0) { //capture left
+			if(((coord>>9)&board.blackPieces&~Board.colH) != 0) { //capture left
 				moves |= coord>>9;
 			}
-			if(((coord>>7)&board.blackPieces&~Board.colH) != 0) { //capture right
+			if(((coord>>7)&board.blackPieces&~Board.colA) != 0) { //capture right
 				moves |= coord>>7;
 			}	
 		}	
@@ -25,9 +28,11 @@ public class WhitePawn implements Piece
 		return moves;
 	}
 	
-	public void movePiece(Board board, long coord1, long coord2) {
+	public void movePiece(Board board, long coord1, long coord2, boolean checked) {
 		
-		long moves = possibleMoves(board, coord1);
+		if(checked == false)
+			moves = possibleMoves(board, coord1);
+		
 		long change = coord1|coord2;
 		
 		if((coord2&moves) != 0) {
