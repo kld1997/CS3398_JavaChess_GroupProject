@@ -13,7 +13,7 @@ class Main {
         
         WhiteKnight knightw = new WhiteKnight();
         
-        //chess.displayBitboard(chess.colG);
+        //chess.displayBitboard(chess.colMasks[1]);
         //System.out.println(chess.convertToCoord("h1"));
   
         String line = "";

@@ -40,11 +40,23 @@ class Board {
 	static long colG = 4629771061636907072L;
 	static long colH = -9187201950435737472L;
 	
+	static long rowMasks[] = {
+			255L, 65280L, 16711680L, 4278190080L, 1095216660480L, 280375465082880L, 71776119061217280L, -72057594037927936L
+	};
+	
+	static long colMasks[] = {
+			72340172838076673L, 144680345676153346L, 289360691352306692L, 578721382704613384L,
+			1157442765409226768L, 2314885530818453536L, 4629771061636907072L, -9187201950435737472L
+	};
+	
 	WhitePawn pawnW = new WhitePawn();
 	BlackPawn pawnB = new BlackPawn();
 	
 	WhiteKnight knightW = new WhiteKnight();
 	BlackKnight knightB = new BlackKnight();
+	
+	WhiteRook rookW = new WhiteRook();
+	BlackRook rookB = new BlackRook();
 	
 	public Board() {                                                   //initializes all of the bitboards
 		
@@ -77,9 +89,9 @@ class Board {
 				{"br","bk","bb","bq","bK","bb","bk","br"},
 				{"bp","bp","bp","bp","bp","bp","bp","bp"},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","br","  ","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","wr","  ","  ","  ","  ","  ","  "},
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
 				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
 		
@@ -386,6 +398,9 @@ public void displayArray(long bitboard) {
 			else if((coord1&this.whiteKnights) != 0) {
 				knightW.movePiece(this, coord1, coord2, false);
 			}
+			else if((coord1&this.whiteRooks) != 0) {
+				rookW.movePiece(this, coord1, coord2, false);
+			}
 		}
 		else if(team == 1 && (coord1&this.blackPieces) != 0) {
 			if((coord1&this.blackPawns) != 0) {
@@ -393,6 +408,9 @@ public void displayArray(long bitboard) {
 			}
 			else if((coord1&this.blackKnights) != 0) {
 				knightB.movePiece(this, coord1, coord2, false);
+			}
+			else if((coord1&this.blackRooks) != 0) {
+				rookB.movePiece(this, coord1, coord2, false);
 			}
 		}
 	}
@@ -409,6 +427,9 @@ public void displayArray(long bitboard) {
 			else if((coord&this.whiteKnights) != 0) {
 				moves = knightW.possibleMoves(this, coord);
 			}
+			else if((coord&this.whiteRooks) != 0) {
+				moves = rookW.possibleMoves(this, coord);
+			}
 		}
 		else if((coord&this.blackPieces) != 0) {
 			if((coord&this.blackPawns) != 0) {
@@ -416,6 +437,9 @@ public void displayArray(long bitboard) {
 			}
 			else if((coord&this.blackKnights) != 0) {
 				moves = knightB.possibleMoves(this, coord);
+			}
+			else if((coord&this.blackRooks) != 0) {
+				moves = rookB.possibleMoves(this, coord);
 			}
 		}
 		
@@ -440,6 +464,7 @@ public void displayArray(long bitboard) {
 		case "wb":
 			break;
 		case "wr":
+			moves = rookW.getAllPM(this);
 			break;
 		case "wq":
 			break;
@@ -459,6 +484,7 @@ public void displayArray(long bitboard) {
 		case "bb":
 			break;
 		case "br":
+			moves = rookB.getAllPM(this);
 			break;
 		case "bq":
 			break;
