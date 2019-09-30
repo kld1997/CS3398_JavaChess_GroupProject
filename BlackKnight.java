@@ -6,8 +6,6 @@ public class BlackKnight implements Piece
 	
 	public long possibleMoves(Board board, long coord) {
 		
-		board.currentState();
-		
 		moves = 0L;
 		
 		if((board.blackKnights&coord) != 0) {	
@@ -62,7 +60,6 @@ public class BlackKnight implements Piece
 			board.blackKnights^= change;
 		}
 		
-		board.currentState();
 	}
 	
 	public long getAllPM(Board board) {

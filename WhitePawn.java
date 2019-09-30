@@ -6,8 +6,6 @@ public class WhitePawn implements Piece
 	
 	public long possibleMoves(Board board, long coord) {
 		
-		board.currentState();
-		
 		moves = 0L;
 		
 		if((board.whitePawns&coord) != 0) {	
@@ -42,7 +40,6 @@ public class WhitePawn implements Piece
 			board.whitePawns^= change;
 		}
 		
-		board.currentState();
 	}
 	
 	public long getAllPM(Board board) {

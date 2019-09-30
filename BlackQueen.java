@@ -1,5 +1,5 @@
-//Roy Grady, black rook
-public class BlackRook implements Piece
+//Roy Grady, black queen
+public class BlackQueen implements Piece
 {
 	
 	private long moves;
@@ -8,12 +8,16 @@ public class BlackRook implements Piece
 		
 		moves = 0L;
 		
-		if((board.blackRooks&coord) != 0) {	
+		if((board.blackQueens&coord) != 0) {	
 			int trail = Long.numberOfTrailingZeros(coord);
 			
 			long horizontal = (~board.empty - coord * 2) ^ Long.reverse(Long.reverse(~board.empty) - Long.reverse(coord) * 2);
 			long vertical = ((~board.empty&Board.colMasks[trail % 8]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.colMasks[trail % 8]) - (2 * Long.reverse(coord)));
 			moves = (horizontal&Board.rowMasks[trail / 8] | vertical&Board.colMasks[trail % 8]) & board.notBlack;
+			
+			long bltr = ((~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * Long.reverse(coord)));
+	        long tlbr = ((~board.empty&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) - (2 * Long.reverse(coord)));
+			moves |= (bltr&Board.bltrMasks[(trail / 8) + (trail % 8)] | tlbr&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) & board.notBlack;
 		}	
 	
 		return moves;
@@ -30,7 +34,7 @@ public class BlackRook implements Piece
 			if((board.whitePieces&coord2) != 0) {
 				board.removePiece(coord2);
 			}
-			board.blackRooks^= change;
+			board.blackQueens^= change;
 		}
 		
 	}
@@ -38,14 +42,14 @@ public class BlackRook implements Piece
 	public long getAllPM(Board board) {
 		
 		long allMoves = 0L;
-		long rooks = board.blackRooks;
+		long queens = board.blackQueens;
 		long coord = 0L;
-		int r = 0;
+		int q = 0;
 		
-		while(rooks != 0) {
-			r = Long.numberOfTrailingZeros(rooks);
-			coord = 1L<<r;
-			rooks &= ~coord;
+		while(queens != 0) {
+			q = Long.numberOfTrailingZeros(queens);
+			coord = 1L<<q;
+			queens &= ~coord;
 			
 			allMoves |= possibleMoves(board, coord);
 		}

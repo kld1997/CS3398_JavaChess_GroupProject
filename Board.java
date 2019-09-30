@@ -49,14 +49,31 @@ class Board {
 			1157442765409226768L, 2314885530818453536L, 4629771061636907072L, -9187201950435737472L
 	};
 	
+	static long bltrMasks[] = {
+		0x1L, 0x102L, 0x10204L, 0x1020408L, 0x102040810L, 0x10204081020L, 0x1020408102040L,
+		0x102040810204080L, 0x204081020408000L, 0x408102040800000L, 0x810204080000000L,
+		0x1020408000000000L, 0x2040800000000000L, 0x4080000000000000L, 0x8000000000000000L
+	};
+	    static long tlbrMasks[] = {
+		0x80L, 0x8040L, 0x804020L, 0x80402010L, 0x8040201008L, 0x804020100804L, 0x80402010080402L,
+		0x8040201008040201L, 0x4020100804020100L, 0x2010080402010000L, 0x1008040201000000L,
+		0x804020100000000L, 0x402010000000000L, 0x201000000000000L, 0x100000000000000L
+	};
+	
 	WhitePawn pawnW = new WhitePawn();
 	BlackPawn pawnB = new BlackPawn();
 	
 	WhiteKnight knightW = new WhiteKnight();
 	BlackKnight knightB = new BlackKnight();
 	
+	WhiteBishop bishopW = new WhiteBishop();
+	BlackBishop bishopB = new BlackBishop();
+	
 	WhiteRook rookW = new WhiteRook();
 	BlackRook rookB = new BlackRook();
+	
+	WhiteQueen queenW = new WhiteQueen();
+	BlackQueen queenB = new BlackQueen();
 	
 	public Board() {                                                   //initializes all of the bitboards
 		
@@ -89,9 +106,9 @@ class Board {
 				{"br","bk","bb","bq","bK","bb","bk","br"},
 				{"bp","bp","bp","bp","bp","bp","bp","bp"},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"  ","  ","  ","br","  ","  ","  ","  "},
+				{"  ","  ","  ","bq","  ","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"  ","wr","  ","  ","  ","  ","  ","  "},
+				{"  ","wq","  ","  ","  ","  ","  ","  "},
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
 				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
 		
@@ -398,8 +415,14 @@ public void displayArray(long bitboard) {
 			else if((coord1&this.whiteKnights) != 0) {
 				knightW.movePiece(this, coord1, coord2, false);
 			}
+			else if((coord1&this.whiteBishops) != 0) {
+				bishopW.movePiece(this, coord1, coord2, false);
+			}
 			else if((coord1&this.whiteRooks) != 0) {
 				rookW.movePiece(this, coord1, coord2, false);
+			}
+			else if((coord1&this.whiteQueens) != 0) {
+				queenW.movePiece(this, coord1, coord2, false);
 			}
 		}
 		else if(team == 1 && (coord1&this.blackPieces) != 0) {
@@ -409,10 +432,18 @@ public void displayArray(long bitboard) {
 			else if((coord1&this.blackKnights) != 0) {
 				knightB.movePiece(this, coord1, coord2, false);
 			}
+			else if((coord1&this.blackBishops) != 0) {
+				bishopB.movePiece(this, coord1, coord2, false);
+			}
 			else if((coord1&this.blackRooks) != 0) {
 				rookB.movePiece(this, coord1, coord2, false);
 			}
+			else if((coord1&this.blackQueens) != 0) {
+				queenB.movePiece(this, coord1, coord2, false);
+			}
 		}
+		
+		currentState();
 	}
 	
 	public long showMoves(String pos) {
@@ -427,8 +458,14 @@ public void displayArray(long bitboard) {
 			else if((coord&this.whiteKnights) != 0) {
 				moves = knightW.possibleMoves(this, coord);
 			}
+			else if((coord&this.whiteBishops) != 0) {
+				moves = bishopW.possibleMoves(this, coord);
+			}
 			else if((coord&this.whiteRooks) != 0) {
 				moves = rookW.possibleMoves(this, coord);
+			}
+			else if((coord&this.whiteQueens) != 0) {
+				moves = queenW.possibleMoves(this, coord);
 			}
 		}
 		else if((coord&this.blackPieces) != 0) {
@@ -438,8 +475,14 @@ public void displayArray(long bitboard) {
 			else if((coord&this.blackKnights) != 0) {
 				moves = knightB.possibleMoves(this, coord);
 			}
+			else if((coord&this.blackBishops) != 0) {
+				moves = bishopB.possibleMoves(this, coord);
+			}
 			else if((coord&this.blackRooks) != 0) {
 				moves = rookB.possibleMoves(this, coord);
+			}
+			else if((coord&this.blackQueens) != 0) {
+				moves = queenB.possibleMoves(this, coord);
 			}
 		}
 		
@@ -454,6 +497,8 @@ public void displayArray(long bitboard) {
 		case "wA":
 			moves |= pawnW.getAllPM(this);
 			moves |= knightW.getAllPM(this);
+			moves |= bishopW.getAllPM(this);
+			moves |= rookW.getAllPM(this);
 			break;
 		case "wp":
 			moves = pawnW.getAllPM(this);
@@ -462,11 +507,13 @@ public void displayArray(long bitboard) {
 			moves = knightW.getAllPM(this);
 			break;
 		case "wb":
+			moves = bishopW.getAllPM(this);
 			break;
 		case "wr":
 			moves = rookW.getAllPM(this);
 			break;
 		case "wq":
+			moves = queenW.getAllPM(this);
 			break;
 		case "wK":
 			break;
@@ -474,6 +521,8 @@ public void displayArray(long bitboard) {
 		case "bA":
 			moves |= pawnB.getAllPM(this);
 			moves |= knightB.getAllPM(this);
+			moves |= bishopB.getAllPM(this);
+			moves |= rookB.getAllPM(this);
 			break;
 		case "bp":
 			moves = pawnB.getAllPM(this);
@@ -482,11 +531,13 @@ public void displayArray(long bitboard) {
 			moves = knightB.getAllPM(this);
 			break;
 		case "bb":
+			moves = bishopB.getAllPM(this);
 			break;
 		case "br":
 			moves = rookB.getAllPM(this);
 			break;
 		case "bq":
+			moves = queenB.getAllPM(this);
 			break;
 		case "bK":
 			break;

@@ -6,8 +6,6 @@ public class WhiteKnight implements Piece
 	
 	public long possibleMoves(Board board, long coord) {
 		
-		board.currentState();
-		
 		moves = 0L;
 		
 		if((board.whiteKnights&coord) != 0) {	
@@ -62,7 +60,6 @@ public class WhiteKnight implements Piece
 			board.whiteKnights^= change;
 		}
 		
-		board.currentState();
 	}
 	
 	public long getAllPM(Board board) {
