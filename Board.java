@@ -106,9 +106,9 @@ class Board {
 				{"br","bk","bb","bq","bK","bb","bk","br"},
 				{"bp","bp","bp","bp","bp","bp","bp","bp"},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"  ","  ","  ","bq","  ","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"  ","wq","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
 				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
 		
@@ -403,6 +403,13 @@ public void displayArray(long bitboard) {
 		return coord;
 	}
 	
+	public static long convertToCoord(int x, int y) {
+
+		long coord = 1L<<((y*8)+x);
+		
+		return coord;
+	}
+	
 	public void makeMove(int team, String pos) {
 		
 		long coord1 = convertToCoord(pos.substring(0,2));
@@ -499,6 +506,7 @@ public void displayArray(long bitboard) {
 			moves |= knightW.getAllPM(this);
 			moves |= bishopW.getAllPM(this);
 			moves |= rookW.getAllPM(this);
+			moves |= queenW.getAllPM(this);
 			break;
 		case "wp":
 			moves = pawnW.getAllPM(this);
@@ -523,6 +531,7 @@ public void displayArray(long bitboard) {
 			moves |= knightB.getAllPM(this);
 			moves |= bishopB.getAllPM(this);
 			moves |= rookB.getAllPM(this);
+			moves |= queenB.getAllPM(this);
 			break;
 		case "bp":
 			moves = pawnB.getAllPM(this);
