@@ -13,7 +13,7 @@ class Main {
         
         WhiteKnight knightw = new WhiteKnight();
         
-        //chess.displayBitboard(chess.tlbrMasks[6]);
+        chess.displayBitboard(chess.kingW.getAllPM(chess));
         //System.out.println(chess.convertToCoord("h1"));
   
         String line = "";
@@ -46,7 +46,7 @@ class Main {
         		System.out.println("enter coordinates(e.g. b1c3): ");
         		coord = "1111";
             	coord = scan.nextLine() + coord;
-            	chess.makeMove(teamSwitch, coord);
+            	chess.makeMove(teamSwitch, coord, false);
             	chess.displayArray();
             	teamSwitch = Math.abs(teamSwitch - 1);
         	}

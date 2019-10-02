@@ -40,6 +40,8 @@ class Board {
 	static long colG = 4629771061636907072L;
 	static long colH = -9187201950435737472L;
 	
+	static long kingMoves = -2260560722335367168L;
+	
 	static long rowMasks[] = {
 			255L, 65280L, 16711680L, 4278190080L, 1095216660480L, 280375465082880L, 71776119061217280L, -72057594037927936L
 	};
@@ -75,6 +77,8 @@ class Board {
 	WhiteQueen queenW = new WhiteQueen();
 	BlackQueen queenB = new BlackQueen();
 	
+	WhiteKing kingW = new WhiteKing();
+	
 	public Board() {                                                   //initializes all of the bitboards
 		
 		this.whiteKing = 0;
@@ -106,11 +110,11 @@ class Board {
 				{"br","bk","bb","bq","bK","bb","bk","br"},
 				{"bp","bp","bp","bp","bp","bp","bp","bp"},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","wK","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
-				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
+				{"wr","wk","wb","wq","  ","wb","wk","wr"}};
 		
 		arrayToBitboards(standardChessBoard);
 	}
@@ -410,43 +414,46 @@ public void displayArray(long bitboard) {
 		return coord;
 	}
 	
-	public void makeMove(int team, String pos) {
+	public void makeMove(int team, String pos, boolean checked) {
 		
 		long coord1 = convertToCoord(pos.substring(0,2));
 		long coord2 = convertToCoord(pos.substring(2,4));
 		
-		if(team == 0 && (coord1&this.whitePieces) != 0) {
+		if(team == 0 && (coord1&(this.whitePieces|this.whiteKing)) != 0) {
 			if((coord1&this.whitePawns) != 0) {
-				pawnW.movePiece(this, coord1, coord2, false);
+				pawnW.movePiece(this, coord1, coord2, checked);
 			}
 			else if((coord1&this.whiteKnights) != 0) {
-				knightW.movePiece(this, coord1, coord2, false);
+				knightW.movePiece(this, coord1, coord2, checked);
 			}
 			else if((coord1&this.whiteBishops) != 0) {
-				bishopW.movePiece(this, coord1, coord2, false);
+				bishopW.movePiece(this, coord1, coord2, checked);
 			}
 			else if((coord1&this.whiteRooks) != 0) {
-				rookW.movePiece(this, coord1, coord2, false);
+				rookW.movePiece(this, coord1, coord2, checked);
 			}
 			else if((coord1&this.whiteQueens) != 0) {
-				queenW.movePiece(this, coord1, coord2, false);
+				queenW.movePiece(this, coord1, coord2, checked);
+			}
+			else if((coord1&this.whiteKing) != 0) {
+				kingW.movePiece(this, coord1, coord2, checked);
 			}
 		}
 		else if(team == 1 && (coord1&this.blackPieces) != 0) {
 			if((coord1&this.blackPawns) != 0) {
-				pawnB.movePiece(this, coord1, coord2, false);
+				pawnB.movePiece(this, coord1, coord2, checked);
 			}
 			else if((coord1&this.blackKnights) != 0) {
-				knightB.movePiece(this, coord1, coord2, false);
+				knightB.movePiece(this, coord1, coord2, checked);
 			}
 			else if((coord1&this.blackBishops) != 0) {
-				bishopB.movePiece(this, coord1, coord2, false);
+				bishopB.movePiece(this, coord1, coord2, checked);
 			}
 			else if((coord1&this.blackRooks) != 0) {
-				rookB.movePiece(this, coord1, coord2, false);
+				rookB.movePiece(this, coord1, coord2, checked);
 			}
 			else if((coord1&this.blackQueens) != 0) {
-				queenB.movePiece(this, coord1, coord2, false);
+				queenB.movePiece(this, coord1, coord2, checked);
 			}
 		}
 		
@@ -473,6 +480,10 @@ public void displayArray(long bitboard) {
 			}
 			else if((coord&this.whiteQueens) != 0) {
 				moves = queenW.possibleMoves(this, coord);
+			}
+			else if((coord&this.whiteKing) != 0) {
+				moves = kingW.possibleMoves(this, coord);
+				System.out.println("cmon");
 			}
 		}
 		else if((coord&this.blackPieces) != 0) {
@@ -524,6 +535,7 @@ public void displayArray(long bitboard) {
 			moves = queenW.getAllPM(this);
 			break;
 		case "wK":
+			moves = kingW.getAllPM(this);
 			break;
 			
 		case "bA":
