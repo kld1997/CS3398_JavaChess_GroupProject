@@ -1,3 +1,4 @@
+//Kieran Hsieh
 import javax.swing.*;
 import javax.swing.JFrame;
 import java.awt.*;
@@ -10,27 +11,31 @@ import javax.imageio.*;
 
 public class ChessGui extends JFrame
 {
-
+        public int teamNum = 0;
         public Board gameBoard = new Board();
 
         private JPanel mainBoard = new JPanel();
         private JPanel leftPanel = new JPanel();
         private JPanel bottomPanel = new JPanel();
-        private JPanel topPanel = new JPanel();
+        private JLabel topLabel = new JLabel();
 
         ChessSquare[][] squares = new ChessSquare[8][8];
         public static BufferedImage pieces[][] = new BufferedImage[2][6];
 
-
+        private int[] lastClicked = new int[2];
+        ArrayList<ChessSquare> highlighted = new ArrayList<ChessSquare>();
         public ChessGui()
         {
             gameBoard.standardChess();
+
             setUpImages();
-            setSize((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.75), (int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.75));
+            setSize((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.5), (int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.75));
             setDefaultCloseOperation(EXIT_ON_CLOSE);
             setLocation((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()*.15), (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight()*.15));
             setLayout(new BorderLayout());
-            topPanel.setLayout(new BorderLayout());
+            topLabel.setText("White Turn");
+            topLabel.setFont(new Font("Serif", Font.BOLD, 20));
+            topLabel.setHorizontalAlignment(JLabel.CENTER);
             mainBoard.setLayout(new GridLayout(8, 8));
             leftPanel.setLayout(new GridLayout(8,0));
             bottomPanel.setLayout(new GridLayout(0,8));
@@ -41,6 +46,7 @@ public class ChessGui extends JFrame
             add(mainBoard);
             add(leftPanel, BorderLayout.WEST);
             add(bottomPanel, BorderLayout.SOUTH);
+            add(topLabel, BorderLayout.NORTH);
             setVisible(true);
         }
         /*
@@ -107,9 +113,42 @@ public class ChessGui extends JFrame
                         @Override
                         public void actionPerformed(ActionEvent actionEvent)
                         {
+                            boolean moveMade = false;
+                            String moveString = "";
+                            moveString+=convertStrings(lastClicked[0],lastClicked[1]);
                             ChessSquare temp = (ChessSquare) actionEvent.getSource();
                             temp.Highlight();
-                            System.out.println(actionEvent.getActionCommand()); //Action Command is set to coordinates on board of where you clicked.
+                            squares[lastClicked[0]][lastClicked[1]].unHighlight();
+                            //System.out.println("Last Clicked: " + lastClicked[0] + " " + lastClicked[1] + " or " + convertStrings(lastClicked[0],lastClicked[1]));
+                            for(int i = 0; i < highlighted.size(); i ++)
+                            {
+                                highlighted.get(i).unHighlight();
+                            }
+                            for(int i = 6 ; i < temp.getActionCommand().length(); i ++)
+                            {
+                                int count = 0;
+                                if(temp.getActionCommand().substring(i, i+1).equals(" "))
+                                {
+                                    lastClicked[0] = Integer.parseInt(temp.getActionCommand().substring(i+1,i+2));
+                                    lastClicked[1] = Integer.parseInt(temp.getActionCommand().substring(i+3));
+                                    break;
+                                }
+                            }
+                            moveString+=convertStrings(lastClicked[0],lastClicked[1]);
+                            //highlighted = displayPossibleMoves(gameBoard.showMoves(convertStrings(lastClicked[0],lastClicked[1])));
+
+                            moveMade = gameBoard.makeMove(teamNum, moveString, true);
+
+                            if(moveMade)
+                            {
+                                teamNum = Math.abs(teamNum - 1);
+                            }
+                            else
+                            {
+                                highlighted = displayPossibleMoves(gameBoard.showMoves(convertStrings(lastClicked[0],lastClicked[1])));
+                            }
+                            updateBoard(gameBoard);
+                            //System.out.println(actionEvent.getActionCommand()); //Action Command is set to coordinates on board of where you clicked.
                         }                                                       //Note: These coordinates don't correspond to the ones shown in the GUI, and instead
                     });                                                         //      show their indexes in the array squares
                     mainBoard.add(newSquare);
@@ -118,6 +157,28 @@ public class ChessGui extends JFrame
 
                 }
             }
+        }
+        private ArrayList<ChessSquare> displayPossibleMoves(long board)
+        {
+            //String newBoard = board + "";
+            //System.out.println("\n"+newBoard+"\n");
+            ArrayList<ChessSquare> retList = new ArrayList<ChessSquare>();
+            for(int x = 0; x < 8; x ++)
+            {
+                for(int y = 0; y < 8;y ++)
+                {
+                    if(((board>>(x*8)+y)&1) == 1) {
+                        squares[x][y].Highlight();
+                        retList.add(squares[x][y]);
+                    }
+                    /*if(newBoard.charAt((x+y)) == 1)
+                    {
+                        squares[x][y].Highlight();
+                        retList.add(squares[x][y]);
+                    }*/
+                }
+            }
+            return retList;
         }
         private void setUpImages()
         {
@@ -136,11 +197,26 @@ public class ChessGui extends JFrame
         }
         //END BASE SETUP
 
-
+        private String convertStrings(int x, int y)
+        {
+            String ret = "";
+            ret+= (char)(y + 97);
+            ret+= 8-x;
+            return ret;
+        }
         //Updates images on the mainBoard JPanel
         public void updateBoard(Board board)
         {
+            if(teamNum == 0)
+            {
+                topLabel.setText("White Turn");
+            }
+            else
+            {
+                topLabel.setText("Black Turn");
+            }
             //Remove icons
+
             for(int x = 0; x < 8; x ++)
             {
                 for(int y = 0; y < 8; y++)
@@ -148,6 +224,8 @@ public class ChessGui extends JFrame
                     squares[x][y].setIcon(null);
                 }
             }
+
+
             //Setting up Icons in shape of new board using Roy's code for displaying the array but setting icons instead.
             for(int x = 0; x < 8; x ++)
             {
@@ -207,6 +285,10 @@ public class ChessGui extends JFrame
                             else if(((board.blackPawns>>(x*8)+y)&1) == 1) {
                                 squares[x][y].setIcon(new ImageIcon(pieces[0][5]));           //"bp";
                                 squares[x][y].setActionCommand("Black Pawn " + x + " " + y);
+                            }
+                            else
+                            {
+                                squares[x][y].setActionCommand("White  " + x + " " + y);
                             }
                 }
             }
