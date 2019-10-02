@@ -21,5 +21,8 @@ public class ChessSquare extends JButton
     {
         setBorder(BorderFactory.createLineBorder(Color.RED, 5));
     }
-
+    public void unHighlight()
+    {
+        setBorder(null);
+    }
 }
