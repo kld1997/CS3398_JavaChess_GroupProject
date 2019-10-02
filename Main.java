@@ -8,12 +8,7 @@ class Main {
         
         chess.displayArray();
         
-        WhitePawn pawnw = new WhitePawn();
-        BlackPawn pawnb = new BlackPawn();
-        
-        WhiteKnight knightw = new WhiteKnight();
-        
-        chess.displayBitboard(chess.kingW.getAllPM(chess));
+        //chess.displayBitboard(Board.kingMoves);
         //System.out.println(chess.convertToCoord("h1"));
   
         String line = "";

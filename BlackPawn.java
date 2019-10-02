@@ -6,8 +6,6 @@ public class BlackPawn implements Piece
 	
 	public long possibleMoves(Board board, long coord) {
 		
-		board.currentState();
-		
 		moves = 0L;
 		
 		if((board.blackPawns&coord) != 0) {
@@ -28,7 +26,7 @@ public class BlackPawn implements Piece
 		return moves;
 	}
 	
-	public void movePiece(Board board, long coord1, long coord2, boolean checked) {
+	public boolean movePiece(Board board, long coord1, long coord2, boolean checked) {
 		
 		if(checked == false)
 			moves = possibleMoves(board, coord1);
@@ -40,9 +38,9 @@ public class BlackPawn implements Piece
 				board.removePiece(coord2);
 			}
 			board.blackPawns^= change;
+			return true;
 		}
-		
-		board.currentState();
+		return false;
 	}
 	
 	public long getAllPM(Board board) {

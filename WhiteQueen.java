@@ -23,7 +23,7 @@ public class WhiteQueen implements Piece
 		return moves;
 	}
 	
-	public void movePiece(Board board, long coord1, long coord2, boolean checked) {
+	public boolean movePiece(Board board, long coord1, long coord2, boolean checked) {
 		
 		if(checked == false)
 			moves = possibleMoves(board, coord1);
@@ -35,8 +35,9 @@ public class WhiteQueen implements Piece
 				board.removePiece(coord2);
 			}
 			board.whiteQueens^= change;
+			return true;
 		}
-		
+		return false;
 	}
 	
 	public long getAllPM(Board board) {

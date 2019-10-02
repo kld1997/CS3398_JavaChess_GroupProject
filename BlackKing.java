@@ -1,5 +1,5 @@
-//Roy Grady, king
-public class WhiteKing implements Piece
+//Roy Grady, black king
+public class BlackKing implements Piece
 {
 	
 	private long moves;
@@ -7,7 +7,7 @@ public class WhiteKing implements Piece
 	public long possibleMoves(Board board, long coord) {
 		moves = 0L;
 		
-		if((board.whiteKing&coord) != 0) {	
+		if((board.blackKing&coord) != 0) {	
 			int trail = Long.numberOfTrailingZeros(coord);
 			
 			if(trail == 9) {
@@ -34,7 +34,7 @@ public class WhiteKing implements Piece
 			}
 			
 		}	
-		moves &= board.notWhite;
+		moves &= board.notBlack;
 		
 		return moves;
 	}
@@ -47,10 +47,10 @@ public class WhiteKing implements Piece
 		long change = coord1|coord2;
 		
 		if((coord2&moves) != 0) {
-			if((board.blackPieces&coord2) != 0) {
+			if((board.whitePieces&coord2) != 0) {
 				board.removePiece(coord2);
 			}
-			board.whiteKing^= change;
+			board.blackKing^= change;
 			return true;
 		}
 		return false;
@@ -59,7 +59,7 @@ public class WhiteKing implements Piece
 	public long getAllPM(Board board) {
 		
 		long allMoves = 0L;
-		long king = board.whiteKing;
+		long king = board.blackKing;
 		long coord = 0L;
 		int k = 0;
 		

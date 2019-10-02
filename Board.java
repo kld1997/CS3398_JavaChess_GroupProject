@@ -40,7 +40,7 @@ class Board {
 	static long colG = 4629771061636907072L;
 	static long colH = -9187201950435737472L;
 	
-	static long kingMoves = -2260560722335367168L;
+	static long kingMoves = 460039L; //-2260560722335367168L;
 	
 	static long rowMasks[] = {
 			255L, 65280L, 16711680L, 4278190080L, 1095216660480L, 280375465082880L, 71776119061217280L, -72057594037927936L
@@ -78,6 +78,7 @@ class Board {
 	BlackQueen queenB = new BlackQueen();
 	
 	WhiteKing kingW = new WhiteKing();
+	BlackKing kingB = new BlackKing();
 	
 	public Board() {                                                   //initializes all of the bitboards
 		
@@ -110,11 +111,11 @@ class Board {
 				{"br","bk","bb","bq","bK","bb","bk","br"},
 				{"bp","bp","bp","bp","bp","bp","bp","bp"},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"  ","  ","  ","  ","wK","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
-				{"wr","wk","wb","wq","  ","wb","wk","wr"}};
+				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
 		
 		arrayToBitboards(standardChessBoard);
 	}
@@ -419,47 +420,51 @@ public void displayArray(long bitboard) {
 		long coord1 = convertToCoord(pos.substring(0,2));
 		long coord2 = convertToCoord(pos.substring(2,4));
 		
+		boolean valid = false;
+		
 		if(team == 0 && (coord1&(this.whitePieces|this.whiteKing)) != 0) {
 			if((coord1&this.whitePawns) != 0) {
-				pawnW.movePiece(this, coord1, coord2, checked);
+				valid = pawnW.movePiece(this, coord1, coord2, checked);
 			}
 			else if((coord1&this.whiteKnights) != 0) {
-				knightW.movePiece(this, coord1, coord2, checked);
+				valid = knightW.movePiece(this, coord1, coord2, checked);
 			}
 			else if((coord1&this.whiteBishops) != 0) {
-				bishopW.movePiece(this, coord1, coord2, checked);
+				valid = bishopW.movePiece(this, coord1, coord2, checked);
 			}
 			else if((coord1&this.whiteRooks) != 0) {
-				rookW.movePiece(this, coord1, coord2, checked);
+				valid = rookW.movePiece(this, coord1, coord2, checked);
 			}
 			else if((coord1&this.whiteQueens) != 0) {
-				queenW.movePiece(this, coord1, coord2, checked);
+				valid = queenW.movePiece(this, coord1, coord2, checked);
 			}
 			else if((coord1&this.whiteKing) != 0) {
-				kingW.movePiece(this, coord1, coord2, checked);
+				valid = kingW.movePiece(this, coord1, coord2, checked);
 			}
 		}
-		else if(team == 1 && (coord1&this.blackPieces) != 0) {
+		else if(team == 1 && (coord1&(this.blackPieces|this.blackKing)) != 0) {
 			if((coord1&this.blackPawns) != 0) {
-				pawnB.movePiece(this, coord1, coord2, checked);
+				valid = pawnB.movePiece(this, coord1, coord2, checked);
 			}
 			else if((coord1&this.blackKnights) != 0) {
-				knightB.movePiece(this, coord1, coord2, checked);
+				valid = knightB.movePiece(this, coord1, coord2, checked);
 			}
 			else if((coord1&this.blackBishops) != 0) {
-				bishopB.movePiece(this, coord1, coord2, checked);
+				valid = bishopB.movePiece(this, coord1, coord2, checked);
 			}
 			else if((coord1&this.blackRooks) != 0) {
-				rookB.movePiece(this, coord1, coord2, checked);
+				valid = rookB.movePiece(this, coord1, coord2, checked);
 			}
 			else if((coord1&this.blackQueens) != 0) {
-				queenB.movePiece(this, coord1, coord2, checked);
+				valid = queenB.movePiece(this, coord1, coord2, checked);
+			}
+			else if((coord1&this.blackKing) != 0) {
+				valid = kingB.movePiece(this, coord1, coord2, checked);
 			}
 		}
-		else return false;
 		
 		currentState();
-		return true;
+		return valid;
 	}
 	
 	public long showMoves(String pos) {
@@ -485,10 +490,9 @@ public void displayArray(long bitboard) {
 			}
 			else if((coord&this.whiteKing) != 0) {
 				moves = kingW.possibleMoves(this, coord);
-				System.out.println("cmon");
 			}
 		}
-		else if((coord&this.blackPieces) != 0) {
+		else if((coord&(this.blackPieces|this.blackKing)) != 0) {
 			if((coord&this.blackPawns) != 0) {
 				moves = pawnB.possibleMoves(this, coord);
 			}
@@ -502,6 +506,9 @@ public void displayArray(long bitboard) {
 				moves = rookB.possibleMoves(this, coord);
 			}
 			else if((coord&this.blackQueens) != 0) {
+				moves = queenB.possibleMoves(this, coord);
+			}
+			else if((coord&this.blackKing) != 0) {
 				moves = queenB.possibleMoves(this, coord);
 			}
 		}
@@ -520,6 +527,7 @@ public void displayArray(long bitboard) {
 			moves |= bishopW.getAllPM(this);
 			moves |= rookW.getAllPM(this);
 			moves |= queenW.getAllPM(this);
+			moves |= kingW.getAllPM(this);
 			break;
 		case "wp":
 			moves = pawnW.getAllPM(this);
@@ -546,6 +554,7 @@ public void displayArray(long bitboard) {
 			moves |= bishopB.getAllPM(this);
 			moves |= rookB.getAllPM(this);
 			moves |= queenB.getAllPM(this);
+			moves |= kingB.getAllPM(this);
 			break;
 		case "bp":
 			moves = pawnB.getAllPM(this);
@@ -563,6 +572,7 @@ public void displayArray(long bitboard) {
 			moves = queenB.getAllPM(this);
 			break;
 		case "bK":
+			moves = kingB.getAllPM(this);
 			break;
 		default:
 			System.out.println("Invalid syntax");
