@@ -414,12 +414,12 @@ public void displayArray(long bitboard) {
 		return coord;
 	}
 	
-	public void makeMove(int team, String pos, boolean checked) {
+	public boolean makeMove(String pos, boolean checked) {
 		
 		long coord1 = convertToCoord(pos.substring(0,2));
 		long coord2 = convertToCoord(pos.substring(2,4));
 		
-		if(team == 0 && (coord1&(this.whitePieces|this.whiteKing)) != 0) {
+		if((coord1&(this.whitePieces|this.whiteKing)) != 0) {
 			if((coord1&this.whitePawns) != 0) {
 				pawnW.movePiece(this, coord1, coord2, checked);
 			}
@@ -439,7 +439,7 @@ public void displayArray(long bitboard) {
 				kingW.movePiece(this, coord1, coord2, checked);
 			}
 		}
-		else if(team == 1 && (coord1&this.blackPieces) != 0) {
+		else if((coord1&this.blackPieces) != 0) {
 			if((coord1&this.blackPawns) != 0) {
 				pawnB.movePiece(this, coord1, coord2, checked);
 			}
@@ -456,8 +456,10 @@ public void displayArray(long bitboard) {
 				queenB.movePiece(this, coord1, coord2, checked);
 			}
 		}
+		else return false;
 		
 		currentState();
+		return true;
 	}
 	
 	public long showMoves(String pos) {
@@ -465,7 +467,7 @@ public void displayArray(long bitboard) {
 		long coord = convertToCoord(pos);
 		long moves = 0L;
 		
-		if((coord&this.whitePieces) != 0) {
+		if((coord&(this.whitePieces|this.whiteKing)) != 0) {
 			if((coord&this.whitePawns) != 0) {
 				moves = pawnW.possibleMoves(this, coord);
 			}
