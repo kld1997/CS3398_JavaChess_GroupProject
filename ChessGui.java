@@ -14,13 +14,16 @@ public class ChessGui extends JFrame
 {
         public int teamNum = 0;
         public Board gameBoard = new Board();
+        public int promoButtonClicked = 0;
 
         private JPanel mainPanel = new JPanel();
         private JPanel mainBoard = new JPanel();
         private JPanel leftPanel = new JPanel();
         private JPanel bottomPanel = new JPanel();
         private JLabel topLabel = new JLabel();
-        private PieceHistory rightPanel = new PieceHistory();
+        private PieceHistory historyPanel = new PieceHistory();
+        private JPanel rightPanel = new JPanel();
+        private JPanel rightPawnChoice = new JPanel();
 
         ChessSquare[][] squares = new ChessSquare[8][8];
         public static BufferedImage pieces[][] = new BufferedImage[2][6];
@@ -42,8 +45,9 @@ public class ChessGui extends JFrame
             topLabel.setHorizontalAlignment(JLabel.CENTER);
             mainBoard.setLayout(new GridLayout(8, 8));
             leftPanel.setLayout(new GridLayout(8,0));
+            rightPanel.setLayout(new GridLayout(2, 1));
             bottomPanel.setLayout(new GridLayout(0,8));
-
+            rightPawnChoice.setLayout(new GridLayout(2, 2));
             boardSetUp();
             sidesSetup();
             updateBoard(gameBoard);
@@ -75,7 +79,30 @@ public class ChessGui extends JFrame
 
                 bottomPanel.add(newLabel);
             }
-
+            //Right side Panels
+            //Dimension d = new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.155), (int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.375));
+            rightPanel.add(historyPanel);
+            rightPanel.add(rightPawnChoice);
+        }
+        public int showPawnPromotion()
+        {
+            int retInt = 0;
+            for(int i = 1; i < 5; i ++)
+            {
+                JButton choiceButton = new JButton();
+                choiceButton.setIcon(new ImageIcon(pieces[teamNum == 0 ? 1: 0][i]));
+                choiceButton.setActionCommand(i + "");
+                choiceButton.addActionListener(new ActionListener(){
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        JButton temp = (JButton)  e.getSource();
+                        promoButtonClicked = Integer.parseInt(temp.getActionCommand());
+                        getParent().removeAll();
+                    }
+                });
+                rightPawnChoice.add(choiceButton);
+            }
+            return promoButtonClicked;
         }
         private void boardSetUp()
         {
@@ -139,7 +166,7 @@ public class ChessGui extends JFrame
                                 tempString+= " " + actionCommandString.substring(6, spaceIndex) ;
 
                                 tempString+= " has moved from " + moveString.substring(0,2) + " to " + moveString.substring(2);
-                                rightPanel.addMove(tempString);
+                                historyPanel.addMove(tempString);
                             }
                             else
                             {
