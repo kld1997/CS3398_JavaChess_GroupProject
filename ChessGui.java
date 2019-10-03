@@ -6,33 +6,37 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.*;
-import java.util.Timer;
+
 import javax.imageio.*;
+import javax.swing.border.Border;
 
 public class ChessGui extends JFrame
 {
         public int teamNum = 0;
         public Board gameBoard = new Board();
 
+        private JPanel mainPanel = new JPanel();
         private JPanel mainBoard = new JPanel();
         private JPanel leftPanel = new JPanel();
         private JPanel bottomPanel = new JPanel();
         private JLabel topLabel = new JLabel();
+        private PieceHistory rightPanel = new PieceHistory();
 
         ChessSquare[][] squares = new ChessSquare[8][8];
         public static BufferedImage pieces[][] = new BufferedImage[2][6];
 
         private int[] lastClicked = new int[2];
         ArrayList<ChessSquare> highlighted = new ArrayList<ChessSquare>();
-        public ChessGui()
+        public ChessGui()   //Basic Setup
         {
             gameBoard.standardChess();
 
             setUpImages();
-            setSize((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.5), (int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.75));
+            setSize((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.7), (int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.75));
             setDefaultCloseOperation(EXIT_ON_CLOSE);
             setLocation((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()*.15), (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight()*.15));
             setLayout(new BorderLayout());
+            mainPanel.setLayout(new BorderLayout());
             topLabel.setText("White Turn");
             topLabel.setFont(new Font("Serif", Font.BOLD, 20));
             topLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -43,45 +47,18 @@ public class ChessGui extends JFrame
             boardSetUp();
             sidesSetup();
             updateBoard(gameBoard);
-            add(mainBoard);
-            add(leftPanel, BorderLayout.WEST);
-            add(bottomPanel, BorderLayout.SOUTH);
-            add(topLabel, BorderLayout.NORTH);
+            mainPanel.add(mainBoard);
+            mainPanel.add(leftPanel, BorderLayout.WEST);
+            mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+            mainPanel.add(topLabel, BorderLayout.NORTH);
+            add(rightPanel, BorderLayout.EAST);
+            add(mainPanel, BorderLayout.CENTER);
             setVisible(true);
         }
-        /*
-        DEPRECATED
-        private void layPieces()
-        {
-            for(int i = 0; i < 8; i ++)
-            {
-                squares[1][i].setIcon(new ImageIcon(pieces[0][5]));
-                squares[6][i].setIcon(new ImageIcon(pieces[1][5]));
-            }
-            //Top Side
-            squares[0][0].setIcon(new ImageIcon(pieces[0][2]));
-            squares[0][1].setIcon(new ImageIcon(pieces[0][3]));
-            squares[0][2].setIcon(new ImageIcon(pieces[0][4]));
-            squares[0][3].setIcon(new ImageIcon(pieces[0][1]));
-            squares[0][4].setIcon(new ImageIcon(pieces[0][0]));
-            squares[0][5].setIcon(new ImageIcon(pieces[0][4]));
-            squares[0][6].setIcon(new ImageIcon(pieces[0][3]));
-            squares[0][7].setIcon(new ImageIcon(pieces[0][2]));
-
-            //Bottom Side
-            squares[7][0].setIcon(new ImageIcon(pieces[1][2]));
-            squares[7][1].setIcon(new ImageIcon(pieces[1][3]));
-            squares[7][2].setIcon(new ImageIcon(pieces[1][4]));
-            squares[7][3].setIcon(new ImageIcon(pieces[1][1]));
-            squares[7][4].setIcon(new ImageIcon(pieces[1][0]));
-            squares[7][5].setIcon(new ImageIcon(pieces[1][4]));
-            squares[7][6].setIcon(new ImageIcon(pieces[1][3]));
-            squares[7][7].setIcon(new ImageIcon(pieces[1][2]));
-        }
-        */
         //BASIC SETUP HELPER METHODS
         private void sidesSetup()
         {
+            //Left Side number labels
             for(int i = 8; i > 0; i--)
             {
                 JLabel newLabel = new JLabel(i + "", SwingConstants.CENTER);
@@ -89,6 +66,7 @@ public class ChessGui extends JFrame
 
                 leftPanel.add(newLabel);
             }
+            //Bottom side letters
             for(int i = 65; i < 73; i ++) //Char values for A-H
             {
                 String letter = Character.toString((char)i);
@@ -109,22 +87,26 @@ public class ChessGui extends JFrame
                 {
                     ChessSquare newSquare = new ChessSquare(counter, x, y);
                     newSquare.addActionListener(new ActionListener()
-                    {
+                    {                                                                       //When tiles are clicked
                         @Override
                         public void actionPerformed(ActionEvent actionEvent)
                         {
                             boolean moveMade = false;
                             String moveString = "";
-                            moveString+=convertStrings(lastClicked[0],lastClicked[1]);
+
+                            moveString+=convertStrings(lastClicked[0],lastClicked[1]);      //Converts coordinates to a usable form
                             ChessSquare temp = (ChessSquare) actionEvent.getSource();
                             temp.Highlight();
                             squares[lastClicked[0]][lastClicked[1]].unHighlight();
-                            //System.out.println("Last Clicked: " + lastClicked[0] + " " + lastClicked[1] + " or " + convertStrings(lastClicked[0],lastClicked[1]));
-                            for(int i = 0; i < highlighted.size(); i ++)
+                            int[] pieceMovedPos = new int[2];
+                            pieceMovedPos[0] = lastClicked[0];
+                            pieceMovedPos[1] = lastClicked[1];
+
+                            for(int i = 0; i < highlighted.size(); i ++)                //Unhighlight previously highlighted tiles
                             {
                                 highlighted.get(i).unHighlight();
                             }
-                            for(int i = 6 ; i < temp.getActionCommand().length(); i ++)
+                            for(int i = 6 ; i < temp.getActionCommand().length(); i ++)       //Find coordinates for current button being pressed
                             {
                                 int count = 0;
                                 if(temp.getActionCommand().substring(i, i+1).equals(" "))
@@ -134,21 +116,36 @@ public class ChessGui extends JFrame
                                     break;
                                 }
                             }
-                            moveString+=convertStrings(lastClicked[0],lastClicked[1]);
-                            //highlighted = displayPossibleMoves(gameBoard.showMoves(convertStrings(lastClicked[0],lastClicked[1])));
 
-                            moveMade = gameBoard.makeMove(teamNum, moveString, true);
+                            moveString+=convertStrings(lastClicked[0],lastClicked[1]);                                   //Convert current coordinates into usable form
+
+                            moveMade = gameBoard.makeMove(teamNum, moveString, true);                           //Check to see if a move has been made
 
                             if(moveMade)
                             {
                                 teamNum = Math.abs(teamNum - 1);
+                                String tempString = "";
+                                String actionCommandString = squares[pieceMovedPos[0]][pieceMovedPos[1]].getActionCommand();
+                                tempString+= actionCommandString.substring(0,5);
+                                int spaceIndex = 0;
+                                for(int i = 6; i < actionCommandString.length(); i ++)                                          //Find index of space after white/black
+                                {
+                                    if(actionCommandString.charAt(i) == ' ')
+                                    {
+                                        spaceIndex = i;
+                                        break;
+                                    }
+                                }
+                                tempString+= " " + actionCommandString.substring(6, spaceIndex) ;
+
+                                tempString+= " has moved from " + moveString.substring(0,2) + " to " + moveString.substring(2);
+                                rightPanel.addMove(tempString);
                             }
                             else
                             {
-                                highlighted = displayPossibleMoves(gameBoard.showMoves(convertStrings(lastClicked[0],lastClicked[1])));
+                                highlighted = displayPossibleMoves(gameBoard.showMoves(convertStrings(lastClicked[0],lastClicked[1])));     //Display the possible moves of piece that has been clicked
                             }
-                            updateBoard(gameBoard);
-                            //System.out.println(actionEvent.getActionCommand()); //Action Command is set to coordinates on board of where you clicked.
+                            updateBoard(gameBoard);                             //Action Command is set to coordinates on board of where you clicked.
                         }                                                       //Note: These coordinates don't correspond to the ones shown in the GUI, and instead
                     });                                                         //      show their indexes in the array squares
                     mainBoard.add(newSquare);
@@ -158,29 +155,23 @@ public class ChessGui extends JFrame
                 }
             }
         }
-        private ArrayList<ChessSquare> displayPossibleMoves(long board)
+        private ArrayList<ChessSquare> displayPossibleMoves(long board)                 //Highlights possible moves with board method
         {
-            //String newBoard = board + "";
-            //System.out.println("\n"+newBoard+"\n");
             ArrayList<ChessSquare> retList = new ArrayList<ChessSquare>();
             for(int x = 0; x < 8; x ++)
             {
                 for(int y = 0; y < 8;y ++)
                 {
-                    if(((board>>(x*8)+y)&1) == 1) {
-                        squares[x][y].Highlight();
-                        retList.add(squares[x][y]);
-                    }
-                    /*if(newBoard.charAt((x+y)) == 1)
+                    if(((board>>(x*8)+y)&1) == 1)
                     {
                         squares[x][y].Highlight();
                         retList.add(squares[x][y]);
-                    }*/
+                    }
                 }
             }
             return retList;
         }
-        private void setUpImages()
+        private void setUpImages()                                                                                      //Separates consolidated image file into different images
         {
             try
             {
@@ -197,7 +188,7 @@ public class ChessGui extends JFrame
         }
         //END BASE SETUP
 
-        private String convertStrings(int x, int y)
+        private String convertStrings(int x, int y)                                                                     //Converts coordinates to a different form
         {
             String ret = "";
             ret+= (char)(y + 97);
