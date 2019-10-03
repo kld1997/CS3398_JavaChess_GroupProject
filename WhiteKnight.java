@@ -94,4 +94,25 @@ public class WhiteKnight implements Piece
 		
 		return threatened;
 	}
+	
+	public long threatPos(Board board, long pCoord) {
+		
+		long tPos = 0L;
+		long unit = board.whiteKnights;
+		long coord = 0L;
+		int u = 0;
+		
+		while(unit != 0) {
+			u = Long.numberOfTrailingZeros(unit);
+			coord = 1L<<u;
+			unit &= ~coord;
+			
+			if((possibleMoves(board, coord)&pCoord) != 0) {
+				tPos |= coord;
+				board.blackCheck++;
+			}
+		}
+		
+		return tPos;
+	}
 }

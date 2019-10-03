@@ -8,7 +8,7 @@ public class WhitePawn implements Piece
 		
 		moves = 0L;
 		
-		if((board.whitePawns&coord) != 0) {	
+		if((board.whitePawns&coord) != 0 && board.whiteCheck < 2) {	
 			if((coord&Board.row8) == 0 && ((coord>>8)&board.empty) != 0) {     //push up by 1
 				moves |= coord>>8;
 			}
@@ -22,6 +22,10 @@ public class WhitePawn implements Piece
 				moves |= coord>>7;
 			}	
 		}	
+		
+		if(board.whiteCheck == 1) {
+			moves &= board.bKThreats;
+		}
 	
 		return moves;
 	}

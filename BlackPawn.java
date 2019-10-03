@@ -8,7 +8,7 @@ public class BlackPawn implements Piece
 		
 		moves = 0L;
 		
-		if((board.blackPawns&coord) != 0) {
+		if((board.blackPawns&coord) != 0 && board.blackCheck < 2) {
 			if((coord&Board.row1) == 0 && ((coord<<8)&board.empty) != 0) {     //push up by 1
 				moves |= coord<<8;
 			}
@@ -22,6 +22,10 @@ public class BlackPawn implements Piece
 				moves |= coord<<9;
 			}	
 		}	
+		
+		if(board.blackCheck == 1) {
+			moves &= board.bKThreats;
+		}
 	
 		return moves;
 	}
@@ -63,5 +67,26 @@ public class BlackPawn implements Piece
 		threatened |= (board.blackPawns>>9)&~Board.colH;
 		
 		return threatened;
+	}
+	
+	public long threatPos(Board board, long pCoord) {
+		
+		long tPos = 0L;
+		long unit = board.blackPawns;
+		long coord = 0L;
+		int u = 0;
+		
+		while(unit != 0) {
+			u = Long.numberOfTrailingZeros(unit);
+			coord = 1L<<u;
+			unit &= ~coord;
+			
+			if((possibleMoves(board, coord)&pCoord) != 0) {
+				tPos |= coord;
+				board.whiteCheck++;
+			}
+		}
+		
+		return tPos;
 	}
 }

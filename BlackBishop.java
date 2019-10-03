@@ -9,7 +9,7 @@ public class BlackBishop implements Piece
 		
 		moves = 0L;
 		
-		if((board.blackBishops&coord) != 0) {	
+		if((board.blackBishops&coord) != 0 && board.blackCheck < 2) {	
 			int trail = Long.numberOfTrailingZeros(coord);
 			
 			long bltr = ((~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * Long.reverse(coord)));
@@ -21,6 +21,10 @@ public class BlackBishop implements Piece
 			moves &= board.notBlack;
 		
 		threat = false;
+		
+		if(board.blackCheck == 1) {
+			moves &= board.bKThreats;
+		}
 		
 		return moves;
 	}

@@ -8,7 +8,7 @@ public class BlackKnight implements Piece
 		
 		moves = 0L;
 		
-		if((board.blackKnights&coord) != 0) {	
+		if((board.blackKnights&coord) != 0 && board.blackCheck < 2) {	
 			if((coord&(Board.row7|Board.row8)) == 0) {
 				if((coord&Board.colA) == 0 && ((coord>>17)&(board.notBlack)) != 0) {     //up left
 					moves |= coord>>17;
@@ -42,6 +42,10 @@ public class BlackKnight implements Piece
 				}
 			}
 		}	
+		
+		if(board.blackCheck == 1) {
+			moves &= board.bKThreats;
+		}
 	
 		return moves;
 	}
@@ -93,5 +97,26 @@ public class BlackKnight implements Piece
 		threatened |= (board.blackKnights<<10)&~(Board.colA|Board.colB)&~Board.row8;
 		
 		return threatened;
+	}
+	
+	public long threatPos(Board board, long pCoord) {
+		
+		long tPos = 0L;
+		long unit = board.blackKnights;
+		long coord = 0L;
+		int u = 0;
+		
+		while(unit != 0) {
+			u = Long.numberOfTrailingZeros(unit);
+			coord = 1L<<u;
+			unit &= ~coord;
+			
+			if((possibleMoves(board, coord)&pCoord) != 0) {
+				tPos |= coord;
+				board.whiteCheck++;
+			}
+		}
+		
+		return tPos;
 	}
 }

@@ -9,7 +9,7 @@ public class BlackQueen implements Piece
 		
 		moves = 0L;
 		
-		if((board.blackQueens&coord) != 0) {	
+		if((board.blackQueens&coord) != 0 && board.blackCheck < 2) {	
 			int trail = Long.numberOfTrailingZeros(coord);
 			
 			long horizontal = (~board.empty - coord * 2) ^ Long.reverse(Long.reverse(~board.empty) - Long.reverse(coord) * 2);
@@ -25,6 +25,10 @@ public class BlackQueen implements Piece
 			moves &= board.notBlack;
 		
 		threat = false;
+		
+		if(board.blackCheck == 1) {
+			moves &= board.bKThreats;
+		}
 	
 		return moves;
 	}
