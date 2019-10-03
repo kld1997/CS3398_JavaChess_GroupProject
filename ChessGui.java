@@ -143,7 +143,14 @@ public class ChessGui extends JFrame
                             }
                             else
                             {
-                                highlighted = displayPossibleMoves(gameBoard.showMoves(convertStrings(lastClicked[0],lastClicked[1])));     //Display the possible moves of piece that has been clicked
+                                String teamString = "";
+                                if(teamNum == 0) { teamString = "White"; }
+                                else { teamString = "Black"; }
+                                if(squares[lastClicked[0]][lastClicked[1]].getActionCommand().substring(0,5).equals(teamString))
+                                {
+                                    highlighted = displayPossibleMoves(gameBoard.showMoves(convertStrings(lastClicked[0], lastClicked[1])));     //Display the possible moves of piece that has been clicked
+                                }
+                                else{highlighted = new ArrayList<ChessSquare>();}
                             }
                             updateBoard(gameBoard);                             //Action Command is set to coordinates on board of where you clicked.
                         }                                                       //Note: These coordinates don't correspond to the ones shown in the GUI, and instead
