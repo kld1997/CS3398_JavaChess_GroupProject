@@ -16,13 +16,9 @@ public class WhiteKing implements Piece
 			else {
 				if(trail > 9) {
 					moves = Board.kingMoves<<(trail - 9);
-		
-					moves &= ~Board.row1;
 				}
 				else if(trail < 9) {
 					moves = Board.kingMoves>>>(9 - trail);
-					
-					moves &= ~Board.row8;
 				}
 				
 				if((coord&Board.colA) != 0) {
@@ -34,7 +30,7 @@ public class WhiteKing implements Piece
 			}
 			
 		}	
-		moves &= board.notWhite;
+		moves &= board.notWhite&~board.blackThreaten;
 		
 		return moves;
 	}

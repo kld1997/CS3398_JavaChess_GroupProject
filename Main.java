@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 class Main {
     public static void main(String[] args) {
-        Board chess = new Board();
+        /*Board chess = new Board();
         chess.standardChess();
         
         chess.displayArray();
@@ -53,6 +53,7 @@ class Main {
         	
         	System.out.println();
         }
-        scan.close();
+        scan.close();*/
+    	new ChessGui();
     }
 }

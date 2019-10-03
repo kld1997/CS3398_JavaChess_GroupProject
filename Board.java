@@ -28,6 +28,8 @@ class Board {
 	long notWhite;
 	long notBlack;
 	long empty;
+	long whiteThreaten;
+	long blackThreaten;
 	
 	static long row1 = -72057594037927936L;
 	static long row2 = 71776119061217280L;
@@ -101,6 +103,8 @@ class Board {
 		this.notWhite = 0;
 		this.notBlack = 0;
 		this.empty = 0;
+		this.whiteThreaten = 0;
+		this.blackThreaten = 0;
 		
 		currentState();
 	}
@@ -175,6 +179,14 @@ class Board {
 		this.notBlack = ~(blackPieces|blackKing|whiteKing);
 		
 		this.empty = ~(whitePieces|blackPieces|whiteKing|blackKing);
+		
+		whiteThreaten = 
+				pawnW.getAllPM(this)|knightW.getAllPM(this)|bishopW.getAllPM(this)|
+				rookW.getAllPM(this)|queenW.getAllPM(this)|kingW.getAllPM(this);
+		
+		blackThreaten = 
+				pawnB.getAllPM(this)|knightB.getAllPM(this)|bishopB.getAllPM(this)|
+				rookB.getAllPM(this)|queenB.getAllPM(this)|kingB.getAllPM(this);
 	}
 	
 	public void displayArray() {
@@ -293,57 +305,6 @@ public void displayArray(long bitboard) {
 		System.out.println("   a   b   c   d   e   f   g   h");
 		System.out.println();
 	}
-	
-	/*public void movePawn(int action, int x, int y) {
-		
-		currentState();
-		
-		long change = 0;
-		long coord = (long)1<<((y*8)+x);
-		
-		if((this.whitePawns&coord) != 0) {	
-			if(action == 0) {
-				change = coord|(coord>>8);
-				this.whitePawns = this.whitePawns^change;
-			}
-			else if(action == 1) {
-				if(((coord>>9)&this.blackPieces) != 0) {
-					change = coord|(coord>>9);
-					removePiece(coord>>9);
-					this.whitePawns = this.whitePawns^change;
-				}
-			}
-			else if(action == 2) {
-				if(((coord>>7)&this.blackPieces) != 0) {
-					change = coord|(coord>>7);
-					removePiece(coord>>7);
-					this.whitePawns = this.whitePawns^change;
-				}
-			}
-		}	
-		else if((this.blackPawns&coord) != 0) {
-			if(action == 0) {
-				change = coord|(coord<<8);
-				this.blackPawns = this.blackPawns^change;
-			}
-			else if(action == 1) {
-				if(((coord<<9)&this.whitePieces) != 0) {
-					change = coord|(coord<<9);
-					removePiece(coord<<9);
-					this.blackPawns = this.blackPawns^change;
-				}
-			}
-			else if(action == 2) {
-				if(((coord<<7)&this.whitePieces) != 0) {
-					change = coord|(coord<<7);
-					removePiece(coord<<7);
-					this.blackPawns = this.blackPawns^change;
-				}
-			}
-		}
-		
-		currentState();
-	}*/
 	
 	public void removePiece(long coord) {
 		if((this.whitePieces&coord) != 0) {
@@ -509,7 +470,7 @@ public void displayArray(long bitboard) {
 				moves = queenB.possibleMoves(this, coord);
 			}
 			else if((coord&this.blackKing) != 0) {
-				moves = queenB.possibleMoves(this, coord);
+				moves = kingB.possibleMoves(this, coord);
 			}
 		}
 		
