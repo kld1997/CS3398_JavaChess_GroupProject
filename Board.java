@@ -30,6 +30,10 @@ class Board {
 	long empty;
 	long whiteThreaten;
 	long blackThreaten;
+	long wKThreats;
+	long bKThreats;
+	int whiteCheck;
+	int blackCheck;
 	
 	static long row1 = -72057594037927936L;
 	static long row2 = 71776119061217280L;
@@ -105,6 +109,10 @@ class Board {
 		this.empty = 0;
 		this.whiteThreaten = 0;
 		this.blackThreaten = 0;
+		this.wKThreats = 0;
+		this.bKThreats = 0;
+		this.whiteCheck = 0;
+		this.blackCheck = 0;
 		
 		currentState();
 	}
@@ -112,11 +120,11 @@ class Board {
 	public void standardChess() {                                           //sets up the positions of a standard chess game
 		
 		String standardChessBoard[][] = {
-				{"br","bk","bb","bq","bK","bb","bk","br"},
+				{"br","bk","bb","bq","  ","bb","bk","br"},
 				{"bp","bp","bp","bp","bp","bp","bp","bp"},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","bK","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
 				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
@@ -172,8 +180,18 @@ class Board {
 	
 	public void currentState() {
 		
-		this.whitePieces = whiteQueens|whiteRooks|whiteKnights|whiteBishops|whitePawns;
-		this.blackPieces = blackQueens|blackRooks|blackKnights|blackBishops|blackPawns;
+		whiteCheck = 0;
+		blackCheck = 0;
+		
+		if((this.whitePawns&row8) != 0) {
+			pawnPromotion(0);
+		}
+		if((this.blackPawns&row1) != 0) {
+			pawnPromotion(1);
+		}
+		
+		this.whitePieces = whiteQueens|whiteRooks|whiteKnights|whiteBishops|whitePawns|whiteKing;
+		this.blackPieces = blackQueens|blackRooks|blackKnights|blackBishops|blackPawns|blackKing;
 		
 		this.notWhite = ~(whitePieces|whiteKing|blackKing);
 		this.notBlack = ~(blackPieces|blackKing|whiteKing);
@@ -181,12 +199,32 @@ class Board {
 		this.empty = ~(whitePieces|blackPieces|whiteKing|blackKing);
 		
 		whiteThreaten = 
-				pawnW.getAllPM(this)|knightW.getAllPM(this)|bishopW.getAllPM(this)|
-				rookW.getAllPM(this)|queenW.getAllPM(this)|kingW.getAllPM(this);
+				pawnW.threaten(this)|knightW.threaten(this)|bishopW.threaten(this)|
+				rookW.threaten(this)|queenW.threaten(this)|kingW.threaten(this);
+		
+		if((whiteThreaten&this.blackKing) != 0) {
+			if((this.blackKing&pawnW.threaten(this)) != 0) {
+				bKThreats = pawnW.threatPos(this, this.blackKing);
+				displayBitboard(bKThreats);
+				System.out.println(blackCheck);
+			}
+			//System.out.println(blackCheck);
+		}
+		else
+			blackCheck = 0;
 		
 		blackThreaten = 
-				pawnB.getAllPM(this)|knightB.getAllPM(this)|bishopB.getAllPM(this)|
-				rookB.getAllPM(this)|queenB.getAllPM(this)|kingB.getAllPM(this);
+				pawnB.threaten(this)|knightB.threaten(this)|bishopB.threaten(this)|
+				rookB.threaten(this)|queenB.threaten(this)|kingB.threaten(this);
+		
+		if((blackThreaten&this.whiteKing) != 0) {
+			whiteCheck++;
+			//System.out.println(whiteCheck);
+		}
+		else
+			whiteCheck = 0;
+		
+		//code for making a bitboard of all of the pinned pieces
 	}
 	
 	public void displayArray() {
@@ -540,5 +578,76 @@ public void displayArray(long bitboard) {
 		}
 		
 		return moves;
+	}
+	
+	public void pawnPromotion(int team) {
+		if(team == 0) {
+			long coord = 0L;
+			int p = 0;
+			int newP = 4;
+			long promote = this.whitePawns&row8;
+			
+			while(promote != 0) {
+				//newP = GUI
+				p = Long.numberOfTrailingZeros(promote);
+				coord = 1L<<p;
+				promote &= ~coord;
+				
+				switch(newP) {
+				  case 1: //knight
+					this.removePiece(coord);
+					this.whiteKnights |= coord;
+				    break;
+				  case 2: //bishop
+					this.removePiece(coord);
+					this.whiteBishops |= coord;
+				    break;
+				  case 3: //rook
+					this.removePiece(coord);
+					this.whiteRooks |= coord;
+				    break;
+				  case 4: //queen
+					this.removePiece(coord);
+					this.whiteQueens |= coord;
+				    break;
+				  default:
+				    System.out.println("error");
+				}
+			}
+		}	
+		if(team == 1) {
+			long coord = 0L;
+			int p = 0;
+			int newP = 4;
+			long promote = this.blackPawns&row1;
+			
+			while(promote != 0) {
+				//newP = GUI
+				p = Long.numberOfTrailingZeros(promote);
+				coord = 1L<<p;
+				promote &= ~coord;
+				
+				switch(newP) {
+				  case 1: //knight
+					this.removePiece(coord);
+					this.blackKnights |= coord;
+				    break;
+				  case 2: //bishop
+					this.removePiece(coord);
+					this.blackBishops |= coord;
+				    break;
+				  case 3: //rook
+					this.removePiece(coord);
+					this.blackRooks |= coord;
+				    break;
+				  case 4: //queen
+					this.removePiece(coord);
+					this.blackQueens |= coord;
+				    break;
+				  default:
+				    System.out.println("error");
+				}
+			}
+		}
 	}
 }

@@ -54,4 +54,35 @@ public class WhitePawn implements Piece
 		
 		return allMoves;
 	}
+	
+	public long threaten(Board board) {
+		
+		long threatened = 0L;
+		
+		threatened |= (board.whitePawns>>7)&~Board.colA;
+		threatened |= (board.whitePawns>>9)&~Board.colH;
+		
+		return threatened;
+	}
+	
+	public long threatPos(Board board, long pCoord) {
+		
+		long tPos = 0L;
+		long unit = board.whitePawns;
+		long coord = 0L;
+		int u = 0;
+		
+		while(unit != 0) {
+			u = Long.numberOfTrailingZeros(unit);
+			coord = 1L<<u;
+			unit &= ~coord;
+			
+			if((possibleMoves(board, coord)&pCoord) != 0) {
+				tPos |= coord;
+				board.blackCheck++;
+			}
+		}
+		
+		return tPos;
+	}
 }

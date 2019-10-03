@@ -3,6 +3,7 @@ public class BlackBishop implements Piece
 {
 	
 	private long moves;
+	private boolean threat = false;
 	
 	public long possibleMoves(Board board, long coord) {
 		
@@ -13,9 +14,14 @@ public class BlackBishop implements Piece
 			
 			long bltr = ((~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * Long.reverse(coord)));
 	        long tlbr = ((~board.empty&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) - (2 * Long.reverse(coord)));
-			moves = (bltr&Board.bltrMasks[(trail / 8) + (trail % 8)] | tlbr&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) & board.notBlack;
+			moves = (bltr&Board.bltrMasks[(trail / 8) + (trail % 8)] | tlbr&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]);
 		}	
 	
+		if(!threat)
+			moves &= board.notBlack;
+		
+		threat = false;
+		
 		return moves;
 	}
 	
@@ -52,5 +58,24 @@ public class BlackBishop implements Piece
 		}
 		
 		return allMoves;
+	}
+	
+	public long threaten(Board board) {
+		
+		long threatened = 0L;
+		long bishops = board.blackBishops;
+		long coord = 0L;
+		int b = 0;
+		
+		while(bishops != 0) {
+			threat = true;
+			b = Long.numberOfTrailingZeros(bishops);
+			coord = 1L<<b;
+			bishops &= ~coord;
+			
+			threatened |= possibleMoves(board, coord);
+		}
+		
+		return threatened;
 	}
 }

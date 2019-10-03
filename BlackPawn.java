@@ -54,4 +54,14 @@ public class BlackPawn implements Piece
 		
 		return allMoves;
 	}
+	
+	public long threaten(Board board) {
+		
+		long threatened = 0L;
+
+		threatened |= (board.blackPawns<<7)&~Board.colA;
+		threatened |= (board.blackPawns>>9)&~Board.colH;
+		
+		return threatened;
+	}
 }

@@ -3,6 +3,7 @@ public class WhiteRook implements Piece
 {
 	
 	private long moves;
+	private boolean threat = false;
 	
 	public long possibleMoves(Board board, long coord) {
 		
@@ -13,9 +14,15 @@ public class WhiteRook implements Piece
 			
 			long horizontal = (~board.empty - coord * 2) ^ Long.reverse(Long.reverse(~board.empty) - Long.reverse(coord) * 2);
 			long vertical = ((~board.empty&Board.colMasks[trail % 8]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.colMasks[trail % 8]) - (2 * Long.reverse(coord)));
-			moves = (horizontal&Board.rowMasks[trail / 8] | vertical&Board.colMasks[trail % 8]) & board.notWhite;
+			moves = (horizontal&Board.rowMasks[trail / 8] | vertical&Board.colMasks[trail % 8]);
 		}	
 	
+		if(!threat)
+			moves &= board.notWhite;
+		
+		threat = false;
+	
+		
 		return moves;
 	}
 	
@@ -52,5 +59,24 @@ public class WhiteRook implements Piece
 		}
 		
 		return allMoves;
+	}
+	
+	public long threaten(Board board) {
+		
+		long threatened = 0L;
+		long rooks = board.whiteRooks;
+		long coord = 0L;
+		int r = 0;
+		
+		while(rooks != 0) {
+			threat = true;
+			r = Long.numberOfTrailingZeros(rooks);
+			coord = 1L<<r;
+			rooks &= ~coord;
+			
+			threatened |= possibleMoves(board, coord);
+		}
+		
+		return threatened;
 	}
 }

@@ -3,6 +3,7 @@ public class WhiteQueen implements Piece
 {
 	
 	private long moves;
+	private boolean threat = false;
 	
 	public long possibleMoves(Board board, long coord) {
 		
@@ -13,12 +14,17 @@ public class WhiteQueen implements Piece
 			
 			long horizontal = (~board.empty - coord * 2) ^ Long.reverse(Long.reverse(~board.empty) - Long.reverse(coord) * 2);
 			long vertical = ((~board.empty&Board.colMasks[trail % 8]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.colMasks[trail % 8]) - (2 * Long.reverse(coord)));
-			moves = (horizontal&Board.rowMasks[trail / 8] | vertical&Board.colMasks[trail % 8]) & board.notWhite;
+			moves = (horizontal&Board.rowMasks[trail / 8] | vertical&Board.colMasks[trail % 8]);
 			
 			long bltr = ((~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * Long.reverse(coord)));
 	        long tlbr = ((~board.empty&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) - (2 * Long.reverse(coord)));
-			moves |= (bltr&Board.bltrMasks[(trail / 8) + (trail % 8)] | tlbr&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) & board.notWhite;
+			moves |= (bltr&Board.bltrMasks[(trail / 8) + (trail % 8)] | tlbr&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]);
 		}	
+		
+		if(!threat)
+			moves &= board.notWhite;
+		
+		threat = false;
 	
 		return moves;
 	}
@@ -56,5 +62,24 @@ public class WhiteQueen implements Piece
 		}
 		
 		return allMoves;
+	}
+	
+	public long threaten(Board board) {
+		
+		long threatened = 0L;
+		long queens = board.whiteQueens;
+		long coord = 0L;
+		int q = 0;
+		
+		while(queens != 0) {
+			threat = true;
+			q = Long.numberOfTrailingZeros(queens);
+			coord = 1L<<q;
+			queens &= ~coord;
+			
+			threatened |= possibleMoves(board, coord);
+		}
+		
+		return threatened;
 	}
 }
