@@ -9,8 +9,8 @@ public class PieceHistory extends JPanel
     public PieceHistory()
     {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        Dimension d = new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.1), (int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.75));
-        setMinimumSize(d);
+        Dimension d = new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.155), (int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.75));
+        setPreferredSize(d);
     }
     public void addMove(String move)
     {
