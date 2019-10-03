@@ -23,30 +23,47 @@ public class Menu extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        add(Box.createVerticalStrut(280));
+        JLabel jlabel = new JLabel("Chess++");
+        jlabel.setFont(new Font("Algerian", Font.BOLD, 50));
+        jlabel.setForeground(Color.BLUE);
+        jlabel.setVerticalAlignment(jlabel.TOP);
+        jlabel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+
+        add(jlabel);
+
+        add(Box.createVerticalStrut(100));
 
         Button playbutton = new Button("Play");
         playbutton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
-        playbutton.addActionListener(new AbstractAction() {
+        playbutton.addActionListener (new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //chessGui gui = new chessGui();
+                start();
+            }
+        });
+
+        add(playbutton);
+
+        add(Box.createVerticalStrut(10));
+
+        Button profilebutton = new Button("Profile");
+        profilebutton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        profilebutton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 start();
             }
         });
 
-        add(playbutton);
-        //add(Box.createVerticalGlue());
-
-        add(Box.createVerticalStrut(190));
-        Button profilebutton = new Button("Profile");
-        profilebutton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
         add(profilebutton);
-        //add(Box.createVerticalGlue());
+
+        add(Box.createVerticalStrut(10));
 
         Button settingsButton = new Button("Settings");
         settingsButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
         add(settingsButton);
-        //add(Box.createVerticalGlue());
+
         /***
         try {
           We can put background music later here.
@@ -54,6 +71,8 @@ public class Menu extends JPanel {
          ***/
 
     }
+
+    //// Placeholders until button implementations.
 
     public void start() {
         started = true;
