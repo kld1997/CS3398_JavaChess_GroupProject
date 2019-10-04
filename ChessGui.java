@@ -12,9 +12,11 @@ import javax.swing.border.Border;
 
 public class ChessGui extends JFrame
 {
+        public int pawnID = 0;
         public int teamNum = 0;
         public Board gameBoard = new Board();
         public int promoButtonClicked = 0;
+        public ChessGui thisGui = this;
 
         private JPanel mainPanel = new JPanel();
         private JPanel mainBoard = new JPanel();
@@ -39,18 +41,22 @@ public class ChessGui extends JFrame
             setDefaultCloseOperation(EXIT_ON_CLOSE);
             setLocation((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()*.15), (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight()*.15));
             setLayout(new BorderLayout());
-            mainPanel.setLayout(new BorderLayout());
+
             topLabel.setText("White Turn");
             topLabel.setFont(new Font("Serif", Font.BOLD, 20));
             topLabel.setHorizontalAlignment(JLabel.CENTER);
+
+            mainPanel.setLayout(new BorderLayout());
             mainBoard.setLayout(new GridLayout(8, 8));
             leftPanel.setLayout(new GridLayout(8,0));
             rightPanel.setLayout(new GridLayout(2, 1));
             bottomPanel.setLayout(new GridLayout(0,8));
             rightPawnChoice.setLayout(new GridLayout(2, 2));
+
             boardSetUp();
             sidesSetup();
             updateBoard(gameBoard);
+
             mainPanel.add(mainBoard);
             mainPanel.add(leftPanel, BorderLayout.WEST);
             mainPanel.add(bottomPanel, BorderLayout.SOUTH);
@@ -84,8 +90,9 @@ public class ChessGui extends JFrame
             rightPanel.add(historyPanel);
             rightPanel.add(rightPawnChoice);
         }
-        public int showPawnPromotion()
+        public void showPawnPromotion()
         {
+            //System.out.println("Called");
             int retInt = 0;
             for(int i = 1; i < 5; i ++)
             {
@@ -97,12 +104,17 @@ public class ChessGui extends JFrame
                     {
                         JButton temp = (JButton)  e.getSource();
                         promoButtonClicked = Integer.parseInt(temp.getActionCommand());
-                        getParent().removeAll();
+                        pawnID = promoButtonClicked;
+                        gameBoard.pawnPromotion(teamNum == 0?1:0, thisGui);
+
+
+                        temp.getParent().removeAll();
+                        rightPawnChoice.repaint();
+                        updateBoard(gameBoard);
                     }
                 });
                 rightPawnChoice.add(choiceButton);
             }
-            return promoButtonClicked;
         }
         private void boardSetUp()
         {
@@ -147,24 +159,18 @@ public class ChessGui extends JFrame
                             moveString+=convertStrings(lastClicked[0],lastClicked[1]);                                   //Convert current coordinates into usable form
 
                             moveMade = gameBoard.makeMove(teamNum, moveString, true);                           //Check to see if a move has been made
-
                             if(moveMade)
                             {
+                                if(gameBoard.promoteWhite == 1)
+                                {
+                                    showPawnPromotion();
+                                }
                                 teamNum = Math.abs(teamNum - 1);
                                 String tempString = "";
                                 String actionCommandString = squares[pieceMovedPos[0]][pieceMovedPos[1]].getActionCommand();
                                 tempString+= actionCommandString.substring(0,5);
-                                int spaceIndex = 0;
-                                for(int i = 6; i < actionCommandString.length(); i ++)                                          //Find index of space after white/black
-                                {
-                                    if(actionCommandString.charAt(i) == ' ')
-                                    {
-                                        spaceIndex = i;
-                                        break;
-                                    }
-                                }
+                                int spaceIndex = actionCommandString.substring(6).indexOf(' ') + 6;
                                 tempString+= " " + actionCommandString.substring(6, spaceIndex) ;
-
                                 tempString+= " has moved from " + moveString.substring(0,2) + " to " + moveString.substring(2);
                                 historyPanel.addMove(tempString);
                             }
