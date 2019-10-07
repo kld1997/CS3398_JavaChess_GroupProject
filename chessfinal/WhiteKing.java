@@ -1,5 +1,7 @@
 //Roy Grady, king
+
 package chessfinal;
+
 public class WhiteKing implements Piece
 {
 	

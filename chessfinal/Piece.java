@@ -1,4 +1,5 @@
 package chessfinal;
+
 import java.awt.*;
 public interface Piece
 {

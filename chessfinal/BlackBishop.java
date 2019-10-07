@@ -1,6 +1,8 @@
-//Roy Grady, black queen
+//Roy Grady, black bishop
+
 package chessfinal;
-public class BlackQueen implements Piece
+
+public class BlackBishop implements Piece
 {
 	
 	private long moves;
@@ -9,16 +11,12 @@ public class BlackQueen implements Piece
 		
 		moves = 0L;
 		
-		if((board.blackQueens&coord) != 0) {	
+		if((board.blackBishops&coord) != 0) {	
 			int trail = Long.numberOfTrailingZeros(coord);
-			
-			long horizontal = (~board.empty - coord * 2) ^ Long.reverse(Long.reverse(~board.empty) - Long.reverse(coord) * 2);
-			long vertical = ((~board.empty&Board.colMasks[trail % 8]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.colMasks[trail % 8]) - (2 * Long.reverse(coord)));
-			moves = (horizontal&Board.rowMasks[trail / 8] | vertical&Board.colMasks[trail % 8]) & board.notBlack;
 			
 			long bltr = ((~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * Long.reverse(coord)));
 	        long tlbr = ((~board.empty&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) - (2 * Long.reverse(coord)));
-			moves |= (bltr&Board.bltrMasks[(trail / 8) + (trail % 8)] | tlbr&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) & board.notBlack;
+			moves = (bltr&Board.bltrMasks[(trail / 8) + (trail % 8)] | tlbr&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) & board.notBlack;
 		}	
 	
 		return moves;
@@ -35,7 +33,7 @@ public class BlackQueen implements Piece
 			if((board.whitePieces&coord2) != 0) {
 				board.removePiece(coord2);
 			}
-			board.blackQueens^= change;
+			board.blackBishops^= change;
 			return true;
 		}
 		return false;
@@ -44,14 +42,14 @@ public class BlackQueen implements Piece
 	public long getAllPM(Board board) {
 		
 		long allMoves = 0L;
-		long queens = board.blackQueens;
+		long bishops = board.blackBishops;
 		long coord = 0L;
-		int q = 0;
+		int b = 0;
 		
-		while(queens != 0) {
-			q = Long.numberOfTrailingZeros(queens);
-			coord = 1L<<q;
-			queens &= ~coord;
+		while(bishops != 0) {
+			b = Long.numberOfTrailingZeros(bishops);
+			coord = 1L<<b;
+			bishops &= ~coord;
 			
 			allMoves |= possibleMoves(board, coord);
 		}

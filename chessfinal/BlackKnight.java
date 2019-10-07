@@ -1,5 +1,7 @@
 //Roy Grady, black knight
+
 package chessfinal;
+
 public class BlackKnight implements Piece
 {
 	

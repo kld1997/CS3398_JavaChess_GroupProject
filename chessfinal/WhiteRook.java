@@ -1,5 +1,7 @@
 //Roy Grady, rook
+
 package chessfinal;
+
 public class WhiteRook implements Piece
 {
 	

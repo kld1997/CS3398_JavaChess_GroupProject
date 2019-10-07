@@ -1,6 +1,8 @@
-//Roy Grady, black bishop
+//Roy Grady, bishop
+
 package chessfinal;
-public class BlackBishop implements Piece
+
+public class WhiteBishop implements Piece
 {
 	
 	private long moves;
@@ -9,12 +11,12 @@ public class BlackBishop implements Piece
 		
 		moves = 0L;
 		
-		if((board.blackBishops&coord) != 0) {	
+		if((board.whiteBishops&coord) != 0) {	
 			int trail = Long.numberOfTrailingZeros(coord);
 			
 			long bltr = ((~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * Long.reverse(coord)));
 	        long tlbr = ((~board.empty&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) - (2 * Long.reverse(coord)));
-			moves = (bltr&Board.bltrMasks[(trail / 8) + (trail % 8)] | tlbr&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) & board.notBlack;
+			moves = (bltr&Board.bltrMasks[(trail / 8) + (trail % 8)] | tlbr&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) & board.notWhite;
 		}	
 	
 		return moves;
@@ -28,10 +30,10 @@ public class BlackBishop implements Piece
 		long change = coord1|coord2;
 		
 		if((coord2&moves) != 0) {
-			if((board.whitePieces&coord2) != 0) {
+			if((board.blackPieces&coord2) != 0) {
 				board.removePiece(coord2);
 			}
-			board.blackBishops^= change;
+			board.whiteBishops^= change;
 			return true;
 		}
 		return false;
@@ -40,7 +42,7 @@ public class BlackBishop implements Piece
 	public long getAllPM(Board board) {
 		
 		long allMoves = 0L;
-		long bishops = board.blackBishops;
+		long bishops = board.whiteBishops;
 		long coord = 0L;
 		int b = 0;
 		

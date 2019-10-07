@@ -1,5 +1,7 @@
 //Roy Grady, pawn without en passant or promotion
+
 package chessfinal;
+
 public class WhitePawn implements Piece
 {
 	

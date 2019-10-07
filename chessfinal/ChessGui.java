@@ -22,7 +22,6 @@ public class ChessGui extends JFrame
         private JPanel leftPanel = new JPanel();
         private JPanel bottomPanel = new JPanel();
         private JLabel topLabel = new JLabel();
-        public JMenuBar menuBar = new JMenuBar();
         private PieceHistory rightPanel = new PieceHistory();
 
         ChessSquare[][] squares = new ChessSquare[8][8];
@@ -61,7 +60,7 @@ public class ChessGui extends JFrame
 
             boardSetUp();
             sidesSetup();
-            buildMenuColors();
+            MenuBuilder menu = new MenuBuilder(colors, mainBoard);
             updateBoard(gameBoard);
             mainPanel.add(mainBoard);
             mainPanel.add(leftPanel, BorderLayout.WEST);
@@ -69,45 +68,10 @@ public class ChessGui extends JFrame
             mainPanel.add(topLabel, BorderLayout.NORTH);
             add(rightPanel, BorderLayout.EAST);
             add(mainPanel, BorderLayout.CENTER);
+            setJMenuBar(menu);
         }
         //BASIC SETUP HELPER METHODS
-        public void buildMenuColors()
-        {
-            JMenuBar menuBar = new JMenuBar();
-            JMenu menu = new JMenu("Options");
-            menuBar.add(menu);
 
-            JMenu chooseColor = new JMenu("Board Colors");
-            JCheckBoxMenuItem color = new JCheckBoxMenuItem("Red", new ImageIcon(colors[0][0]), false);      
-            chooseColor.add(color);
-            color = new JCheckBoxMenuItem("Black", new ImageIcon(colors[0][1]), true);
-            chooseColor.add(color);
-            color = new JCheckBoxMenuItem("Dark Blue", new ImageIcon(colors[0][2]), false);
-            chooseColor.add(color);
-            color = new JCheckBoxMenuItem("Cyan", new ImageIcon(colors[0][3]), false);
-            chooseColor.add(color);
-            color = new JCheckBoxMenuItem("Dark Gray", new ImageIcon(colors[0][4]), false);
-            chooseColor.add(color);
-            color = new JCheckBoxMenuItem("Light Gray", new ImageIcon(colors[0][5]), false);
-            chooseColor.add(color);
-            color = new JCheckBoxMenuItem("Dark Green", new ImageIcon(colors[1][0]), false);
-            chooseColor.add(color);
-            color = new JCheckBoxMenuItem("Lime Green", new ImageIcon(colors[1][1]), false);
-            chooseColor.add(color);
-            color = new JCheckBoxMenuItem("Magenta", new ImageIcon(colors[1][2]), false);
-            chooseColor.add(color);
-            color = new JCheckBoxMenuItem("Orange", new ImageIcon(colors[1][3]), false);
-            chooseColor.add(color);
-            color = new JCheckBoxMenuItem("Pink", new ImageIcon(colors[1][4]), false);
-            chooseColor.add(color);
-            color = new JCheckBoxMenuItem("White", new ImageIcon(colors[1][5]), true);
-            chooseColor.add(color);
-            color = new JCheckBoxMenuItem("Yellow", new ImageIcon(colors[2][0]), false);
-            chooseColor.add(color);
-            menu.add(chooseColor);
-
-            setJMenuBar(menuBar);
-        }
 
         private void sidesSetup()
         {
@@ -229,7 +193,7 @@ public class ChessGui extends JFrame
             try
             {
                 BufferedImage biPieces = ImageIO.read(new File("img/Pieces.png"));
-                BufferedImage biColors = ImageIO.read(new File("colors/colors-1.jpg"));
+                BufferedImage biColors = ImageIO.read(new File("img/colors-1.jpg"));
                 for(int i = 0; i < 2; i ++)
                 {
                     for(int j = 0; j < 6; j++)
@@ -242,7 +206,7 @@ public class ChessGui extends JFrame
                 {
                     for(int j = 0; j < 6; j++)
                     {
-                        colors[i][j] = biColors.getSubimage((j*212)+25, (i*204)+23, 20, 20);
+                        colors[i][j] = biColors.getSubimage((j*212)+30, (i*204)+23, 20, 20);
                         if(i == 2 && j == 0)
                           break;
                     }
