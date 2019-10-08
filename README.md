@@ -111,4 +111,4 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
 * Felipe Rodriguez
 
   -        The user profile has been completed as a constructor that will inititate the players ELO score along 
-  -        all other information such as name, username, date of birth, etc.
+           all other information such as name, username, date of birth, etc.
