@@ -90,14 +90,14 @@ public class ChessGui extends JFrame
             rightPanel.add(historyPanel);
             rightPanel.add(rightPawnChoice);
         }
-        public void showPawnPromotion()
+        public void showPawnPromotion(int team, long coord)
         {
-            //System.out.println("Called");
-            int retInt = 0;
+            System.out.println("Called");
+            int teamIcon = Math.abs(team-1);
             for(int i = 1; i < 5; i ++)
             {
                 JButton choiceButton = new JButton();
-                choiceButton.setIcon(new ImageIcon(pieces[teamNum == 0 ? 1: 0][i]));
+                choiceButton.setIcon(new ImageIcon(pieces[teamIcon][i]));
                 choiceButton.setActionCommand(i + "");
                 choiceButton.addActionListener(new ActionListener(){
                     public void actionPerformed(ActionEvent e)
@@ -105,12 +105,12 @@ public class ChessGui extends JFrame
                         JButton temp = (JButton)  e.getSource();
                         promoButtonClicked = Integer.parseInt(temp.getActionCommand());
                         pawnID = promoButtonClicked;
-                        gameBoard.pawnPromotion(teamNum == 0?1:0, thisGui);
-
+                        pawnPromote.promotePawn(team, coord, gameBoard, pawnID);
 
                         temp.getParent().removeAll();
                         rightPawnChoice.repaint();
                         updateBoard(gameBoard);
+                        
                     }
                 });
                 rightPawnChoice.add(choiceButton);
@@ -129,7 +129,10 @@ public class ChessGui extends JFrame
                     {                                                                       //When tiles are clicked
                         @Override
                         public void actionPerformed(ActionEvent actionEvent)
-                        {
+                        {	
+                        	if(pawnPromote.promotion == true) {
+                        		showPawnPromotion(0, pawnPromote.coord);
+                        	}
                             boolean moveMade = false;
                             String moveString = "";
 
@@ -161,10 +164,6 @@ public class ChessGui extends JFrame
                             moveMade = gameBoard.makeMove(teamNum, moveString, true);                           //Check to see if a move has been made
                             if(moveMade)
                             {
-                                if(gameBoard.promoteWhite == 1)
-                                {
-                                    showPawnPromotion();
-                                }
                                 teamNum = Math.abs(teamNum - 1);
                                 String tempString = "";
                                 String actionCommandString = squares[pieceMovedPos[0]][pieceMovedPos[1]].getActionCommand();
@@ -191,7 +190,6 @@ public class ChessGui extends JFrame
                     mainBoard.add(newSquare);
                     counter = Math.abs(counter - 1);
                     squares[x][y] = newSquare;
-
                 }
             }
         }
@@ -237,7 +235,7 @@ public class ChessGui extends JFrame
         }
         //Updates images on the mainBoard JPanel
         public void updateBoard(Board board)
-        {
+        {	
             if(teamNum == 0)
             {
                 topLabel.setText("White Turn");
@@ -245,6 +243,18 @@ public class ChessGui extends JFrame
             else
             {
                 topLabel.setText("Black Turn");
+            }
+            if(gameBoard.whiteCheck == 1 || gameBoard.blackCheck == 1)
+            {
+                topLabel.setText("Check! " + topLabel.getText());
+            }
+            if(gameBoard.teamWon == 0)
+            {
+                topLabel.setText("White team wins!");
+            }
+            if(gameBoard.teamWon == 1)
+            {
+                topLabel.setText("Black team wins!");
             }
             //Remove icons
 
