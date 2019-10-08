@@ -13,6 +13,7 @@
 * [Status](#status)
 * [Inspiration](#inspiration)
 * [Contact](#contact)
+* [Sprint 1 Review](#Sprint 1 Review)
 
 ## General info
 
@@ -69,7 +70,7 @@ To-do list:
            This also corresponds to the user story on visual interfaces.
            
 ## Status
-Project is: in progress. Will be finished by the end of the semester.
+Project is: in progress. Sprint 1 is complete.
 
 ## Inspiration
 Add here credits. Project inspired by..., based on...
@@ -82,3 +83,25 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
            [Kieran Hsieh](kth43@txstate.edu)
 
 - feel free to contact us!
+
+## Sprint 1 Review
+
+* Roy Grady
+
+  -        entry
+           
+* Kieran Hsieh
+
+  -        entry
+           
+* Guillermo Gomez
+
+  -        entry
+           
+* Kody Davis
+
+  -        entry
+           
+* Felipe Rodriguez
+
+  -        entry
