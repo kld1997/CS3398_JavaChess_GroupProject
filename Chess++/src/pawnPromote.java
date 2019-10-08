@@ -19,6 +19,7 @@ class pawnPromote {
 		
 		int newP = pawnID;
 		
+		
 		switch(newP) {
 		  case 3: //knight
 			board.removePiece(coord);
