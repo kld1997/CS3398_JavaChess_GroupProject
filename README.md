@@ -106,7 +106,10 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
            
 * Kody Davis
 
-  -        entry
+  -        Helped with the construction of the GUI by finding pictures of chess pieces as well as a way
+           to read them in and show them on the board. Added the menu bar with the options button on top
+           of the board as a way to change the color of the board for player customization. The branch I
+           used to track my changes is KodyGUI.
            
 * Felipe Rodriguez
 
