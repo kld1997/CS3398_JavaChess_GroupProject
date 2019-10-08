@@ -8,12 +8,13 @@ public class WhiteRook implements Piece
 	public long possibleMoves(Board board, long coord) {
 		
 		moves = 0L;
-		
-		if((board.whiteRooks&coord) != 0) {	
+		long occ = ~board.empty;
+
+		if((board.whiteRooks&coord) != 0 && board.whiteCheck < 2) {	
 			int trail = Long.numberOfTrailingZeros(coord);
 			
-			long horizontal = (~board.empty - coord * 2) ^ Long.reverse(Long.reverse(~board.empty) - Long.reverse(coord) * 2);
-			long vertical = ((~board.empty&Board.colMasks[trail % 8]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.colMasks[trail % 8]) - (2 * Long.reverse(coord)));
+			long horizontal = (occ - coord * 2) ^ Long.reverse(Long.reverse(occ) - Long.reverse(coord) * 2);
+			long vertical = ((occ&Board.colMasks[trail % 8]) - (2 * coord)) ^ Long.reverse(Long.reverse(occ&Board.colMasks[trail % 8]) - (2 * Long.reverse(coord)));
 			moves = (horizontal&Board.rowMasks[trail / 8] | vertical&Board.colMasks[trail % 8]);
 		}	
 	
@@ -22,6 +23,16 @@ public class WhiteRook implements Piece
 		
 		threat = false;
 	
+		if(board.whiteCheck == 1) {
+			if((coord & board.pinnedW) == 0)
+				moves&= board.interfereW;
+			else
+				moves &= board.wKThreats;
+		}
+		
+		if((coord & board.pinnedW) != 0) {
+			moves &= board.pinMove(coord, board.pinnersB, board.whiteKing);
+		}
 		
 		return moves;
 	}

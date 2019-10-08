@@ -24,6 +24,14 @@ class Board {
 	long blackPawns;	
 	long blackPieces;
 	
+	//king and sliders
+	long pinnersW;
+	long pinnedB;
+	long interfereB;
+	long pinnersB;
+	long pinnedW;
+	long interfereW;
+	
 	//misc
 	long notWhite;
 	long notBlack;
@@ -32,6 +40,8 @@ class Board {
 	long blackThreaten;
 	long wKThreats;
 	long bKThreats;
+	long wGetAllPM;
+	long bGetAllPM;
 	int whiteCheck;
 	int blackCheck;
 	int promoteWhite;
@@ -47,7 +57,7 @@ class Board {
 	static long colG = 4629771061636907072L;
 	static long colH = -9187201950435737472L;
 	
-	static long kingMoves = 460039L; //-2260560722335367168L;
+	static long kingMoves = 460039L;
 	
 	static long rowMasks[] = {
 			255L, 65280L, 16711680L, 4278190080L, 1095216660480L, 280375465082880L, 71776119061217280L, -72057594037927936L
@@ -105,17 +115,26 @@ class Board {
 		this.blackPawns = 0;
 		this.blackPieces = 0;
 		
+		this.pinnersW = 0;
+		this.pinnedB = 0;
+		this.interfereB = 0;
+		this.pinnersB = 0;
+		this.pinnedW = 0;
+		this.interfereW = 0;
+		
 		this.notWhite = 0;
 		this.notBlack = 0;
 		this.empty = 0;
 		this.whiteThreaten = 0;
 		this.blackThreaten = 0;
+		this.wGetAllPM = 0;
+		this.bGetAllPM = 0;
 		this.wKThreats = 0;
 		this.bKThreats = 0;
 		this.whiteCheck = 0;
 		this.blackCheck = 0;
 		
-		currentState();
+		//currentState();
 	}
 	
 	public void standardChess() {                                           //sets up the positions of a standard chess game
@@ -123,12 +142,12 @@ class Board {
 		String standardChessBoard[][] = {
 				{"br","bk","bb","bq","  ","bb","bk","br"},
 				{"bp","bp","bp","bp","bp","bp","bp","bp"},
+				{"  ","  ","  ","  ","  ","bK","  ","  "},
+				{"  ","  ","  ","  ","bq","bp","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"  ","  ","  ","  ","bK","  ","  ","  "},
-				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","wK","  ","wq","wr","  ","  ","  "},
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
-				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
+				{"wr","wk","wb","wq","  ","wb","wk","wr"}};
 		
 		arrayToBitboards(standardChessBoard);
 	}
@@ -185,16 +204,6 @@ class Board {
 		blackCheck = 0;
 		promoteWhite = 0;
 		
-		if((this.whitePawns&row8) != 0) {
-			//pawnPromotion(0);
-			promoteWhite = 1;
-			return;
-		}
-		if((this.blackPawns&row1) != 0) {
-			//pawnPromotion(1);
-			return;
-		}
-		
 		this.whitePieces = whiteQueens|whiteRooks|whiteKnights|whiteBishops|whitePawns|whiteKing;
 		this.blackPieces = blackQueens|blackRooks|blackKnights|blackBishops|blackPawns|blackKing;
 		
@@ -202,6 +211,137 @@ class Board {
 		this.notBlack = ~(blackPieces);
 		
 		this.empty = ~(whitePieces|blackPieces|whiteKing|blackKing);
+		
+		getThreaten();
+		
+		checkmate();
+		
+		//code for making a bitboard of all of the pinnedB and pinning pieces
+		getpinned();
+		
+		kingB.slideThreats(this);
+		kingW.slideThreats(this);
+		
+		if((this.whitePawns&row8) != 0) {
+			pawnPromote.pawnPromotion(0, this);
+		}
+		if((this.blackPawns&row1) != 0) {
+
+		}
+	}
+	
+	public void getpinned() {
+		
+		pinnedB = 0L;
+		pinnersW = 0L;
+		interfereB = 0L;
+		pinnedW = 0L;
+		pinnersB = 0L;
+		interfereW = 0L;
+		long coord = 0L;
+		long temp = 0L;
+		int pinPos = 0;
+
+		pinnersW |= kingB.xrayHV(this, this.blackPieces) & (this.whiteRooks | this.whiteQueens);
+		pinnersW |= kingB.xrayD(this, this.blackPieces) & (this.whiteBishops | this.whiteQueens);
+		pinnersB |= kingW.xrayHV(this, this.whitePieces) & (this.blackRooks | this.blackQueens);
+		pinnersB |= kingW.xrayD(this, this.whitePieces) & (this.blackBishops | this.blackQueens);
+		
+		temp = pinnersW;
+		
+		while(temp != 0) {
+			
+			pinPos = Long.numberOfTrailingZeros(temp);
+			coord = 1L<<pinPos;
+			
+			pinnedB |= obstruct(coord, this.blackKing) & (this.blackPieces&~this.blackKing);
+			
+			temp &= temp - 1;
+		}
+
+		temp = pinnersB;
+		
+		while(temp != 0) {
+			
+			pinPos = Long.numberOfTrailingZeros(temp);
+			coord = 1L<<pinPos;
+			
+			pinnedW |= obstruct(coord, this.whiteKing) & (this.whitePieces&~this.whiteKing);
+			
+			temp &= temp - 1;
+		}
+		
+	}
+	
+	public long pinMove(long pin, long pinners, long protect) {
+		
+		long pinPos = 0L;
+		long coord = 0L;
+		
+		while(pinners != 0) {
+			
+			pinPos = Long.numberOfTrailingZeros(pinners);
+			coord = 1L<<pinPos;
+			
+			if((pin & obstruct(coord, protect)) != 0) {
+				return obstruct(coord, protect);
+			}
+			
+			pinners &= pinners - 1;
+		}
+		return 0L;
+	}
+	
+	public long obstruct(long coord1, long coord2) {
+		
+		if(coord1 > coord2) {
+			long temp = coord1;
+			coord1 = coord2;
+			coord2 = temp;
+		}
+		long coords = coord1 | coord2;
+		
+		int trail1 = Long.numberOfTrailingZeros(coord1);
+		int trail2 = Long.numberOfTrailingZeros(coord2);
+		
+		if((trail1 / 8) == (trail2 / 8)) {			//horizontal
+			return (coord2 - coord1) & rowMasks[trail1 / 8] | coords;
+		}
+		else if((trail1 % 8) == (trail2 % 8)) {		//vertical
+			return (coord2 - coord1) & colMasks[trail1 % 8] | coords;
+		}
+		else if((trail1 / 8) + (trail1 % 8) == (trail2 / 8) + (trail2 % 8)) {		//bottom left to top right
+			return (coord2 - coord1) & Board.bltrMasks[(trail1 / 8) + (trail1 % 8)] | coords;
+		}
+		else if((trail1 / 8) + 7 - (trail1 % 8) == (trail2 / 8) + 7 - (trail2 % 8)) {		//top left to bottom right
+			return (coord2 - coord1) & Board.tlbrMasks[(trail1 / 8) + 7 - (trail1 % 8)] | coords;
+		}
+		
+		
+		return 0L;
+	}
+
+	
+	public void checkmate() {
+		
+		wGetAllPM = 
+				pawnW.getAllPM(this)|knightW.getAllPM(this)|bishopW.getAllPM(this)|
+				rookW.getAllPM(this)|queenW.getAllPM(this)|kingW.getAllPM(this);
+		
+		if(wGetAllPM == 0) {
+			System.out.println("white checkmate!");
+		}
+		
+		bGetAllPM = 
+				pawnB.getAllPM(this)|knightB.getAllPM(this)|bishopB.getAllPM(this)|
+				rookB.getAllPM(this)|queenB.getAllPM(this)|kingB.getAllPM(this);
+		
+		if(bGetAllPM == 0) {
+			System.out.println("black checkmate!");
+		}
+	}
+	
+	public void getThreaten() {
 		
 		whiteThreaten = 
 				pawnW.threaten(this)|knightW.threaten(this)|bishopW.threaten(this)|
@@ -224,8 +364,9 @@ class Board {
 			if((this.blackKing&queenW.threaten(this)) != 0) {
 				bKThreats |= queenW.threatPos(this, this.blackKing);
 			}
-			//displayBitboard(bKThreats);
-			//System.out.println(blackCheck);
+			if((this.blackKing&kingW.threaten(this)) != 0) {
+				bKThreats |= kingW.threatPos(this, this.blackKing);
+			}
 		}
 		else
 			blackCheck = 0;
@@ -233,7 +374,7 @@ class Board {
 		blackThreaten = 
 				pawnB.threaten(this)|knightB.threaten(this)|bishopB.threaten(this)|
 				rookB.threaten(this)|queenB.threaten(this)|kingB.threaten(this);
-		
+
 		if((blackThreaten&this.whiteKing) != 0) {
 			wKThreats = 0;
 			if((this.whiteKing&pawnB.threaten(this)) != 0) {
@@ -242,7 +383,7 @@ class Board {
 			if((this.whiteKing&knightB.threaten(this)) != 0) {
 				wKThreats |= knightB.threatPos(this, this.whiteKing);
 			}
-			/*if((this.whiteKing&bishopB.threaten(this)) != 0) {
+			if((this.whiteKing&bishopB.threaten(this)) != 0) {
 				wKThreats |= bishopB.threatPos(this, this.whiteKing);
 			}
 			if((this.whiteKing&rookB.threaten(this)) != 0) {
@@ -251,13 +392,12 @@ class Board {
 			if((this.whiteKing&queenB.threaten(this)) != 0) {
 				wKThreats |= queenB.threatPos(this, this.whiteKing);
 			}
-			displayBitboard(bKThreats);
-			System.out.println(whiteCheck);*/
+			if((this.whiteKing&kingB.threaten(this)) != 0) {
+				wKThreats |= kingB.threatPos(this, this.whiteKing);
+			}
 		}
 		else
 			whiteCheck = 0;
-		
-		//code for making a bitboard of all of the pinned pieces
 	}
 	
 	public void displayArray() {
@@ -494,8 +634,9 @@ public void displayArray(long bitboard) {
 				valid = kingB.movePiece(this, coord1, coord2, checked);
 			}
 		}
+		if(valid)
+			currentState();
 		
-		currentState();
 		return valid;
 	}
 	
@@ -613,7 +754,7 @@ public void displayArray(long bitboard) {
 		return moves;
 	}
 	
-	public void pawnPromotion(int team, ChessGui gui) {
+	/*public void pawnPromotion(int team, ChessGui gui) {
 		
 		long coord = 0L;
 		int p = 0;
@@ -626,7 +767,7 @@ public void displayArray(long bitboard) {
 			newP = 1;
 			promote = this.whitePawns&row8;
 			
-			while(promote != 0) {
+			//while(promote != 0) {
 				newP = gui.showPawnPromotion();
 				p = Long.numberOfTrailingZeros(promote);
 				coord = 1L<<p;
@@ -653,8 +794,8 @@ public void displayArray(long bitboard) {
 				    System.out.println("error");
 				}
 			}
-		}	
-		else if(team == 1) {
+		//}	
+		/*else if(team == 1) {
 			coord = 0L;
 			p = 0;
 			newP = 4;
@@ -688,5 +829,5 @@ public void displayArray(long bitboard) {
 				}
 			}
 		}
-	}
+	}*/
 }

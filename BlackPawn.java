@@ -24,9 +24,15 @@ public class BlackPawn implements Piece
 		}	
 		
 		if(board.blackCheck == 1) {
-			moves &= board.bKThreats;
+			if((coord & board.pinnedB) == 0)
+				moves&= board.interfereB;
+			else
+				moves &= board.bKThreats;
 		}
-	
+		
+		if((coord & board.pinnedB) != 0) {
+			moves &= board.pinMove(coord, board.pinnersW, board.blackKing);
+		}
 		return moves;
 	}
 	
@@ -51,10 +57,15 @@ public class BlackPawn implements Piece
 		
 		long allMoves = 0L;
 		
-		allMoves |= (board.blackPawns<<8)&board.empty;
-		allMoves |= (board.blackPawns<<16)&board.empty&(board.empty<<8)&Board.row5;
-		allMoves |= (board.blackPawns<<7)&board.whitePieces&~Board.colH;
-		allMoves |= (board.blackPawns<<9)&board.whitePieces&~Board.colA;
+		if(board.blackCheck < 2) {
+			allMoves |= (board.blackPawns<<8)&board.empty;
+			allMoves |= (board.blackPawns<<16)&board.empty&(board.empty<<8)&Board.row5;
+			allMoves |= (board.blackPawns<<7)&board.whitePieces&~Board.colH;
+			allMoves |= (board.blackPawns<<9)&board.whitePieces&~Board.colA;
+		}
+		
+		if(board.blackCheck == 1)
+			allMoves &=board.bKThreats;
 		
 		return allMoves;
 	}

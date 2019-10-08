@@ -44,7 +44,14 @@ public class BlackKnight implements Piece
 		}	
 		
 		if(board.blackCheck == 1) {
-			moves &= board.bKThreats;
+			if((coord & board.pinnedB) == 0)
+				moves&= board.interfereB;
+			else
+				moves &= board.bKThreats;
+		}
+		
+		if((coord & board.pinnedB) != 0) {
+			moves &= board.pinMove(coord, board.pinnersW, board.blackKing);
 		}
 	
 		return moves;
@@ -71,14 +78,19 @@ public class BlackKnight implements Piece
 		
 		long allMoves = 0L;
 		
-		allMoves |= (board.blackKnights>>17)&(board.notBlack)&~(Board.row1|Board.row2)&~Board.colH;
-		allMoves |= (board.blackKnights>>15)&(board.notBlack)&~(Board.row1|Board.row2)&~Board.colA;
-		allMoves |= (board.blackKnights<<15)&(board.notBlack)&~(Board.row7|Board.row8)&~Board.colH;
-		allMoves |= (board.blackKnights<<17)&(board.notBlack)&~(Board.row7|Board.row8)&~Board.colA;
-		allMoves |= (board.blackKnights>>10)&(board.notBlack)&~(Board.colG|Board.colH)&~Board.row1;
-		allMoves |= (board.blackKnights<<6)&(board.notBlack)&~(Board.colG|Board.colH)&~Board.row8;
-		allMoves |= (board.blackKnights>>6)&(board.notBlack)&~(Board.colA|Board.colB)&~Board.row1;
-		allMoves |= (board.blackKnights<<10)&(board.notBlack)&~(Board.colA|Board.colB)&~Board.row8;
+		if(board.blackCheck > 2) {
+			allMoves |= (board.blackKnights>>17)&(board.notBlack)&~(Board.row1|Board.row2)&~Board.colH;
+			allMoves |= (board.blackKnights>>15)&(board.notBlack)&~(Board.row1|Board.row2)&~Board.colA;
+			allMoves |= (board.blackKnights<<15)&(board.notBlack)&~(Board.row7|Board.row8)&~Board.colH;
+			allMoves |= (board.blackKnights<<17)&(board.notBlack)&~(Board.row7|Board.row8)&~Board.colA;
+			allMoves |= (board.blackKnights>>10)&(board.notBlack)&~(Board.colG|Board.colH)&~Board.row1;
+			allMoves |= (board.blackKnights<<6)&(board.notBlack)&~(Board.colG|Board.colH)&~Board.row8;
+			allMoves |= (board.blackKnights>>6)&(board.notBlack)&~(Board.colA|Board.colB)&~Board.row1;
+			allMoves |= (board.blackKnights<<10)&(board.notBlack)&~(Board.colA|Board.colB)&~Board.row8;
+		}
+		
+		if(board.blackCheck == 1)
+			allMoves &= board.bKThreats;
 		
 		return allMoves;
 	}

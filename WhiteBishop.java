@@ -9,7 +9,7 @@ public class WhiteBishop implements Piece
 		
 		moves = 0L;
 		
-		if((board.whiteBishops&coord) != 0) {	
+		if((board.whiteBishops&coord) != 0 && board.whiteCheck < 2) {	
 			int trail = Long.numberOfTrailingZeros(coord);
 			
 			long bltr = ((~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * Long.reverse(coord)));
@@ -21,6 +21,17 @@ public class WhiteBishop implements Piece
 			moves &= board.notWhite;
 		
 		threat = false;
+		
+		if(board.whiteCheck == 1) {
+			if((coord & board.pinnedW) == 0)
+				moves&= board.interfereW;
+			else
+				moves &= board.wKThreats;
+		}
+		
+		if((coord & board.pinnedW) != 0) {
+			moves &= board.pinMove(coord, board.pinnersB, board.whiteKing);
+		}
 		
 		return moves;
 	}
