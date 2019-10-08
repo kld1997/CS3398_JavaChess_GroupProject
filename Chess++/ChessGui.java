@@ -244,6 +244,18 @@ public class ChessGui extends JFrame
             {
                 topLabel.setText("Black Turn");
             }
+            if(gameBoard.whiteCheck == 1 || gameBoard.blackCheck == 1)
+            {
+                topLabel.setText("Check! " + topLabel.getText());
+            }
+            if(gameBoard.teamWon == 0)
+            {
+                topLabel.setText("White team wins!");
+            }
+            if(gameBoard.teamWon == 1)
+            {
+                topLabel.setText("Black team wins!");
+            }
             //Remove icons
 
             for(int x = 0; x < 8; x ++)
