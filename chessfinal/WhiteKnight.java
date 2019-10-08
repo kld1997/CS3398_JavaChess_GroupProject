@@ -1,7 +1,5 @@
 //Roy Grady, knight
-
 package chessfinal;
-
 public class WhiteKnight implements Piece
 {
 	
@@ -13,34 +11,34 @@ public class WhiteKnight implements Piece
 		
 		if((board.whiteKnights&coord) != 0) {	
 			if((coord&(Board.row7|Board.row8)) == 0) {
-				if((coord&Board.colA) == 0 && ((coord>>17)&(board.empty|board.blackPieces)) != 0) {     //up left
+				if((coord&Board.colA) == 0 && ((coord>>17)&(board.notWhite)) != 0) {     //up left
 					moves |= coord>>17;
 				}
-				if((coord&Board.colH) == 0 && ((coord>>15)&(board.empty|board.blackPieces)) != 0) {     //up right
+				if((coord&Board.colH) == 0 && ((coord>>15)&(board.notWhite)) != 0) {     //up right
 					moves |= coord>>15;
 				}
 			}
 			if((coord&(Board.row1|Board.row2)) == 0) {
-				if((coord&Board.colA) == 0 && ((coord<<15)&(board.empty|board.blackPieces)) != 0) {     //down left
+				if((coord&Board.colA) == 0 && ((coord<<15)&(board.notWhite)) != 0) {     //down left
 					moves |= coord<<15;
 				}
-				if((coord&Board.colH) == 0 && ((coord<<17)&(board.empty|board.blackPieces)) != 0) {     //down right
+				if((coord&Board.colH) == 0 && ((coord<<17)&(board.notWhite)) != 0) {     //down right
 					moves |= coord<<17;
 				}
 			}
 			if((coord&(Board.colA|Board.colB)) == 0) {
-				if((coord&Board.row8) == 0 && ((coord>>10)&(board.empty|board.blackPieces)) != 0) {     //left up
+				if((coord&Board.row8) == 0 && ((coord>>10)&(board.notWhite)) != 0) {     //left up
 					moves |= coord>>10;
 				}
-				if((coord&Board.row1) == 0 && ((coord<<6)&(board.empty|board.blackPieces)) != 0) {     //left down
+				if((coord&Board.row1) == 0 && ((coord<<6)&(board.notWhite)) != 0) {     //left down
 					moves |= coord<<6;
 				}
 			}
 			if((coord&(Board.colG|Board.colH)) == 0) {
-				if((coord&Board.row8) == 0 && ((coord>>6)&(board.empty|board.blackPieces)) != 0) {     //right up
+				if((coord&Board.row8) == 0 && ((coord>>6)&(board.notWhite)) != 0) {     //right up
 					moves |= coord>>6;
 				}
-				if((coord&Board.row1) == 0 && ((coord<<10)&(board.empty|board.blackPieces)) != 0) {     //right down
+				if((coord&Board.row1) == 0 && ((coord<<10)&(board.notWhite)) != 0) {     //right down
 					moves |= coord<<10;
 				}
 			}
@@ -70,15 +68,52 @@ public class WhiteKnight implements Piece
 		
 		long allMoves = 0L;
 		
-		allMoves |= (board.whiteKnights>>17)&(board.empty|board.blackPieces)&~(Board.row1|Board.row2)&~Board.colH;
-		allMoves |= (board.whiteKnights>>15)&(board.empty|board.blackPieces)&~(Board.row1|Board.row2)&~Board.colA;
-		allMoves |= (board.whiteKnights<<15)&(board.empty|board.blackPieces)&~(Board.row7|Board.row8)&~Board.colH;
-		allMoves |= (board.whiteKnights<<17)&(board.empty|board.blackPieces)&~(Board.row7|Board.row8)&~Board.colA;
-		allMoves |= (board.whiteKnights>>10)&(board.empty|board.blackPieces)&~(Board.colG|Board.colH)&~Board.row1;
-		allMoves |= (board.whiteKnights<<6)&(board.empty|board.blackPieces)&~(Board.colG|Board.colH)&~Board.row8;
-		allMoves |= (board.whiteKnights>>6)&(board.empty|board.blackPieces)&~(Board.colA|Board.colB)&~Board.row1;
-		allMoves |= (board.whiteKnights<<10)&(board.empty|board.blackPieces)&~(Board.colA|Board.colB)&~Board.row8;
+		allMoves |= (board.whiteKnights>>17)&(board.notWhite)&~(Board.row1|Board.row2)&~Board.colH;
+		allMoves |= (board.whiteKnights>>15)&(board.notWhite)&~(Board.row1|Board.row2)&~Board.colA;
+		allMoves |= (board.whiteKnights<<15)&(board.notWhite)&~(Board.row7|Board.row8)&~Board.colH;
+		allMoves |= (board.whiteKnights<<17)&(board.notWhite)&~(Board.row7|Board.row8)&~Board.colA;
+		allMoves |= (board.whiteKnights>>10)&(board.notWhite)&~(Board.colG|Board.colH)&~Board.row1;
+		allMoves |= (board.whiteKnights<<6)&(board.notWhite)&~(Board.colG|Board.colH)&~Board.row8;
+		allMoves |= (board.whiteKnights>>6)&(board.notWhite)&~(Board.colA|Board.colB)&~Board.row1;
+		allMoves |= (board.whiteKnights<<10)&(board.notWhite)&~(Board.colA|Board.colB)&~Board.row8;
 		
 		return allMoves;
+	}
+	
+	public long threaten(Board board) {
+		
+		long threatened = 0L;
+		
+		threatened |= (board.whiteKnights>>17)&~(Board.row1|Board.row2)&~Board.colH;
+		threatened |= (board.whiteKnights>>15)&~(Board.row1|Board.row2)&~Board.colA;
+		threatened |= (board.whiteKnights<<15)&~(Board.row7|Board.row8)&~Board.colH;
+		threatened |= (board.whiteKnights<<17)&~(Board.row7|Board.row8)&~Board.colA;
+		threatened |= (board.whiteKnights>>10)&~(Board.colG|Board.colH)&~Board.row1;
+		threatened |= (board.whiteKnights<<6)&~(Board.colG|Board.colH)&~Board.row8;
+		threatened |= (board.whiteKnights>>6)&~(Board.colA|Board.colB)&~Board.row1;
+		threatened |= (board.whiteKnights<<10)&~(Board.colA|Board.colB)&~Board.row8;
+		
+		return threatened;
+	}
+	
+	public long threatPos(Board board, long pCoord) {
+		
+		long tPos = 0L;
+		long unit = board.whiteKnights;
+		long coord = 0L;
+		int u = 0;
+		
+		while(unit != 0) {
+			u = Long.numberOfTrailingZeros(unit);
+			coord = 1L<<u;
+			unit &= ~coord;
+			
+			if((possibleMoves(board, coord)&pCoord) != 0) {
+				tPos |= coord;
+				board.blackCheck++;
+			}
+		}
+		
+		return tPos;
 	}
 }

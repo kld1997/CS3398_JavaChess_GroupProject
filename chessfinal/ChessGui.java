@@ -14,31 +14,36 @@ import javax.swing.border.Border;
 
 public class ChessGui extends JFrame
 {
+        public int pawnID = 0;
         public int teamNum = 0;
         public Board gameBoard = new Board();
+        public int promoButtonClicked = 0;
+        public ChessGui thisGui = this;
 
         private JPanel mainPanel = new JPanel();
         private JPanel mainBoard = new JPanel();
         private JPanel leftPanel = new JPanel();
         private JPanel bottomPanel = new JPanel();
         private JLabel topLabel = new JLabel();
-        private PieceHistory rightPanel = new PieceHistory();
+        private PieceHistory historyPanel = new PieceHistory();
+        private JPanel rightPanel = new JPanel();
+        private JPanel rightPawnChoice = new JPanel();
 
         ChessSquare[][] squares = new ChessSquare[8][8];
-        public static BufferedImage pieces[][] = new BufferedImage[2][6];
         public static BufferedImage colors[][] = new BufferedImage[3][6];
+        public static BufferedImage pieces[][] = new BufferedImage[2][6];
 
         private int[] lastClicked = new int[2];
         ArrayList<ChessSquare> highlighted = new ArrayList<ChessSquare>();
 
         public static void main(String[] args) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                  ChessGui frame = new ChessGui();
-                  frame.setVisible(true);
-         }
-     });
- }
+          SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+              ChessGui frame = new ChessGui();
+              frame.setVisible(true);
+            }
+          });
+        }
 
         public ChessGui()   //Basic Setup
         {
@@ -49,19 +54,23 @@ public class ChessGui extends JFrame
             setDefaultCloseOperation(EXIT_ON_CLOSE);
             setLocation((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()*.15), (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight()*.15));
             setLayout(new BorderLayout());
-            mainPanel.setLayout(new BorderLayout());
+
             topLabel.setText("White Turn");
             topLabel.setFont(new Font("Serif", Font.BOLD, 20));
             topLabel.setHorizontalAlignment(JLabel.CENTER);
+
+            mainPanel.setLayout(new BorderLayout());
             mainBoard.setLayout(new GridLayout(8, 8));
             leftPanel.setLayout(new GridLayout(8,0));
+            rightPanel.setLayout(new GridLayout(2, 1));
             bottomPanel.setLayout(new GridLayout(0,8));
-
+            rightPawnChoice.setLayout(new GridLayout(2, 2));
 
             boardSetUp();
             sidesSetup();
-            MenuBuilder menu = new MenuBuilder(colors, mainBoard);
+            JMenuBar menu = new MenuBuilder(colors, squares);
             updateBoard(gameBoard);
+
             mainPanel.add(mainBoard);
             mainPanel.add(leftPanel, BorderLayout.WEST);
             mainPanel.add(bottomPanel, BorderLayout.SOUTH);
@@ -69,10 +78,9 @@ public class ChessGui extends JFrame
             add(rightPanel, BorderLayout.EAST);
             add(mainPanel, BorderLayout.CENTER);
             setJMenuBar(menu);
+            setVisible(true);
         }
         //BASIC SETUP HELPER METHODS
-
-
         private void sidesSetup()
         {
             //Left Side number labels
@@ -92,7 +100,36 @@ public class ChessGui extends JFrame
 
                 bottomPanel.add(newLabel);
             }
+            //Right side Panels
+            //Dimension d = new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.155), (int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.375));
+            rightPanel.add(historyPanel);
+            rightPanel.add(rightPawnChoice);
+        }
+        public void showPawnPromotion()
+        {
+            //System.out.println("Called");
+            int retInt = 0;
+            for(int i = 1; i < 5; i ++)
+            {
+                JButton choiceButton = new JButton();
+                choiceButton.setIcon(new ImageIcon(pieces[teamNum == 0 ? 1: 0][i]));
+                choiceButton.setActionCommand(i + "");
+                choiceButton.addActionListener(new ActionListener(){
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        JButton temp = (JButton)  e.getSource();
+                        promoButtonClicked = Integer.parseInt(temp.getActionCommand());
+                        pawnID = promoButtonClicked;
+                        gameBoard.pawnPromotion(teamNum == 0?1:0, thisGui, promoButtonClicked);
 
+
+                        temp.getParent().removeAll();
+                        rightPawnChoice.repaint();
+                        updateBoard(gameBoard);
+                    }
+                });
+                rightPawnChoice.add(choiceButton);
+            }
         }
         private void boardSetUp()
         {
@@ -136,31 +173,32 @@ public class ChessGui extends JFrame
 
                             moveString+=convertStrings(lastClicked[0],lastClicked[1]);                                   //Convert current coordinates into usable form
 
-                            moveMade = gameBoard.makeMove(teamNum, moveString, false);                           //Check to see if a move has been made
-
+                            moveMade = gameBoard.makeMove(teamNum, moveString, true);                           //Check to see if a move has been made
                             if(moveMade)
                             {
+                                if(gameBoard.promoteWhite == 1)
+                                {
+                                    showPawnPromotion();
+                                }
                                 teamNum = Math.abs(teamNum - 1);
                                 String tempString = "";
                                 String actionCommandString = squares[pieceMovedPos[0]][pieceMovedPos[1]].getActionCommand();
                                 tempString+= actionCommandString.substring(0,5);
-                                int spaceIndex = 0;
-                                for(int i = 6; i < actionCommandString.length(); i ++)                                          //Find index of space after white/black
-                                {
-                                    if(actionCommandString.charAt(i) == ' ')
-                                    {
-                                        spaceIndex = i;
-                                        break;
-                                    }
-                                }
+                                int spaceIndex = actionCommandString.substring(6).indexOf(' ') + 6;
                                 tempString+= " " + actionCommandString.substring(6, spaceIndex) ;
-
                                 tempString+= " has moved from " + moveString.substring(0,2) + " to " + moveString.substring(2);
-                                rightPanel.addMove(tempString);
+                                historyPanel.addMove(tempString);
                             }
                             else
                             {
-                                highlighted = displayPossibleMoves(gameBoard.showMoves(convertStrings(lastClicked[0],lastClicked[1])));     //Display the possible moves of piece that has been clicked
+                                String teamString = "";
+                                if(teamNum == 0) { teamString = "White"; }
+                                else { teamString = "Black"; }
+                                if(squares[lastClicked[0]][lastClicked[1]].getActionCommand().substring(0,5).equals(teamString))
+                                {
+                                    highlighted = displayPossibleMoves(gameBoard.showMoves(convertStrings(lastClicked[0], lastClicked[1])));     //Display the possible moves of piece that has been clicked
+                                }
+                                else{highlighted = new ArrayList<ChessSquare>();}
                             }
                             updateBoard(gameBoard);                             //Action Command is set to coordinates on board of where you clicked.
                         }                                                       //Note: These coordinates don't correspond to the ones shown in the GUI, and instead
@@ -201,7 +239,6 @@ public class ChessGui extends JFrame
                         pieces[i][j] = biPieces.getSubimage(j*64, i*64, 64, 64);
                     }
                 }
-
                 for(int i = 0; i < 3; i++)
                 {
                     for(int j = 0; j < 6; j++)
@@ -232,7 +269,7 @@ public class ChessGui extends JFrame
             }
             else
             {
-                topLabel.setText("Gold Turn");
+                topLabel.setText("Black Turn");
             }
             //Remove icons
 

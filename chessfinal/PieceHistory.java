@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 import java.lang.reflect.Array;
 import java.util.*;
+
 public class PieceHistory extends JPanel
 {
     private Stack<JLabel> moveList = new Stack<JLabel>();

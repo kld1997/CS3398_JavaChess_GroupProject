@@ -1,11 +1,10 @@
 //Roy Grady, bishop
-
 package chessfinal;
-
 public class WhiteBishop implements Piece
 {
 	
 	private long moves;
+	private boolean threat;
 	
 	public long possibleMoves(Board board, long coord) {
 		
@@ -16,9 +15,14 @@ public class WhiteBishop implements Piece
 			
 			long bltr = ((~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * Long.reverse(coord)));
 	        long tlbr = ((~board.empty&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) - (2 * Long.reverse(coord)));
-			moves = (bltr&Board.bltrMasks[(trail / 8) + (trail % 8)] | tlbr&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) & board.notWhite;
+			moves = (bltr&Board.bltrMasks[(trail / 8) + (trail % 8)] | tlbr&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]);
 		}	
-	
+		
+		if(!threat)
+			moves &= board.notWhite;
+		
+		threat = false;
+		
 		return moves;
 	}
 	
@@ -55,5 +59,45 @@ public class WhiteBishop implements Piece
 		}
 		
 		return allMoves;
+	}
+	
+	public long threaten(Board board) {
+		
+		long threatened = 0L;
+		long bishops = board.whiteBishops;
+		long coord = 0L;
+		int b = 0;
+		
+		while(bishops != 0) {
+			threat = true;
+			b = Long.numberOfTrailingZeros(bishops);
+			coord = 1L<<b;
+			bishops &= ~coord;
+			
+			threatened |= possibleMoves(board, coord);
+		}
+		
+		return threatened;
+	}
+	
+	public long threatPos(Board board, long pCoord) {
+		
+		long tPos = 0L;
+		long unit = board.whiteBishops;
+		long coord = 0L;
+		int u = 0;
+		
+		while(unit != 0) {
+			u = Long.numberOfTrailingZeros(unit);
+			coord = 1L<<u;
+			unit &= ~coord;
+			
+			if((possibleMoves(board, coord)&pCoord) != 0) {
+				tPos |= coord;
+				board.blackCheck++;
+			}
+		}
+		
+		return tPos;
 	}
 }

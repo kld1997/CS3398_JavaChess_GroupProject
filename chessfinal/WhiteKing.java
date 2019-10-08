@@ -1,11 +1,10 @@
 //Roy Grady, king
-
 package chessfinal;
-
 public class WhiteKing implements Piece
 {
 	
 	private long moves;
+	private boolean threat = false;
 	
 	public long possibleMoves(Board board, long coord) {
 		moves = 0L;
@@ -19,13 +18,9 @@ public class WhiteKing implements Piece
 			else {
 				if(trail > 9) {
 					moves = Board.kingMoves<<(trail - 9);
-		
-					moves &= ~Board.row1;
 				}
 				else if(trail < 9) {
 					moves = Board.kingMoves>>>(9 - trail);
-					
-					moves &= ~Board.row8;
 				}
 				
 				if((coord&Board.colA) != 0) {
@@ -36,8 +31,14 @@ public class WhiteKing implements Piece
 				}
 			}
 			
-		}	
-		moves &= board.notWhite;
+		}
+		
+		if(!threat)
+			moves &= board.notWhite;
+		
+		threat = false;
+		
+		moves &= ~board.blackThreaten;
 		
 		return moves;
 	}
@@ -67,6 +68,25 @@ public class WhiteKing implements Piece
 		int k = 0;
 		
 		while(king != 0) {
+			k = Long.numberOfTrailingZeros(king);
+			coord = 1L<<k;
+			king &= ~coord;
+			
+			allMoves |= possibleMoves(board, coord);
+		}
+		
+		return allMoves;
+	}
+	
+	public long threaten(Board board) {
+		
+		long allMoves = 0L;
+		long king = board.whiteKing;
+		long coord = 0L;
+		int k = 0;
+		
+		while(king != 0) {
+			threat = true;
 			k = Long.numberOfTrailingZeros(king);
 			coord = 1L<<k;
 			king &= ~coord;

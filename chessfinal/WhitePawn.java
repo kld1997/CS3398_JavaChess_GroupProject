@@ -1,7 +1,5 @@
 //Roy Grady, pawn without en passant or promotion
-
 package chessfinal;
-
 public class WhitePawn implements Piece
 {
 	
@@ -11,7 +9,7 @@ public class WhitePawn implements Piece
 		
 		moves = 0L;
 		
-		if((board.whitePawns&coord) != 0) {	
+		if((board.whitePawns&coord) != 0 && board.whiteCheck < 2) {	
 			if((coord&Board.row8) == 0 && ((coord>>8)&board.empty) != 0) {     //push up by 1
 				moves |= coord>>8;
 			}
@@ -25,6 +23,10 @@ public class WhitePawn implements Piece
 				moves |= coord>>7;
 			}	
 		}	
+		
+		if(board.whiteCheck == 1) {
+			moves &= board.bKThreats;
+		}
 	
 		return moves;
 	}
@@ -56,5 +58,36 @@ public class WhitePawn implements Piece
 		allMoves |= (board.whitePawns>>9)&board.blackPieces&~Board.colH;
 		
 		return allMoves;
+	}
+	
+	public long threaten(Board board) {
+		
+		long threatened = 0L;
+		
+		threatened |= (board.whitePawns>>7)&~Board.colA;
+		threatened |= (board.whitePawns>>9)&~Board.colH;
+		
+		return threatened;
+	}
+	
+	public long threatPos(Board board, long pCoord) {
+		
+		long tPos = 0L;
+		long unit = board.whitePawns;
+		long coord = 0L;
+		int u = 0;
+		
+		while(unit != 0) {
+			u = Long.numberOfTrailingZeros(unit);
+			coord = 1L<<u;
+			unit &= ~coord;
+			
+			if((possibleMoves(board, coord)&pCoord) != 0) {
+				tPos |= coord;
+				board.blackCheck++;
+			}
+		}
+		
+		return tPos;
 	}
 }
