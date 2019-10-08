@@ -38,10 +38,11 @@ public class Menu extends JPanel {
         playbutton.addActionListener (new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //chessGui gui = new chessGui();
+                new ChessGui();
                 start();
             }
         });
+        setVisible(false);
 
         add(playbutton);
 
@@ -62,6 +63,22 @@ public class Menu extends JPanel {
 
         Button settingsButton = new Button("Settings");
         settingsButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        settingsButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //JPanel settingspanel = new JPanel();
+                //settingsframe.setTitle("Settings");
+
+                //settingsframe.setSize(640, 480);
+                //settingsframe.setResizable(false);
+
+                //SettingsMenu settings = new SettingsMenu();
+                //settings.Menu();
+                //settingsframe.add(settings);
+            }
+        });
+
+
         add(settingsButton);
 
         /***
