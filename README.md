@@ -13,7 +13,7 @@
 * [Status](#status)
 * [Inspiration](#inspiration)
 * [Contact](#contact)
-* [Sprint 1 Review](#Sprint 1 Review)
+* [Sprint 1 Review](#Sprint-1-Review)
 
 ## General info
 
