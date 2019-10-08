@@ -14,6 +14,7 @@ public class ChessGui extends JFrame
 {
         public int pawnID = 0;
         public int teamNum = 0;
+        public boolean locked = false;
         public Board gameBoard = new Board();
         public int promoButtonClicked = 0;
         public ChessGui thisGui = this;
@@ -92,7 +93,7 @@ public class ChessGui extends JFrame
         }
         public void showPawnPromotion(int team, long coord)
         {
-            System.out.println("Called");
+            locked = true;
             int teamIcon = Math.abs(team-1);
             for(int i = 1; i < 5; i ++)
             {
@@ -102,6 +103,7 @@ public class ChessGui extends JFrame
                 choiceButton.addActionListener(new ActionListener(){
                     public void actionPerformed(ActionEvent e)
                     {
+                        locked = false;
                         JButton temp = (JButton)  e.getSource();
                         promoButtonClicked = Integer.parseInt(temp.getActionCommand());
                         pawnID = promoButtonClicked;
@@ -110,7 +112,6 @@ public class ChessGui extends JFrame
                         temp.getParent().removeAll();
                         rightPawnChoice.repaint();
                         updateBoard(gameBoard);
-                        
                     }
                 });
                 rightPawnChoice.add(choiceButton);
@@ -129,63 +130,64 @@ public class ChessGui extends JFrame
                     {                                                                       //When tiles are clicked
                         @Override
                         public void actionPerformed(ActionEvent actionEvent)
-                        {	
-                        	if(pawnPromote.promotion == true) {
-                        		showPawnPromotion(0, pawnPromote.coord);
-                        	}
-                            boolean moveMade = false;
-                            String moveString = "";
-
-                            moveString+=convertStrings(lastClicked[0],lastClicked[1]);      //Converts coordinates to a usable form
-                            ChessSquare temp = (ChessSquare) actionEvent.getSource();
-                            temp.Highlight();
-                            squares[lastClicked[0]][lastClicked[1]].unHighlight();
-                            int[] pieceMovedPos = new int[2];
-                            pieceMovedPos[0] = lastClicked[0];
-                            pieceMovedPos[1] = lastClicked[1];
-
-                            for(int i = 0; i < highlighted.size(); i ++)                //Unhighlight previously highlighted tiles
+                        {
+                            if(!locked)
                             {
-                                highlighted.get(i).unHighlight();
-                            }
-                            for(int i = 6 ; i < temp.getActionCommand().length(); i ++)       //Find coordinates for current button being pressed
-                            {
-                                int count = 0;
-                                if(temp.getActionCommand().substring(i, i+1).equals(" "))
+                                boolean moveMade = false;
+                                String moveString = "";
+
+                                moveString += convertStrings(lastClicked[0], lastClicked[1]);      //Converts coordinates to a usable form
+                                ChessSquare temp = (ChessSquare) actionEvent.getSource();
+                                temp.Highlight();
+                                squares[lastClicked[0]][lastClicked[1]].unHighlight();
+                                int[] pieceMovedPos = new int[2];
+                                pieceMovedPos[0] = lastClicked[0];
+                                pieceMovedPos[1] = lastClicked[1];
+
+                                for (int i = 0; i < highlighted.size(); i++)                //Unhighlight previously highlighted tiles
                                 {
-                                    lastClicked[0] = Integer.parseInt(temp.getActionCommand().substring(i+1,i+2));
-                                    lastClicked[1] = Integer.parseInt(temp.getActionCommand().substring(i+3));
-                                    break;
+                                    highlighted.get(i).unHighlight();
                                 }
-                            }
-
-                            moveString+=convertStrings(lastClicked[0],lastClicked[1]);                                   //Convert current coordinates into usable form
-
-                            moveMade = gameBoard.makeMove(teamNum, moveString, true);                           //Check to see if a move has been made
-                            if(moveMade)
-                            {
-                                teamNum = Math.abs(teamNum - 1);
-                                String tempString = "";
-                                String actionCommandString = squares[pieceMovedPos[0]][pieceMovedPos[1]].getActionCommand();
-                                tempString+= actionCommandString.substring(0,5);
-                                int spaceIndex = actionCommandString.substring(6).indexOf(' ') + 6;
-                                tempString+= " " + actionCommandString.substring(6, spaceIndex) ;
-                                tempString+= " has moved from " + moveString.substring(0,2) + " to " + moveString.substring(2);
-                                historyPanel.addMove(tempString);
-                            }
-                            else
-                            {
-                                String teamString = "";
-                                if(teamNum == 0) { teamString = "White"; }
-                                else { teamString = "Black"; }
-                                if(squares[lastClicked[0]][lastClicked[1]].getActionCommand().substring(0,5).equals(teamString))
+                                for (int i = 6; i < temp.getActionCommand().length(); i++)       //Find coordinates for current button being pressed
                                 {
-                                    highlighted = displayPossibleMoves(gameBoard.showMoves(convertStrings(lastClicked[0], lastClicked[1])));     //Display the possible moves of piece that has been clicked
+                                    int count = 0;
+                                    if (temp.getActionCommand().substring(i, i + 1).equals(" ")) {
+                                        lastClicked[0] = Integer.parseInt(temp.getActionCommand().substring(i + 1, i + 2));
+                                        lastClicked[1] = Integer.parseInt(temp.getActionCommand().substring(i + 3));
+                                        break;
+                                    }
                                 }
-                                else{highlighted = new ArrayList<ChessSquare>();}
+
+                                moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
+
+                                moveMade = gameBoard.makeMove(teamNum, moveString, true);                           //Check to see if a move has been made
+                                if (moveMade) {
+                                    teamNum = Math.abs(teamNum - 1);
+                                    String tempString = "";
+                                    String actionCommandString = squares[pieceMovedPos[0]][pieceMovedPos[1]].getActionCommand();
+                                    tempString += actionCommandString.substring(0, 5);
+                                    int spaceIndex = actionCommandString.substring(6).indexOf(' ') + 6;
+                                    tempString += " " + actionCommandString.substring(6, spaceIndex);
+                                    tempString += " has moved from " + moveString.substring(0, 2) + " to " + moveString.substring(2);
+                                    historyPanel.addMove(tempString);
+                                } else {
+                                    String teamString = "";
+                                    if (teamNum == 0) {
+                                        teamString = "White";
+                                    } else {
+                                        teamString = "Black";
+                                    }
+                                    if (squares[lastClicked[0]][lastClicked[1]].getActionCommand().substring(0, 5).equals(teamString)) {
+                                        highlighted = displayPossibleMoves(gameBoard.showMoves(convertStrings(lastClicked[0], lastClicked[1])));     //Display the possible moves of piece that has been clicked
+                                    } else {
+                                        highlighted = new ArrayList<ChessSquare>();
+                                    }
+                                }
+                                updateBoard(gameBoard);                             //Action Command is set to coordinates on board of where you clicked.
                             }
-                            updateBoard(gameBoard);                             //Action Command is set to coordinates on board of where you clicked.
-                        }                                                       //Note: These coordinates don't correspond to the ones shown in the GUI, and instead
+                        }
+
+                            //Note: These coordinates don't correspond to the ones shown in the GUI, and instead
                     });                                                         //      show their indexes in the array squares
                     mainBoard.add(newSquare);
                     counter = Math.abs(counter - 1);
@@ -235,7 +237,10 @@ public class ChessGui extends JFrame
         }
         //Updates images on the mainBoard JPanel
         public void updateBoard(Board board)
-        {	
+        {
+            if(pawnPromote.promotion == true) {
+                showPawnPromotion(0, pawnPromote.coord);
+            }
             if(teamNum == 0)
             {
                 topLabel.setText("White Turn");
