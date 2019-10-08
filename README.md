@@ -88,7 +88,13 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
 
 * Roy Grady
 
-  -        entry
+  -        I created the code for the board representation as well as all of the computations for
+           the possible moves the pieces can make. I also managed how the board recognizes where
+           the pieces are and the conditions for absolute pins, interference squares, and checkmate.
+           My code in GitHub is everything in Board.java, WhitePawn.java, WhiteBishop.java,
+           WhiteKnight.java, WhiteRook.java, WhiteQueen.java, WhiteKing.java, BlackPawn.java, 
+           BlackBishop.java, BlackKnight.java, BlackRook.java, BlackQueen.java, BlackKing.java, 
+           and PawnPromotion.java. The main branch I used when updating my code was in RoyTemp.
            
 * Kieran Hsieh
 
