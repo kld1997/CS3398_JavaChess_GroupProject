@@ -1,0 +1,17 @@
+public static BufferedImage colors[][] = new BufferedImage[3][6];
+
+JMenuBar menu = new MenuBuilder(colors, squares);
+ setJMenuBar(menu);
+
+BufferedImage biColors = ImageIO.read(new File("img/colors-1.jpg"));
+		for(int i = 0; i < 3; i++)
+                {
+                    for(int j = 0; j < 6; j++)
+                    {
+                        colors[i][j] = biColors.getSubimage((j*212)+30, (i*204)+23, 20, 20);
+                        if(i == 2 && j == 0)
+                          break;
+                    }
+                }
+
+Change "Black Turn" to Gold turn
