@@ -98,7 +98,7 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
            
 * Kieran Hsieh
 
-  -        Completed the chess GUI, which can be found in ChessGUI.java under the Board branch.
+  -        Completed the chess GUI, which can be found in ChessGUI.java under the Board branch. This was used to visually represent the            Board, and was used in the Menu as something that opened after the play button was clicked.
            
 * Guillermo Gomez
 
