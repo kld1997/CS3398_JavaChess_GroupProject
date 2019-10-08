@@ -45,6 +45,7 @@ class Board {
 	int whiteCheck;
 	int blackCheck;
 	int promoteWhite;
+	int teamWon = 2;
 	
 	static long row1 = -72057594037927936L;
 	static long row2 = 71776119061217280L;
@@ -140,14 +141,14 @@ class Board {
 	public void standardChess() {                                           //sets up the positions of a standard chess game
 		
 		String standardChessBoard[][] = {
-				{"br","bk","bb","bq","  ","bb","bk","br"},
+				{"br","bk","bb","bq","bK","bb","bk","br"},
 				{"bp","bp","bp","bp","bp","bp","bp","bp"},
-				{"  ","  ","  ","  ","  ","bK","  ","  "},
-				{"  ","  ","  ","  ","bq","bp","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"  ","wK","  ","wq","wr","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
-				{"wr","wk","wb","wq","  ","wb","wk","wr"}};
+				{"wr","wk","wb","wK","wq","wb","wk","wr"}};
 		
 		arrayToBitboards(standardChessBoard);
 	}
@@ -323,13 +324,12 @@ class Board {
 
 	
 	public void checkmate() {
-		
 		wGetAllPM = 
 				pawnW.getAllPM(this)|knightW.getAllPM(this)|bishopW.getAllPM(this)|
 				rookW.getAllPM(this)|queenW.getAllPM(this)|kingW.getAllPM(this);
 		
 		if(wGetAllPM == 0) {
-			System.out.println("white checkmate!");
+			teamWon = 1;
 		}
 		
 		bGetAllPM = 
@@ -337,7 +337,7 @@ class Board {
 				rookB.getAllPM(this)|queenB.getAllPM(this)|kingB.getAllPM(this);
 		
 		if(bGetAllPM == 0) {
-			System.out.println("black checkmate!");
+			teamWon = 0;
 		}
 	}
 	
@@ -754,4 +754,80 @@ public void displayArray(long bitboard) {
 		return moves;
 	}
 	
+	/*public void pawnPromotion(int team, ChessGui gui) {
+		
+		long coord = 0L;
+		int p = 0;
+		int newP = 4;
+		long promote = 0L;
+		
+		if(team == 0) {
+			coord = 0L;
+			p = 0;
+			newP = 1;
+			promote = this.whitePawns&row8;
+			
+			//while(promote != 0) {
+				newP = gui.showPawnPromotion();
+				p = Long.numberOfTrailingZeros(promote);
+				coord = 1L<<p;
+				promote &= ~coord;
+				
+				switch(newP) {
+				  case 3: //knight
+					this.removePiece(coord);
+					this.whiteKnights |= coord;
+				    break;
+				  case 4: //bishop
+					this.removePiece(coord);
+					this.whiteBishops |= coord;
+				    break;
+				  case 2: //rook
+					this.removePiece(coord);
+					this.whiteRooks |= coord;
+				    break;
+				  case 1: //queen
+					this.removePiece(coord);
+					this.whiteQueens |= coord;
+				    break;
+				  default:
+				    System.out.println("error");
+				}
+			}
+		//}	
+		/*else if(team == 1) {
+			coord = 0L;
+			p = 0;
+			newP = 4;
+			promote = this.blackPawns&row1;
+			
+			while(promote != 0) {
+				//newP = GUI
+				p = Long.numberOfTrailingZeros(promote);
+				coord = 1L<<p;
+				promote &= ~coord;
+				
+				switch(newP) {
+				  case 1: //knight
+					this.removePiece(coord);
+					this.blackKnights |= coord;
+				    break;
+				  case 2: //bishop
+					this.removePiece(coord);
+					this.blackBishops |= coord;
+				    break;
+				  case 3: //rook
+					this.removePiece(coord);
+					this.blackRooks |= coord;
+				    break;
+				  case 4: //queen
+					this.removePiece(coord);
+					this.blackQueens |= coord;
+				    break;
+				  default:
+				    System.out.println("error");
+				}
+			}
+		}
+	}*/
 }
