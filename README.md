@@ -98,11 +98,14 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
            
 * Kieran Hsieh
 
-  -        Completed the chess GUI, which can be found in ChessGUI.java under the Board branch. This was used to visually represent the            Board, and was used in the Menu as something that opened after the play button was clicked.
+  -        Completed the chess GUI, which can be found in ChessGUI.java under the Board branch. This was used to visually represent 
+           the board, and was used in the Menu as something that opened after the play button was clicked.
            
 * Guillermo Gomez
 
-  -        I created the basic main menu interface for the chess game. I implemented the standard play button as well as other optional            buttons such as settings and profile. This menu can be found under the Menu.java class, using the Button class to create the            buttons in the menu. All these classes are under the Menu branch. 
+  -        I created the basic main menu interface for the chess game. I implemented the standard play button as well as other optional
+           buttons such as settings and profile. This menu can be found under the Menu.java class, using the Button class to create the
+           buttons in the menu. All these classes are under the Menu branch. 
            
 * Kody Davis
 
