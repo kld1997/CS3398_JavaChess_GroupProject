@@ -30,6 +30,7 @@ public class ChessGui extends JFrame
 
         ChessSquare[][] squares = new ChessSquare[8][8];
         public static BufferedImage pieces[][] = new BufferedImage[2][6];
+        public static BufferedImage colors[][] = new BufferedImage[3][6];
 
         private int[] lastClicked = new int[2];
         ArrayList<ChessSquare> highlighted = new ArrayList<ChessSquare>();
@@ -42,6 +43,12 @@ public class ChessGui extends JFrame
             setDefaultCloseOperation(EXIT_ON_CLOSE);
             setLocation((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()*.15), (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight()*.15));
             setLayout(new BorderLayout());
+
+            JMenuBar menu = new MenuBuilder(colors,squares);
+            setJMenuBar(menu);
+
+
+
 
             topLabel.setText("White Turn");
             topLabel.setFont(new Font("Serif", Font.BOLD, 20));
@@ -221,6 +228,15 @@ public class ChessGui extends JFrame
                     for(int j = 0; j < 6; j++)
                     {
                         pieces[i][j] = biPieces.getSubimage(j*64, i*64, 64, 64);
+                    }
+                }
+                BufferedImage biColors = ImageIO.read(new File("img/colors-1.jpg"));
+                for(int i = 0; i < 3; i++)
+                {
+                    for(int j = 0; j < 6; j ++)
+                    {
+                        colors[i][j] = biColors.getSubimage((j*212)+30, (i*204)+23, 20, 20);
+                        if(i == 2 && j == 0){ break; }
                     }
                 }
             }
