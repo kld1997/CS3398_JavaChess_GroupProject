@@ -116,4 +116,18 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
 * Felipe Rodriguez
 
   -        The user profile has been completed as a constructor that will inititate the players ELO score along 
-           all other information such as name, username, date of birth, etc.
+           all other information such as name, username, date of birth, etc. 
+           
+           Things I will be working on:
+           - I will get with guillermo to implement the user profile option in the menu 
+           - Create a customizable timer for players to use 
+           - Creating an ELO grading system that will be integrated in user profiles 
+           - add a playlist feature that will allow users to play their own music or go with the classical music integrated
+           
+           
+           Things I am thinking about incorperating 
+           - a feature that shows the odds of a player winning without music then comparing to results once music is played
+           - a news feed to let competative players know when there is an in person tournament going on via zipcode 
+           
+        
+           
