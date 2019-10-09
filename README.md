@@ -112,6 +112,10 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
            of the board as a way to change the color of the board for player customization. Only one color can
            be selected at a time and one color must always be selected. The branch I used to track my changes is
            called KodyGUI.
+  -        My next step will be to implement a color wheel or some sort of color choosing mechanism that will 
+           allow the user to have a greater selection of colors. I would also like to find different models for
+           the chess pieces that can be changed in the settings menu. One last thing I will work towards is the
+           implementation of a save option that will allow users to resume a game in progress.
            
 * Felipe Rodriguez
 
