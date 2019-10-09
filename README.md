@@ -65,7 +65,7 @@ To-do list:
            board sizes, and more.
            
 ## Status
-Project is: in progress. Sprint 1 is complete. Starting Sprint 2.
+Project is: in progress. Sprint 1 is complete. See each member's status down in Sprint 1 Review. Starting Sprint 2.
 
 ## Inspiration
 Add here credits. Project inspired by..., based on...
