@@ -36,41 +36,36 @@ Show examples of usage:
 
 ## Features
 List of features ready and TODOs for future development       
-* -
+* - Fundamental movement/position mechanics of the chess engine 
+  - Implementing classic chess pieces 
+  - Menus 
+  - Player info
+  - Board graphics and chess piece sprites
 
 To-do list:
-* Fundamental movement/position mechanics of the chess engine 
+* Online functionality 
 
-  -        This lays the foundations of the game so that the base rules of chess are established.
-           This feature is vital for any playability and necessary for most future features.
-           It corresponds with the story on offline playability.
+  -        Implement client and server functions to make playing between networks possible.
            
-* Implementing classic chess pieces 
+* Improve GUI feautures
 
-  -        Chess pieces are another necessary component of chess playability.
-           This feature assigns valid movement options to each chess piece.
-           This feature is a prerequisite for the user stories on new and customizable chess pieces.
+  -        Make the GUI more intuitive by adding drag-and-drop, more highlight situations, and more.
            
-* Menus 
+* Option and profile menus
 
-  -        Menus allow users to navigate settings, modes, and other options.
-           A successful implementation will be user friendly and visually appealing.
-           This corresponds with the user story on intuitive visual interfaces.
+  -        Flesh out the options menu to change the properties of the game and add a menu for user profiles.
            
-* Player info 
+* Chess replay
 
-  -        This feature stores player data such as username, match history, rank, etc...
-           It will be used by frequent users and features that rely on metadata.
-           This feature corresponds to the user stories on competitive ranking systems.
+  -        Save the move history in way that allows a user to replay a finished match.
            
-* Board graphics and chess piece sprites 
+* Add new modes
 
-  -        Basic graphic designs for each essential component of chess.
-           The first step in creating an interactive graphic interface for players.
-           This also corresponds to the user story on visual interfaces.
+  -        Add a new mode where the user can place the pieces on the board themself, a mode with different
+           board sizes, and more.
            
 ## Status
-Project is: in progress. Sprint 1 is complete.
+Project is: in progress. Sprint 1 is complete. Starting Sprint 2.
 
 ## Inspiration
 Add here credits. Project inspired by..., based on...
@@ -95,6 +90,9 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
            WhiteKnight.java, WhiteRook.java, WhiteQueen.java, WhiteKing.java, BlackPawn.java, 
            BlackBishop.java, BlackKnight.java, BlackRook.java, BlackQueen.java, BlackKing.java, 
            and PawnPromotion.java. The main branch I used when updating my code was in RoyTemp.
+  
+  -        My next step is to implement online functionality and allow for multiple board sizes,
+           as well as finish the remaining classic chess functions like stalemates, castling, and en passant.
            
 * Kieran Hsieh
 
