@@ -98,6 +98,7 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
 
   -        Completed the chess GUI, which can be found in ChessGUI.java under the Board branch. This was used to visually represent 
            the board, and was used in the Menu as something that opened after the play button was clicked.
+  -        My next step will be to connect profiles and users to the GUI
            
 * Guillermo Gomez
 
