@@ -148,7 +148,7 @@ class Board {
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
-				{"wr","wk","wb","wK","wq","wb","wk","wr"}};
+				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
 		
 		arrayToBitboards(standardChessBoard);
 	}
