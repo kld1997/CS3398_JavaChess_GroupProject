@@ -57,7 +57,7 @@ To-do list:
            
 * Chess replay
 
-  -        Save the move history in way that allows a user to replay a finished match.
+  -        Save the move history in a way that allows a user to replay a finished match.
            
 * Add new modes
 
