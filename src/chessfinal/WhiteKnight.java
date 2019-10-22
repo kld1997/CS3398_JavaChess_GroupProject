@@ -9,7 +9,7 @@ public class WhiteKnight implements Piece
 		
 		moves = 0L;
 		
-		if((board.whiteKnights&coord) != 0) {	
+		if((board.whiteKnights&coord) != 0 && board.whiteCheck < 2) {	
 			if((coord&(Board.row7|Board.row8)) == 0) {
 				if((coord&Board.colA) == 0 && ((coord>>17)&(board.notWhite)) != 0) {     //up left
 					moves |= coord>>17;
@@ -43,6 +43,17 @@ public class WhiteKnight implements Piece
 				}
 			}
 		}	
+		
+		if(board.whiteCheck == 1) {
+			if((coord & board.pinnedW) == 0)
+				moves&= board.interfereW;
+			else
+				moves &= board.wKThreats;
+		}
+		
+		if((coord & board.pinnedW) != 0) {
+			moves &= board.pinMove(coord, board.pinnersB, board.whiteKing);
+		}
 	
 		return moves;
 	}
@@ -68,14 +79,19 @@ public class WhiteKnight implements Piece
 		
 		long allMoves = 0L;
 		
-		allMoves |= (board.whiteKnights>>17)&(board.notWhite)&~(Board.row1|Board.row2)&~Board.colH;
-		allMoves |= (board.whiteKnights>>15)&(board.notWhite)&~(Board.row1|Board.row2)&~Board.colA;
-		allMoves |= (board.whiteKnights<<15)&(board.notWhite)&~(Board.row7|Board.row8)&~Board.colH;
-		allMoves |= (board.whiteKnights<<17)&(board.notWhite)&~(Board.row7|Board.row8)&~Board.colA;
-		allMoves |= (board.whiteKnights>>10)&(board.notWhite)&~(Board.colG|Board.colH)&~Board.row1;
-		allMoves |= (board.whiteKnights<<6)&(board.notWhite)&~(Board.colG|Board.colH)&~Board.row8;
-		allMoves |= (board.whiteKnights>>6)&(board.notWhite)&~(Board.colA|Board.colB)&~Board.row1;
-		allMoves |= (board.whiteKnights<<10)&(board.notWhite)&~(Board.colA|Board.colB)&~Board.row8;
+		if(board.whiteCheck < 2) {
+			allMoves |= (board.whiteKnights>>17)&(board.notWhite)&~(Board.row1|Board.row2)&~Board.colH;
+			allMoves |= (board.whiteKnights>>15)&(board.notWhite)&~(Board.row1|Board.row2)&~Board.colA;
+			allMoves |= (board.whiteKnights<<15)&(board.notWhite)&~(Board.row7|Board.row8)&~Board.colH;
+			allMoves |= (board.whiteKnights<<17)&(board.notWhite)&~(Board.row7|Board.row8)&~Board.colA;
+			allMoves |= (board.whiteKnights>>10)&(board.notWhite)&~(Board.colG|Board.colH)&~Board.row1;
+			allMoves |= (board.whiteKnights<<6)&(board.notWhite)&~(Board.colG|Board.colH)&~Board.row8;
+			allMoves |= (board.whiteKnights>>6)&(board.notWhite)&~(Board.colA|Board.colB)&~Board.row1;
+			allMoves |= (board.whiteKnights<<10)&(board.notWhite)&~(Board.colA|Board.colB)&~Board.row8;
+		}
+		
+		if(board.whiteCheck == 1)
+			allMoves &= board.wKThreats;
 		
 		return allMoves;
 	}

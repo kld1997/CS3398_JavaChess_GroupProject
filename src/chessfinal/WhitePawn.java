@@ -25,7 +25,14 @@ public class WhitePawn implements Piece
 		}	
 		
 		if(board.whiteCheck == 1) {
-			moves &= board.bKThreats;
+			if((coord & board.pinnedW) == 0)
+				moves&= board.interfereW;
+			else
+				moves &= board.wKThreats;
+		}
+		
+		if((coord & board.pinnedW) != 0) {
+			moves &= board.pinMove(coord, board.pinnersB, board.whiteKing);
 		}
 	
 		return moves;
@@ -52,10 +59,15 @@ public class WhitePawn implements Piece
 		
 		long allMoves = 0L;
 		
-		allMoves |= (board.whitePawns>>8)&board.empty;
-		allMoves |= (board.whitePawns>>16)&board.empty&(board.empty>>8)&Board.row4;
-		allMoves |= (board.whitePawns>>7)&board.blackPieces&~Board.colA;
-		allMoves |= (board.whitePawns>>9)&board.blackPieces&~Board.colH;
+		if(board.whiteCheck < 2) {
+			allMoves |= (board.whitePawns>>8)&board.empty;
+			allMoves |= (board.whitePawns>>16)&board.empty&(board.empty>>8)&Board.row4;
+			allMoves |= (board.whitePawns>>7)&board.blackPieces&~Board.colA;
+			allMoves |= (board.whitePawns>>9)&board.blackPieces&~Board.colH;
+		}
+		
+		if(board.whiteCheck == 1)
+			allMoves &= board.bKThreats;
 		
 		return allMoves;
 	}

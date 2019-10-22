@@ -24,9 +24,15 @@ public class BlackBishop implements Piece
 		threat = false;
 		
 		if(board.blackCheck == 1) {
-			moves &= board.bKThreats;
+			if((coord & board.pinnedB) == 0)
+				moves&= board.interfereB;
+			else
+				moves &= board.bKThreats;
 		}
 		
+		if((coord & board.pinnedB) != 0) {
+			moves &= board.pinMove(coord, board.pinnersW, board.blackKing);
+		}
 		return moves;
 	}
 	
@@ -82,5 +88,26 @@ public class BlackBishop implements Piece
 		}
 		
 		return threatened;
+	}
+	
+	public long threatPos(Board board, long pCoord) {
+		
+		long tPos = 0L;
+		long unit = board.blackBishops;
+		long coord = 0L;
+		int u = 0;
+		
+		while(unit != 0) {
+			u = Long.numberOfTrailingZeros(unit);
+			coord = 1L<<u;
+			unit &= ~coord;
+			
+			if((possibleMoves(board, coord)&pCoord) != 0) {
+				tPos |= coord;
+				board.whiteCheck++;
+			}
+		}
+		
+		return tPos;
 	}
 }

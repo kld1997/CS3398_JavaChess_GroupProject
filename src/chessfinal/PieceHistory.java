@@ -1,10 +1,8 @@
 package chessfinal;
-
 import java.awt.*;
 import javax.swing.*;
 import java.lang.reflect.Array;
 import java.util.*;
-
 public class PieceHistory extends JPanel
 {
     private Stack<JLabel> moveList = new Stack<JLabel>();
@@ -12,13 +10,13 @@ public class PieceHistory extends JPanel
     public PieceHistory()
     {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        Dimension d = new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.155), (int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.75));
+        Dimension d = new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.155), (int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.375));
         setPreferredSize(d);
     }
     public void addMove(String move)
     {
         JLabel newMove = new JLabel(move, SwingConstants.CENTER);
-        if(moveList.size() >= 35){ moveList.pop(); }
+        if(moveList.size() >= 19){ moveList.pop(); }
         moveList.push(newMove);
         update();
     }
@@ -34,7 +32,6 @@ public class PieceHistory extends JPanel
         removeAll();
         for(int i = 0; i < moveList.size(); i ++)
         {
-            System.out.println("Adding");
             add(moveList.get(i));
         }
         repaint();

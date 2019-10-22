@@ -9,16 +9,17 @@ public class WhiteQueen implements Piece
 	public long possibleMoves(Board board, long coord) {
 		
 		moves = 0L;
+		long occ = ~board.empty;
 		
-		if((board.whiteQueens&coord) != 0) {	
+		if((board.whiteQueens&coord) != 0 && board.whiteCheck < 2) {	
 			int trail = Long.numberOfTrailingZeros(coord);
 			
-			long horizontal = (~board.empty - coord * 2) ^ Long.reverse(Long.reverse(~board.empty) - Long.reverse(coord) * 2);
-			long vertical = ((~board.empty&Board.colMasks[trail % 8]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.colMasks[trail % 8]) - (2 * Long.reverse(coord)));
+			long horizontal = (occ - coord * 2) ^ Long.reverse(Long.reverse(occ) - Long.reverse(coord) * 2);
+			long vertical = ((occ&Board.colMasks[trail % 8]) - (2 * coord)) ^ Long.reverse(Long.reverse(occ&Board.colMasks[trail % 8]) - (2 * Long.reverse(coord)));
 			moves = (horizontal&Board.rowMasks[trail / 8] | vertical&Board.colMasks[trail % 8]);
 			
-			long bltr = ((~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * Long.reverse(coord)));
-	        long tlbr = ((~board.empty&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(~board.empty&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) - (2 * Long.reverse(coord)));
+			long bltr = ((occ&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(occ&Board.bltrMasks[(trail / 8) + (trail % 8)]) - (2 * Long.reverse(coord)));
+	        long tlbr = ((occ&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) - (2 * coord)) ^ Long.reverse(Long.reverse(occ&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]) - (2 * Long.reverse(coord)));
 			moves |= (bltr&Board.bltrMasks[(trail / 8) + (trail % 8)] | tlbr&Board.tlbrMasks[(trail / 8) + 7 - (trail % 8)]);
 		}	
 		
@@ -26,6 +27,17 @@ public class WhiteQueen implements Piece
 			moves &= board.notWhite;
 		
 		threat = false;
+		
+		if(board.whiteCheck == 1) {
+			if((coord & board.pinnedW) == 0)
+				moves&= board.interfereW;
+			else
+				moves &= board.wKThreats;
+		}
+		
+		if((coord & board.pinnedW) != 0) {
+			moves &= board.pinMove(coord, board.pinnersB, board.whiteKing);
+		}
 	
 		return moves;
 	}
