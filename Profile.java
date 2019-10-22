@@ -1,4 +1,5 @@
 package PlayerProfile;
+import java.io.*;
 
 public class Profile {
 	
@@ -40,6 +41,42 @@ public class Profile {
         return winningPercentage;
     }
 	
-	
+    public void Save() { 
+    	try { 
+    		FileWrite fw = new FileWritter("Chess Profile.txt");
+    		PrintWriter pw = new PrintWriter(fw);
+    		
+    		pw.print("Name: " + this.Name);
+    		pw.print("Birthday : " + this.DateOfBirth);
+    		pw.print("Location: " + this.GeographicalLocation);
+    		pw.print("Quote: " + this.Quote);
+    		pw.print("\n");
+    		pw.print("ELO Score: " + this.ELOScoring);
+    		pw.print("Losses: " + this.NumberOfLosses);
+    		pw.print("Wins: " + this.NumberOfWins);
+    		pw.print("Wining Percentage: " + this.score);
+    		
+    		pw.close();
+    	}catch(IOException e) {
+    		pw.print("Error");
+    	}
+    }
+	public void Read() {
+		
+		try {
+			FileReader fr = new Filereader("Chess Profile.txt");
+			BufferedReader br=new BufferedReader(fr);
+			
+			String str;
+			while ((str = br.readLine()) != null ) {
+				out.print("\n");
+			}
+			br.close();
+		}catch (IOException e ) { 
+			out.println("File Not Found");
+		}
+		
+	}
 
+    
 }
