@@ -34,6 +34,7 @@ public class ModelController
     {
       File modelPath = new File("img");
       File[] pathArray = modelPath.listFiles();
+      Arrays.sort(pathArray);
       for(int m = 0; m < 5; m++)
       {
         try
