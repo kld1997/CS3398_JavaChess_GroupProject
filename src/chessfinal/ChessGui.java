@@ -7,6 +7,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.*;
+import java.io.*;
 
 import javax.imageio.*;
 import javax.swing.border.Border;
@@ -18,7 +19,6 @@ public class ChessGui extends JFrame
         public boolean locked = false;
         public Board gameBoard = new Board();
         public int promoButtonClicked = 0;
-        public ChessGui thisGui = this;
 
         private JPanel mainPanel = new JPanel();
         private JPanel mainBoard = new JPanel();
@@ -28,6 +28,7 @@ public class ChessGui extends JFrame
         private PieceHistory historyPanel = new PieceHistory();
         private JPanel rightPanel = new JPanel();
         private JPanel rightPawnChoice = new JPanel();
+        public MenuBuilder menu;
 
         ChessSquare[][] squares = new ChessSquare[8][8];
         public BufferedImage playerOneModels[] = new BufferedImage[6];
@@ -44,8 +45,10 @@ public class ChessGui extends JFrame
             setLocation((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()*.15), (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight()*.15));
             setLayout(new BorderLayout());
 
-            MenuBuilder menu = new MenuBuilder();
+            menu = new MenuBuilder();
             setJMenuBar(menu);
+            playerOneModels = menu.modelControl.playerOnePieces;
+            playerTwoModels = menu.modelControl.playerTwoPieces;
 
 
             topLabel.setText("White Turn");

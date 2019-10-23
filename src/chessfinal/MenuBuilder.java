@@ -7,7 +7,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.*;
 
-public class MenuBuilder extends JMenuBar implements ItemListener
+public class MenuBuilder extends JMenuBar
 {
   ModelController modelControl;
   JMenu playerOneIcons = new JMenu("Icon Set");
@@ -18,8 +18,10 @@ public class MenuBuilder extends JMenuBar implements ItemListener
 
   public MenuBuilder()
   {
+    playerTwoIcons.setVisible(false);
     modelControl = new ModelController();
     JMenu menu = new JMenu("Options");
+    JMenu iconSet = new JMenu();
     add(menu);
 
     for(int j = 0; j < 2; j++)
@@ -28,24 +30,25 @@ public class MenuBuilder extends JMenuBar implements ItemListener
       {
         if(i == 0)
         {
-          JMenu iconSet = buildChoices("CharactersOne", j);
+          iconSet = buildChoices("CharactersOne", j);
         }
         else if(i == 1)
         {
-          JMenu iconSet = buildChoices("CharactersTwo", j);
+          iconSet = buildChoices("CharactersTwo", j);
         }
         else if(i == 2)
         {
-          JMenu iconSet = buildChoices("Classic", j);
+          iconSet = buildChoices("Classic", j);
         }
         else if(i == 3)
         {
-          JMenu iconSet = buildChoices("ShadedOne", j);
+          iconSet = buildChoices("ShadedOne", j);
         }
         else if(i == 4)
         {
-          JMenu iconSet = buildChoices("ShadedTwo", j);
+          iconSet = buildChoices("ShadedTwo", j);
         }
+
         if(j == 0)
         {
           playerOneIcons.add(iconSet);
@@ -74,47 +77,57 @@ public class MenuBuilder extends JMenuBar implements ItemListener
     {
       if(text.equals("CharactersOne"))
       {
-        temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(modelControl.menuIcons[0]), sel);
+        temp = new JCheckBoxMenuItem(colorOne, new ImageIcon(modelControl.menuIcons[1]), sel);
+        temp.setActionCommand(text + " " + colorOne);
         iconMenu.add(temp);
         groupOne.add(temp);
-        temp = new JCheckBoxMenuItem(colorOne, new ImageIcon(modelControl.menuIcons[1]), sel);
+        temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(modelControl.menuIcons[0]), sel);
+        temp.setActionCommand(text + " " + colorThree);
         iconMenu.add(temp);
         groupOne.add(temp);
       }
       else if(text.equals("CharactersTwo"))
       {
         temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(modelControl.menuIcons[2]), sel);
+        temp.setActionCommand(text + " " + colorThree);
         iconMenu.add(temp);
         groupOne.add(temp);
         temp = new JCheckBoxMenuItem(colorTwo, new ImageIcon(modelControl.menuIcons[3]), sel);
+        temp.setActionCommand(text + " " + colorTwo);
         iconMenu.add(temp);
         groupOne.add(temp);
       }
       else if(text.equals("Classic"))
       {
         temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(modelControl.menuIcons[4]), sel);
+        temp.setActionCommand(text + " " + colorThree);
         iconMenu.add(temp);
         groupOne.add(temp);
         temp.setVisible(false);
         temp = new JCheckBoxMenuItem(colorTwo, new ImageIcon(modelControl.menuIcons[5]), true);
+        temp.setActionCommand(text + " " + colorTwo);
         iconMenu.add(temp);
         groupOne.add(temp);
       }
       else if(text.equals("ShadedOne"))
       {
         temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(modelControl.menuIcons[6]), sel);
+        temp.setActionCommand(text + " " + colorThree);
         iconMenu.add(temp);
         groupOne.add(temp);
         temp = new JCheckBoxMenuItem(colorTwo, new ImageIcon(modelControl.menuIcons[7]), sel);
+        temp.setActionCommand(text + " " + colorTwo);
         iconMenu.add(temp);
         groupOne.add(temp);
       }
       else if(text.equals("ShadedTwo"))
       {
         temp = new JCheckBoxMenuItem(colorFour, new ImageIcon(modelControl.menuIcons[8]), sel);
+        temp.setActionCommand(text + " " + colorFour);
         iconMenu.add(temp);
         groupOne.add(temp);
         temp = new JCheckBoxMenuItem(colorOne, new ImageIcon(modelControl.menuIcons[9]), sel);
+        temp.setActionCommand(text + " " + colorOne);
         iconMenu.add(temp);
         groupOne.add(temp);
       }
@@ -123,28 +136,34 @@ public class MenuBuilder extends JMenuBar implements ItemListener
     {
       if(text.equals("CharactersOne"))
       {
-        temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(modelControl.menuIcons[0]), sel);
+        temp = new JCheckBoxMenuItem(colorOne, new ImageIcon(modelControl.menuIcons[1]), sel);
+        temp.setActionCommand(text + " " + colorOne);
         iconMenu.add(temp);
         groupTwo.add(temp);
-        temp = new JCheckBoxMenuItem(colorOne, new ImageIcon(modelControl.menuIcons[1]), sel);
+        temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(modelControl.menuIcons[0]), sel);
+        temp.setActionCommand(text + " " + colorThree);
         iconMenu.add(temp);
         groupTwo.add(temp);
       }
       else if(text.equals("CharactersTwo"))
       {
         temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(modelControl.menuIcons[2]), sel);
+        temp.setActionCommand(text + " " + colorThree);
         iconMenu.add(temp);
         groupTwo.add(temp);
         temp = new JCheckBoxMenuItem(colorTwo, new ImageIcon(modelControl.menuIcons[3]), sel);
+        temp.setActionCommand(text + " " + colorTwo);
         iconMenu.add(temp);
         groupTwo.add(temp);
       }
       else if(text.equals("Classic"))
       {
         temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(modelControl.menuIcons[4]), true);
+        temp.setActionCommand(text + " " + colorThree);
         iconMenu.add(temp);
         groupTwo.add(temp);
         temp = new JCheckBoxMenuItem(colorTwo, new ImageIcon(modelControl.menuIcons[5]), sel);
+        temp.setActionCommand(text + " " + colorTwo);
         iconMenu.add(temp);
         groupTwo.add(temp);
         temp.setVisible(false);
@@ -152,18 +171,22 @@ public class MenuBuilder extends JMenuBar implements ItemListener
       else if(text.equals("ShadedOne"))
       {
         temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(modelControl.menuIcons[6]), sel);
+        temp.setActionCommand(text + " " + colorThree);
         iconMenu.add(temp);
         groupTwo.add(temp);
         temp = new JCheckBoxMenuItem(colorTwo, new ImageIcon(modelControl.menuIcons[7]), sel);
+        temp.setActionCommand(text + " " + colorTwo);
         iconMenu.add(temp);
         groupTwo.add(temp);
       }
       else if(text.equals("ShadedTwo"))
       {
         temp = new JCheckBoxMenuItem(colorFour, new ImageIcon(modelControl.menuIcons[8]), sel);
+        temp.setActionCommand(text + " " + colorFour);
         iconMenu.add(temp);
         groupTwo.add(temp);
         temp = new JCheckBoxMenuItem(colorOne, new ImageIcon(modelControl.menuIcons[9]), sel);
+        temp.setActionCommand(text + " " + colorOne);
         iconMenu.add(temp);
         groupTwo.add(temp);
       }

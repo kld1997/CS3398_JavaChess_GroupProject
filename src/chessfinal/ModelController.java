@@ -4,6 +4,7 @@ import java.util.*;
 import java.io.*;
 import java.lang.*;
 import java.awt.image.BufferedImage;
+import javax.imageio.*;
 
 public class ModelController
 {
@@ -50,7 +51,7 @@ public class ModelController
         }
         catch(Exception e)
         {
-          System.out.println("Problem reading menu image files.");
+          System.out.println("Problem reading icon image files.");
         }
       }
     }
