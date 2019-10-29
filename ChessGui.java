@@ -7,18 +7,34 @@ public class ChessGui extends JFrame
     public HistoryPanel rightPanel;
     public ChessPanel mainPanel;
     JPanel centerPanel = new JPanel();
-    public ChessGui(){}
-    public ChessGui(Board b)
+    public ChessGui(int gameMode, boolean noHighlight)
     {
-        topPanel = new InfoPanel(this);
-        mainPanel = new ChessPanel(this, false);
+        switch(gameMode)
+        {
+            case 0: //Default
+                topPanel = new InfoPanel(this);
+                mainPanel = new ChessPanel(this, false, noHighlight);
+                break;
+            case 1: //Bullet
+                topPanel = new BulletInfoPanel(this);
+                mainPanel = new ChessPanel(this, false, noHighlight);
+                break;
+            case 2: //Plus plus
+                topPanel = new InfoPanel(this);
+                mainPanel = new ChessPanel(this, true, noHighlight);
+                break;
+        }
+        guiBuild();
+    }
+    public void guiBuild()
+    {
         rightPanel = new HistoryPanel(this);
         mainPanel.getMainPanel().updateBoard();
         rightPanel.pp.setGui(this);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize((int)(screenSize.getWidth()*.7), (int)(screenSize.getHeight()*.75));
+        setSize((int)(screenSize.getWidth()*.7), (int)(screenSize.getHeight()*.85));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocation((int)(screenSize.getWidth()*.15), (int) (screenSize.getHeight()*.15));
+        setLocation((int)(screenSize.getWidth()*.1), (int) (screenSize.getHeight()*.1));
         setLayout(new BorderLayout());
         addPanels();
         setVisible(true);
