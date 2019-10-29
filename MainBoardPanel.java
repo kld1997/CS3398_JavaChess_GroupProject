@@ -26,11 +26,11 @@ public class MainBoardPanel extends JPanel
     public static BufferedImage pieces[][] = new BufferedImage[2][6];
 
     ChessGui thisGui;
-    public MainBoardPanel(){}
-    public MainBoardPanel(ChessGui g)
+    public MainBoardPanel(ChessGui g, boolean plusPlus)
     {
         thisGui = g;
-        gameBoard.standardChess();
+        if(plusPlus){ gameBoard.chessPlusPlus(); }
+        else { gameBoard.standardChess(); }
         setUpImages();
         setLayout(new GridLayout(8,8));
         int counter = 0;
@@ -218,6 +218,11 @@ public class MainBoardPanel extends JPanel
                     squares[x][y].setIcon(new ImageIcon(pieces[1][5]));         //"wp";
                     squares[x][y].setActionCommand("White Pawn " + x + " " + y);
                 }
+                else if(((gameBoard.wallsBB[0]>>(x*8)+y)&1) == 1) {
+                    squares[x][y].setIcon(new ImageIcon(pieces[1][2]));         //"wp";
+                    squares[x][y].setActionCommand("White Wall " + x + " " + y);
+                }
+
                 //black pieces
                 else if(((gameBoard.kingBB[1]>>(x*8)+y)&1) == 1) {
                     squares[x][y].setIcon(new ImageIcon(pieces[0][0]));           //"bK";
@@ -242,6 +247,10 @@ public class MainBoardPanel extends JPanel
                 else if(((gameBoard.pawnsBB[1]>>(x*8)+y)&1) == 1) {
                     squares[x][y].setIcon(new ImageIcon(pieces[0][5]));           //"bp";
                     squares[x][y].setActionCommand("Black Pawn " + x + " " + y);
+                }
+                else if(((gameBoard.wallsBB[1]>>(x*8)+y)&1) == 1) {
+                    squares[x][y].setIcon(new ImageIcon(pieces[0][2]));         //"wp";
+                    squares[x][y].setActionCommand("Black Wall " + x + " " + y);
                 }
                 else
                 {
