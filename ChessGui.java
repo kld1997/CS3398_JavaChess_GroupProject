@@ -3,11 +3,14 @@ import java.awt.*;
 
 public class ChessGui extends JFrame
 {
-    private InfoPanel topPanel = new InfoPanel();
-    private HistoryPanel rightPanel;
-    private ChessPanel mainPanel;
-    public ChessGui()
+    public GenericInfoPanel topPanel;
+    public HistoryPanel rightPanel;
+    public ChessPanel mainPanel;
+    JPanel centerPanel = new JPanel();
+    public ChessGui(){}
+    public ChessGui(Board b)
     {
+        topPanel = new InfoPanel(this);
         mainPanel = new ChessPanel(this);
         rightPanel = new HistoryPanel(this);
         mainPanel.getMainPanel().updateBoard();
@@ -17,10 +20,15 @@ public class ChessGui extends JFrame
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocation((int)(screenSize.getWidth()*.15), (int) (screenSize.getHeight()*.15));
         setLayout(new BorderLayout());
-        add(topPanel, BorderLayout.NORTH);
-        add(mainPanel, BorderLayout.CENTER);
-        add(rightPanel, BorderLayout.EAST);
+        addPanels();
         setVisible(true);
+    }
+    public void addPanels()
+    {
+        centerPanel.add(topPanel, BorderLayout.NORTH);
+        centerPanel.add(mainPanel, BorderLayout.CENTER);
+        add(centerPanel, BorderLayout.CENTER);
+        add(rightPanel, BorderLayout.EAST);
     }
     public MainBoardPanel getMainPanel()
     {
@@ -30,7 +38,7 @@ public class ChessGui extends JFrame
     {
         return rightPanel;
     }
-    public InfoPanel getInfoPanel()
+    public GenericInfoPanel getInfoPanel()
     {
         return topPanel;
     }
