@@ -16,7 +16,7 @@ public class MenuBuilder extends JMenuBar
   ButtonGroup groupTwo = new ButtonGroup();
   int currentTeam = 0;
 
-  public MenuBuilder()
+  public MenuBuilder(ChessSquare[][] squares)
   {
     playerTwoIcons.setVisible(false);
     modelControl = new ModelController();
@@ -62,6 +62,7 @@ public class MenuBuilder extends JMenuBar
 
     menu.add(playerOneIcons);
     menu.add(playerTwoIcons);
+    menu.add(new ColorMenu("Choose Board Color", squares));
   }
 
   private JMenu buildChoices(String text, int tm)

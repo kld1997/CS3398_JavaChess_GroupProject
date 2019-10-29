@@ -45,7 +45,7 @@ public class ChessGui extends JFrame
             setLocation((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()*.15), (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight()*.15));
             setLayout(new BorderLayout());
 
-            menu = new MenuBuilder();
+            menu = new MenuBuilder(squares);
             setJMenuBar(menu);
             playerOneModels = menu.modelControl.playerOnePieces;
             playerTwoModels = menu.modelControl.playerTwoPieces;
@@ -104,6 +104,7 @@ public class ChessGui extends JFrame
         }
         public void showPawnPromotion(int team, long coord)
         {
+            menu.setVisible(false);
             locked = true;
             int teamIcon = Math.abs(team-1);
             BufferedImage[] pieces = new BufferedImage[6];
@@ -128,11 +129,13 @@ public class ChessGui extends JFrame
                         temp.getParent().removeAll();
                         rightPawnChoice.repaint();
                         updateBoard(gameBoard);
+                        menu.setVisible(true);
                     }
                 });
                 rightPawnChoice.add(choiceButton);
             }
         }
+
         private void boardSetUp()
         {
             int counter = 0;
@@ -221,8 +224,8 @@ public class ChessGui extends JFrame
                 {
                     if(((board>>(x*8)+y)&1) == 1)
                     {
-                        squares[x][y].Highlight();
                         retList.add(squares[x][y]);
+                        squares[x][y].Highlight();
                     }
                 }
             }
