@@ -6,46 +6,43 @@ import java.io.*;
 
 class Board {
 	
-	//white pieces
-	long whiteKing;
-	long whiteQueens;
-	long whiteRooks;
-	long whiteBishops;
-	long whiteKnights;
-	long whitePawns;	
-	long whitePieces;
+	int teamNum = 2;
+	int pieceNum = 6;
 	
-	//black pieces
-	long blackKing;
-	long blackQueens;
-	long blackRooks;
-	long blackBishops;
-	long blackKnights;
-	long blackPawns;	
-	long blackPieces;
+	// pieces
+	long[] kingBB = new long[teamNum];
+	long[] queensBB = new long[teamNum];
+	long[] rooksBB = new long[teamNum];
+	long[] bishopsBB = new long[teamNum];
+	long[] knightsBB = new long[teamNum];
+	long[] pawnsBB = new long[teamNum];	
+	long[] teamBB = new long[teamNum];
+	
+	long[][] pieceBBArr = {kingBB, queensBB, rooksBB, bishopsBB, knightsBB, pawnsBB};
 	
 	//king and sliders
-	long pinnersW;
-	long pinnedB;
-	long interfereB;
-	long pinnersB;
-	long pinnedW;
-	long interfereW;
+	long[] pinnersBB = new long[teamNum];
+	long[] pinnedBB = new long[teamNum];
+	long[] interfereBB = new long[teamNum];
+	long[] slideThreatsBB = new long[teamNum];
 	
 	//misc
-	long notWhite;
-	long notBlack;
+	long[] notTeamBB = new long[teamNum];
 	long empty;
-	long whiteThreaten;
-	long blackThreaten;
-	long wKThreats;
-	long bKThreats;
-	long wGetAllPM;
-	long bGetAllPM;
-	int whiteCheck;
-	int blackCheck;
-	int promoteWhite;
-	int teamWon = 2;
+	
+	//aggregate moves and threats
+	long[] threatenBB = new long[teamNum];
+	long[] kThreatsBB = new long[teamNum];
+	long[] allPMBB = new long[teamNum];
+	
+	//special position conditions
+	long kingMoved;
+	long rookMoved;
+	long[] epBB = new long[teamNum];
+	
+	//checks and win conditions
+	int[] check = new int[teamNum];
+	int teamWon;
 	
 	static long row1 = -72057594037927936L;
 	static long row2 = 71776119061217280L;
@@ -59,6 +56,7 @@ class Board {
 	static long colH = -9187201950435737472L;
 	
 	static long kingMoves = 460039L;
+	static long knightMoves = 43234889994L;
 	
 	static long rowMasks[] = {
 			255L, 65280L, 16711680L, 4278190080L, 1095216660480L, 280375465082880L, 71776119061217280L, -72057594037927936L
@@ -80,60 +78,77 @@ class Board {
 		0x804020100000000L, 0x402010000000000L, 0x201000000000000L, 0x100000000000000L
 	};
 	
-	WhitePawn pawnW = new WhitePawn();
-	BlackPawn pawnB = new BlackPawn();
+	Pawn pawnW = new Pawn(0);
+	Pawn pawnB = new Pawn(1);
 	
-	WhiteKnight knightW = new WhiteKnight();
-	BlackKnight knightB = new BlackKnight();
+	Knight knightW = new Knight(0);
+	Knight knightB = new Knight(1);
 	
-	WhiteBishop bishopW = new WhiteBishop();
-	BlackBishop bishopB = new BlackBishop();
+	Bishop bishopW = new Bishop(0);
+	Bishop bishopB = new Bishop(1);
 	
-	WhiteRook rookW = new WhiteRook();
-	BlackRook rookB = new BlackRook();
+	Rook rookW = new Rook(0);
+	Rook rookB = new Rook(1);
 	
-	WhiteQueen queenW = new WhiteQueen();
-	BlackQueen queenB = new BlackQueen();
+	Queen queenW = new Queen(0);
+	Queen queenB = new Queen(1);
 	
-	WhiteKing kingW = new WhiteKing();
-	BlackKing kingB = new BlackKing();
+	King kingW = new King(0);
+	King kingB = new King(1);
+	
+	Pieces[][] pieceArr = {{pawnW, knightW, bishopW, rookW, queenW, kingW}, {pawnB, knightB, bishopB, rookB, queenB, kingB}};
 	
 	public Board() {                                                   //initializes all of the bitboards
 		
-		this.whiteKing = 0;
-		this.whiteQueens = 0;
-		this.whiteRooks = 0;
-		this.whiteBishops = 0;
-		this.whiteKnights = 0;
-		this.whitePawns = 0;
-		this.whitePieces = 0;
+		for(int i = 0; i < teamNum; i++) {
+			this.kingBB[i] = 0;
+			this.queensBB[i] = 0;
+			this.rooksBB[i] = 0;
+			this.bishopsBB[i] = 0;
+			this.knightsBB[i] = 0;
+			this.pawnsBB[i] = 0;
+			this.teamBB[i] = 0;
+			this.notTeamBB[i] = 0;
+			
+			this.pinnersBB[i] = 0;
+			this.pinnedBB[i] = 0;
+			this.interfereBB[i] = 0;
+			this.slideThreatsBB[i] = 0;
+			
+			this.threatenBB[i] = 0;
+			this.allPMBB[i] = 0;
+			this.kThreatsBB[i] = 0;
+			this.check[i] = 0;
+			this.epBB[i] = 0;
+			
+			/*this.pieceBBArr[i][0] = this.pawnsBB[i];
+			this.pieceBBArr[i][1] = this.knightsBB[i];
+			this.pieceBBArr[i][2] = this.bishopsBB[i];
+			this.pieceBBArr[i][3] = this.rooksBB[i];
+			this.pieceBBArr[i][4] = this.queensBB[i];
+			this.pieceBBArr[i][5] = this.kingBB[i];*/
+		}
 		
-		this.blackKing = 0;
-		this.blackQueens = 0;
-		this.blackRooks = 0;
-		this.blackBishops = 0;
-		this.blackKnights = 0;
-		this.blackPawns = 0;
-		this.blackPieces = 0;
+		/*pieceArr[0][0] = pawnW;
+		pieceArr[0][1] = knightW;
+		pieceArr[0][2] = bishopW;
+		pieceArr[0][3] = rookW;
+		pieceArr[0][4] = queenW;
+		pieceArr[0][5] = kingW;
 		
-		this.pinnersW = 0;
-		this.pinnedB = 0;
-		this.interfereB = 0;
-		this.pinnersB = 0;
-		this.pinnedW = 0;
-		this.interfereW = 0;
-		
-		this.notWhite = 0;
-		this.notBlack = 0;
+		pieceArr[1][0] = pawnB;
+		pieceArr[1][1] = knightB;
+		pieceArr[1][2] = bishopB;
+		pieceArr[1][3] = rookB;
+		pieceArr[1][4] = queenB;
+		pieceArr[1][5] = kingB;*/
+
 		this.empty = 0;
-		this.whiteThreaten = 0;
-		this.blackThreaten = 0;
-		this.wGetAllPM = 0;
-		this.bGetAllPM = 0;
-		this.wKThreats = 0;
-		this.bKThreats = 0;
-		this.whiteCheck = 0;
-		this.blackCheck = 0;
+		
+		this.kingMoved = 0x1000000000000010L;
+		this.rookMoved = 0x8100000000000081L;
+		
+		this.teamWon = 2;
 		
 		//currentState();
 	}
@@ -160,29 +175,29 @@ class Board {
             Binary="0000000000000000000000000000000000000000000000000000000000000000";
             Binary=Binary.substring(i+1)+"1"+Binary.substring(0, i);
             switch (chessBoard[i/8][i%8]) {
-                case "wp": this.whitePawns += convertStringToBitboard(Binary);
+                case "wp": this.pawnsBB[0] += convertStringToBitboard(Binary);
                     break;
-                case "wk": this.whiteKnights += convertStringToBitboard(Binary);
+                case "wk": this.knightsBB[0] += convertStringToBitboard(Binary);
                     break;
-                case "wb": this.whiteBishops += convertStringToBitboard(Binary);
+                case "wb": this.bishopsBB[0] += convertStringToBitboard(Binary);
                     break;
-                case "wr": this.whiteRooks += convertStringToBitboard(Binary);
+                case "wr": this.rooksBB[0] += convertStringToBitboard(Binary);
                     break;
-                case "wq": this.whiteQueens += convertStringToBitboard(Binary);
+                case "wq": this.queensBB[0] += convertStringToBitboard(Binary);
                     break;
-                case "wK": this.whiteKing += convertStringToBitboard(Binary);
+                case "wK": this.kingBB[0] += convertStringToBitboard(Binary);
                     break;
-                case "bp": this.blackPawns += convertStringToBitboard(Binary);
+                case "bp": this.pawnsBB[1] += convertStringToBitboard(Binary);
                     break;
-                case "bk": this.blackKnights += convertStringToBitboard(Binary);
+                case "bk": this.knightsBB[1] += convertStringToBitboard(Binary);
                     break;
-                case "bb": this.blackBishops += convertStringToBitboard(Binary);
+                case "bb": this.bishopsBB[1] += convertStringToBitboard(Binary);
                     break;
-                case "br": this.blackRooks += convertStringToBitboard(Binary);
+                case "br": this.rooksBB[1] += convertStringToBitboard(Binary);
                     break;
-                case "bq": this.blackQueens += convertStringToBitboard(Binary);
+                case "bq": this.queensBB[1] += convertStringToBitboard(Binary);
                     break;
-                case "bK": this.blackKing += convertStringToBitboard(Binary);
+                case "bK": this.kingBB[1] += convertStringToBitboard(Binary);
                     break;
             }
         }
@@ -201,203 +216,136 @@ class Board {
 	
 	public void currentState() {
 		
-		whiteCheck = 0;
-		blackCheck = 0;
-		promoteWhite = 0;
+		check[0] = 0;
+		check[1] = 0;
 		
-		this.whitePieces = whiteQueens|whiteRooks|whiteKnights|whiteBishops|whitePawns|whiteKing;
-		this.blackPieces = blackQueens|blackRooks|blackKnights|blackBishops|blackPawns|blackKing;
+		this.teamBB[0] = queensBB[0]|rooksBB[0]|knightsBB[0]|bishopsBB[0]|pawnsBB[0]|kingBB[0];
+		this.teamBB[1] = queensBB[1]|rooksBB[1]|knightsBB[1]|bishopsBB[1]|pawnsBB[1]|kingBB[1];
 		
-		this.notWhite = ~(whitePieces);
-		this.notBlack = ~(blackPieces);
+		this.notTeamBB[0] = ~(teamBB[0]);
+		this.notTeamBB[1] = ~(teamBB[1]);
 		
-		this.empty = ~(whitePieces|blackPieces|whiteKing|blackKing);
+		this.empty = ~(teamBB[0]|teamBB[1]);
+		
+		pieceMoved();
 		
 		getThreaten();
 		
+		//code for making a bitboard of all of the pinnedB and pinning pieces
+		Check.getPinned(this);
+		
+		Check.slideThreats(this, 0);
+		Check.slideThreats(this, 1);
+
 		checkmate();
 		
-		//code for making a bitboard of all of the pinnedB and pinning pieces
-		getpinned();
-		
-		kingB.slideThreats(this);
-		kingW.slideThreats(this);
-		
-		if((this.whitePawns&row8) != 0) {
-			pawnPromote.pawnPromotion(0, this);
+		if(((this.pawnsBB[0]&row8)|(this.pawnsBB[1]&row1)) != 0) {
+			PawnPromote.pawnPromotion(this);
 		}
-		if((this.blackPawns&row1) != 0) {
 
-		}
 	}
 	
-	public void getpinned() {
+	public void pieceMoved() {
 		
-		pinnedB = 0L;
-		pinnersW = 0L;
-		interfereB = 0L;
-		pinnedW = 0L;
-		pinnersB = 0L;
-		interfereW = 0L;
-		long coord = 0L;
-		long temp = 0L;
-		int pinPos = 0;
-
-		pinnersW |= kingB.xrayHV(this, this.blackPieces) & (this.whiteRooks | this.whiteQueens);
-		pinnersW |= kingB.xrayD(this, this.blackPieces) & (this.whiteBishops | this.whiteQueens);
-		pinnersB |= kingW.xrayHV(this, this.whitePieces) & (this.blackRooks | this.blackQueens);
-		pinnersB |= kingW.xrayD(this, this.whitePieces) & (this.blackBishops | this.blackQueens);
-		
-		temp = pinnersW;
-		
-		while(temp != 0) {
-			
-			pinPos = Long.numberOfTrailingZeros(temp);
-			coord = 1L<<pinPos;
-			
-			pinnedB |= obstruct(coord, this.blackKing) & (this.blackPieces&~this.blackKing);
-			
-			temp &= temp - 1;
+		if(kingMoved != 0 && kingMoved != ((kingBB[0]|kingBB[1])&kingMoved)) {  	//if king moves
+			kingMoved &= (kingBB[0]|kingBB[1]);
 		}
-
-		temp = pinnersB;
-		
-		while(temp != 0) {
-			
-			pinPos = Long.numberOfTrailingZeros(temp);
-			coord = 1L<<pinPos;
-			
-			pinnedW |= obstruct(coord, this.whiteKing) & (this.whitePieces&~this.whiteKing);
-			
-			temp &= temp - 1;
+		if(rookMoved != 0 && rookMoved != ((rooksBB[0]|rooksBB[1])&rookMoved)) {	//if rook moves
+			rookMoved &= (rooksBB[0]|rooksBB[1]);
 		}
-		
 	}
-	
-	public long pinMove(long pin, long pinners, long protect) {
+
+	public void checkmate() {
 		
-		long pinPos = 0L;
-		long coord = 0L;
-		
-		while(pinners != 0) {
+		for(int i = 0; i < teamNum; i++) {
+			allPMBB[i] = 0;
 			
-			pinPos = Long.numberOfTrailingZeros(pinners);
-			coord = 1L<<pinPos;
-			
-			if((pin & obstruct(coord, protect)) != 0) {
-				return obstruct(coord, protect);
+			for(int j = 0; j < pieceNum; j++) {
+				allPMBB[i] |= pieceArr[i][j].getAllPM(this, false);
 			}
 			
-			pinners &= pinners - 1;
-		}
-		return 0L;
-	}
-	
-	public long obstruct(long coord1, long coord2) {
-		
-		if(coord1 > coord2) {
-			long temp = coord1;
-			coord1 = coord2;
-			coord2 = temp;
-		}
-		long coords = coord1 | coord2;
-		
-		int trail1 = Long.numberOfTrailingZeros(coord1);
-		int trail2 = Long.numberOfTrailingZeros(coord2);
-		
-		if((trail1 / 8) == (trail2 / 8)) {			//horizontal
-			return (coord2 - coord1) & rowMasks[trail1 / 8] | coords;
-		}
-		else if((trail1 % 8) == (trail2 % 8)) {		//vertical
-			return (coord2 - coord1) & colMasks[trail1 % 8] | coords;
-		}
-		else if((trail1 / 8) + (trail1 % 8) == (trail2 / 8) + (trail2 % 8)) {		//bottom left to top right
-			return (coord2 - coord1) & Board.bltrMasks[(trail1 / 8) + (trail1 % 8)] | coords;
-		}
-		else if((trail1 / 8) + 7 - (trail1 % 8) == (trail2 / 8) + 7 - (trail2 % 8)) {		//top left to bottom right
-			return (coord2 - coord1) & Board.tlbrMasks[(trail1 / 8) + 7 - (trail1 % 8)] | coords;
-		}
-		
-		
-		return 0L;
-	}
-
-	
-	public void checkmate() {
-		wGetAllPM = 
-				pawnW.getAllPM(this)|knightW.getAllPM(this)|bishopW.getAllPM(this)|
-				rookW.getAllPM(this)|queenW.getAllPM(this)|kingW.getAllPM(this);
-		
-		if(wGetAllPM == 0) {
-			teamWon = 1;
-		}
-		
-		bGetAllPM = 
-				pawnB.getAllPM(this)|knightB.getAllPM(this)|bishopB.getAllPM(this)|
-				rookB.getAllPM(this)|queenB.getAllPM(this)|kingB.getAllPM(this);
-		
-		if(bGetAllPM == 0) {
-			teamWon = 0;
+			if(allPMBB[i] == 0) {
+				if(check[i] == 1)
+					teamWon = 1 - i;
+				else
+					teamWon = -1;
+			}
 		}
 	}
 	
 	public void getThreaten() {
 		
-		whiteThreaten = 
-				pawnW.threaten(this)|knightW.threaten(this)|bishopW.threaten(this)|
-				rookW.threaten(this)|queenW.threaten(this)|kingW.threaten(this);
+		long currentThreat;
+		int noti = 0;
 		
-		if((whiteThreaten&this.blackKing) != 0) {
+		for(int i = 0; i < teamNum; i++) {
+			threatenBB[i] = 0;
+			currentThreat = 0;
+			noti = Math.abs(i-1);
+			
+			for(int j = 0; j < pieceNum; j++) {
+				currentThreat = pieceArr[i][j].getAllPM(this, true);
+				threatenBB[i] |= currentThreat;
+				if((currentThreat&this.kingBB[noti]) != 0) {
+					kThreatsBB[noti] |= pieceArr[i][j].threatPos(this, this.kingBB[noti]);
+				}
+			}
+		}
+		/*whiteThreaten = 
+				pawnW.getAllPM(this, true)|knightW.getAllPM(this, true)|bishopW.getAllPM(this, true)|
+				rookW.getAllPM(this, true)|queenW.getAllPM(this, true)|kingW.getAllPM(this, true);
+		
+		if((whiteThreaten&this.kingBB[1]) != 0) {
 			bKThreats = 0;
-			if((this.blackKing&pawnW.threaten(this)) != 0) {
-				bKThreats |= pawnW.threatPos(this, this.blackKing);
+			if((this.kingBB[1]&pawnW.getAllPM(this, true)) != 0) {
+				bKThreats |= pawnW.threatPos(this, this.kingBB[1]);
 			}
-			if((this.blackKing&knightW.threaten(this)) != 0) {
-				bKThreats |= knightW.threatPos(this, this.blackKing);
+			if((this.kingBB[1]&knightW.getAllPM(this, true)) != 0) {
+				bKThreats |= knightW.threatPos(this, this.kingBB[1]);
 			}
-			if((this.blackKing&bishopW.threaten(this)) != 0) {
-				bKThreats |= bishopW.threatPos(this, this.blackKing);
+			if((this.kingBB[1]&bishopW.getAllPM(this, true)) != 0) {
+				bKThreats |= bishopW.threatPos(this, this.kingBB[1]);
 			}
-			if((this.blackKing&rookW.threaten(this)) != 0) {
-				bKThreats |= rookW.threatPos(this, this.blackKing);
+			if((this.kingBB[1]&rookW.getAllPM(this, true)) != 0) {
+				bKThreats |= rookW.threatPos(this, this.kingBB[1]);
 			}
-			if((this.blackKing&queenW.threaten(this)) != 0) {
-				bKThreats |= queenW.threatPos(this, this.blackKing);
+			if((this.kingBB[1]&queenW.getAllPM(this, true)) != 0) {
+				bKThreats |= queenW.threatPos(this, this.kingBB[1]);
 			}
-			if((this.blackKing&kingW.threaten(this)) != 0) {
-				bKThreats |= kingW.threatPos(this, this.blackKing);
+			if((this.kingBB[1]&kingW.getAllPM(this, true)) != 0) {
+				bKThreats |= kingW.threatPos(this, this.kingBB[1]);
 			}
 		}
 		else
 			blackCheck = 0;
 		
 		blackThreaten = 
-				pawnB.threaten(this)|knightB.threaten(this)|bishopB.threaten(this)|
-				rookB.threaten(this)|queenB.threaten(this)|kingB.threaten(this);
+				pawnB.getAllPM(this, true)|knightB.getAllPM(this, true)|bishopB.getAllPM(this, true)|
+				rookB.getAllPM(this, true)|queenB.getAllPM(this, true)|kingB.getAllPM(this, true);
 
-		if((blackThreaten&this.whiteKing) != 0) {
+		if((blackThreaten&this.kingBB[0]) != 0) {
 			wKThreats = 0;
-			if((this.whiteKing&pawnB.threaten(this)) != 0) {
-				wKThreats |= pawnB.threatPos(this, this.whiteKing);
+			if((this.kingBB[0]&pawnB.getAllPM(this, true)) != 0) {
+				wKThreats |= pawnB.threatPos(this, this.kingBB[0]);
 			}
-			if((this.whiteKing&knightB.threaten(this)) != 0) {
-				wKThreats |= knightB.threatPos(this, this.whiteKing);
+			if((this.kingBB[0]&knightB.getAllPM(this, true)) != 0) {
+				wKThreats |= knightB.threatPos(this, this.kingBB[0]);
 			}
-			if((this.whiteKing&bishopB.threaten(this)) != 0) {
-				wKThreats |= bishopB.threatPos(this, this.whiteKing);
+			if((this.kingBB[0]&bishopB.getAllPM(this, true)) != 0) {
+				wKThreats |= bishopB.threatPos(this, this.kingBB[0]);
 			}
-			if((this.whiteKing&rookB.threaten(this)) != 0) {
-				wKThreats |= rookB.threatPos(this, this.whiteKing);
+			if((this.kingBB[0]&rookB.getAllPM(this, true)) != 0) {
+				wKThreats |= rookB.threatPos(this, this.kingBB[0]);
 			}
-			if((this.whiteKing&queenB.threaten(this)) != 0) {
-				wKThreats |= queenB.threatPos(this, this.whiteKing);
+			if((this.kingBB[0]&queenB.getAllPM(this, true)) != 0) {
+				wKThreats |= queenB.threatPos(this, this.kingBB[0]);
 			}
-			if((this.whiteKing&kingB.threaten(this)) != 0) {
-				wKThreats |= kingB.threatPos(this, this.whiteKing);
+			if((this.kingBB[0]&kingB.getAllPM(this, true)) != 0) {
+				wKThreats |= kingB.threatPos(this, this.kingBB[0]);
 			}
 		}
 		else
-			whiteCheck = 0;
+			whiteCheck = 0;*/
 	}
 	
 	public void displayArray() {
@@ -415,31 +363,31 @@ class Board {
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {
 				//white pieces
-				if(((this.whiteKing>>(i*8)+j)&1) == 1)
+				if(((this.kingBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wK";
-				else if(((this.whiteQueens>>(i*8)+j)&1) == 1)
+				else if(((this.queensBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wq";
-				else if(((this.whiteRooks>>(i*8)+j)&1) == 1)
+				else if(((this.rooksBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wr";
-				else if(((this.whiteKnights>>(i*8)+j)&1) == 1)
+				else if(((this.knightsBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wk";
-				else if(((this.whiteBishops>>(i*8)+j)&1) == 1)
+				else if(((this.bishopsBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wb";
-				else if(((this.whitePawns>>(i*8)+j)&1) == 1)
+				else if(((this.pawnsBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wp";
 				
 				//black pieces
-				else if(((this.blackKing>>(i*8)+j)&1) == 1)
+				else if(((this.kingBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bK";
-				else if(((this.blackQueens>>(i*8)+j)&1) == 1)
+				else if(((this.queensBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bq";
-				else if(((this.blackRooks>>(i*8)+j)&1) == 1)
+				else if(((this.rooksBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "br";
-				else if(((this.blackKnights>>(i*8)+j)&1) == 1)
+				else if(((this.knightsBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bk";
-				else if(((this.blackBishops>>(i*8)+j)&1) == 1)
+				else if(((this.bishopsBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bb";
-				else if(((this.blackPawns>>(i*8)+j)&1) == 1)
+				else if(((this.pawnsBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bp";
 			}
 		}
@@ -457,7 +405,7 @@ class Board {
 		System.out.println();
 	}
 	
-public void displayArray(long bitboard) {
+	public void displayArray(long bitboard) {
 		
 		String displayChessBoard[][] = {
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
@@ -472,31 +420,31 @@ public void displayArray(long bitboard) {
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {
 				//white pieces
-				if(((this.whiteKing>>(i*8)+j)&1) == 1)
+				if(((this.kingBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wK";
-				else if(((this.whiteQueens>>(i*8)+j)&1) == 1)
+				else if(((this.queensBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wq";
-				else if(((this.whiteRooks>>(i*8)+j)&1) == 1)
+				else if(((this.rooksBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wr";
-				else if(((this.whiteKnights>>(i*8)+j)&1) == 1)
+				else if(((this.knightsBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wk";
-				else if(((this.whiteBishops>>(i*8)+j)&1) == 1)
+				else if(((this.bishopsBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wb";
-				else if(((this.whitePawns>>(i*8)+j)&1) == 1)
+				else if(((this.pawnsBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wp";
 				
 				//black pieces
-				else if(((this.blackKing>>(i*8)+j)&1) == 1)
+				else if(((this.kingBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bK";
-				else if(((this.blackQueens>>(i*8)+j)&1) == 1)
+				else if(((this.queensBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bq";
-				else if(((this.blackRooks>>(i*8)+j)&1) == 1)
+				else if(((this.rooksBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "br";
-				else if(((this.blackKnights>>(i*8)+j)&1) == 1)
+				else if(((this.knightsBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bk";
-				else if(((this.blackBishops>>(i*8)+j)&1) == 1)
+				else if(((this.bishopsBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bb";
-				else if(((this.blackPawns>>(i*8)+j)&1) == 1)
+				else if(((this.pawnsBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bp";
 			}
 		}
@@ -518,38 +466,47 @@ public void displayArray(long bitboard) {
 	}
 	
 	public void removePiece(long coord) {
-		if((this.whitePieces&coord) != 0) {
-			if((this.whitePawns&coord) != 0) {
-				this.whitePawns = this.whitePawns^coord;
+		/*if((this.teamBB[0]&coord) != 0) {
+			if((this.pawnsBB[0]&coord) != 0) {
+				this.pawnsBB[0] = this.pawnsBB[0]^coord;
 			}
-			else if((this.whiteBishops&coord) != 0) {
-				this.whiteBishops = this.whiteBishops^coord;
+			else if((this.bishopsBB[0]&coord) != 0) {
+				this.bishopsBB[0] = this.bishopsBB[0]^coord;
 			}
-			else if((this.whiteKnights&coord) != 0) {
-				this.whiteKnights = this.whiteKnights^coord;
+			else if((this.knightsBB[0]&coord) != 0) {
+				this.knightsBB[0] = this.knightsBB[0]^coord;
 			}
-			else if((this.whiteRooks&coord) != 0) {
-				this.whiteRooks = this.whiteRooks^coord;
+			else if((this.rooksBB[0]&coord) != 0) {
+				this.rooksBB[0] = this.rooksBB[0]^coord;
 			}
-			else if((this.whiteQueens&coord) != 0) {
-				this.whiteQueens = this.whiteQueens^coord;
+			else if((this.queensBB[0]&coord) != 0) {
+				this.queensBB[0] = this.queensBB[0]^coord;
 			}
 		}
-		else if((this.blackPieces&coord) != 0) {
-			if((this.blackPawns&coord) != 0) {
-				this.blackPawns = this.blackPawns^coord;
+		else if((this.teamBB[1]&coord) != 0) {
+			if((this.pawnsBB[1]&coord) != 0) {
+				this.pawnsBB[1] = this.pawnsBB[1]^coord;
 			}
-			else if((this.blackBishops&coord) != 0) {
-				this.blackBishops = this.blackBishops^coord;
+			else if((this.bishopsBB[1]&coord) != 0) {
+				this.bishopsBB[1] = this.bishopsBB[1]^coord;
 			}
-			else if((this.blackKnights&coord) != 0) {
-				this.blackKnights = this.blackKnights^coord;
+			else if((this.knightsBB[1]&coord) != 0) {
+				this.knightsBB[1] = this.knightsBB[1]^coord;
 			}
-			else if((this.blackRooks&coord) != 0) {
-				this.blackRooks = this.blackRooks^coord;
+			else if((this.rooksBB[1]&coord) != 0) {
+				this.rooksBB[1] = this.rooksBB[1]^coord;
 			}
-			else if((this.blackQueens&coord) != 0) {
-				this.blackQueens = this.blackQueens^coord;
+			else if((this.queensBB[1]&coord) != 0) {
+				this.queensBB[1] = this.queensBB[1]^coord;
+			}
+		}*/
+		for(int i = 0; i < teamNum; i++) {
+			if((this.teamBB[i]&coord) != 0) {
+				for(int j = 0; j < pieceNum; j++) {
+					if((pieceBBArr[j][i]&coord) != 0) {
+						pieceBBArr[j][i] ^= coord;
+					}
+				}
 			}
 		}
 	}
@@ -573,11 +530,15 @@ public void displayArray(long bitboard) {
 	
 	public static long convertToCoord(String pos) {
 		
-		int x = pos.charAt(0) - 97;
-		int y = 8 - Integer.parseInt(pos.substring(1,2));
-		long coord = 1L<<((y*8)+x);
-		
-		return coord;
+		try {
+			int x = pos.charAt(0) - 97;
+			int y = 8 - Integer.parseInt(pos.substring(1,2));
+			long coord = 1L<<((y*8)+x);
+			
+			return coord;
+		} catch(NullPointerException e) {
+			return -1L;
+		}
 	}
 	
 	public static long convertToCoord(int x, int y) {
@@ -594,45 +555,103 @@ public void displayArray(long bitboard) {
 		
 		boolean valid = false;
 		
-		if(team == 0 && (coord1&(this.whitePieces|this.whiteKing)) != 0) {
-			if((coord1&this.whitePawns) != 0) {
+		if(team == 0 && (coord1&this.teamBB[0]) != 0) {
+			if((coord1&this.pawnsBB[0]) != 0) {
 				valid = pawnW.movePiece(this, coord1, coord2, checked);
+				if(valid) {
+					this.pawnsBB[0] = pawnW.piece;
+					
+					if(coord2 == coord1>>16)
+						epBB[0] |= coord1>>8;
+					else if((coord2&epBB[1]) != 0)
+						removePiece(coord2<<8); 
+				}
 			}
-			else if((coord1&this.whiteKnights) != 0) {
+			else if((coord1&this.knightsBB[0]) != 0) {
 				valid = knightW.movePiece(this, coord1, coord2, checked);
+				if(valid)
+					this.knightsBB[0] = knightW.piece;
 			}
-			else if((coord1&this.whiteBishops) != 0) {
+			else if((coord1&this.bishopsBB[0]) != 0) {
 				valid = bishopW.movePiece(this, coord1, coord2, checked);
+				if(valid)
+					this.bishopsBB[0] = bishopW.piece;
 			}
-			else if((coord1&this.whiteRooks) != 0) {
+			else if((coord1&this.rooksBB[0]) != 0) {
 				valid = rookW.movePiece(this, coord1, coord2, checked);
+				if(valid)
+					this.rooksBB[0] = rookW.piece;
 			}
-			else if((coord1&this.whiteQueens) != 0) {
+			else if((coord1&this.queensBB[0]) != 0) {
 				valid = queenW.movePiece(this, coord1, coord2, checked);
+				if(valid)
+					this.queensBB[0] = queenW.piece;
 			}
-			else if((coord1&this.whiteKing) != 0) {
+			else if((coord1&this.kingBB[0]) != 0) {
 				valid = kingW.movePiece(this, coord1, coord2, checked);
+				if(valid) {
+					this.kingBB[0] = kingW.piece;
+					
+					if(coord2 == coord1<<2) {
+						this.rooksBB[0] ^= coord2>>1|(this.rooksBB[0]&(this.rookMoved&~(coord1-1)));
+					}
+					else if(coord2 == coord1>>2) {
+						this.rooksBB[0] ^= coord2<<1|(this.rooksBB[0]&(this.rookMoved&(coord1-1)));
+					}
+				}
 			}
+			
+			if(valid)
+				epBB[1] = 0;
 		}
-		else if(team == 1 && (coord1&(this.blackPieces|this.blackKing)) != 0) {
-			if((coord1&this.blackPawns) != 0) {
+		else if(team == 1 && (coord1&this.teamBB[1]) != 0) {
+			if((coord1&this.pawnsBB[1]) != 0) {
 				valid = pawnB.movePiece(this, coord1, coord2, checked);
+				if(valid) {
+					this.pawnsBB[1] = pawnB.piece;
+					
+					if(coord2 == coord1<<16)
+						epBB[1] |= coord1<<8;
+					else if((coord2&epBB[0]) != 0)
+						removePiece(coord2>>8);
+				}
 			}
-			else if((coord1&this.blackKnights) != 0) {
+			else if((coord1&this.knightsBB[1]) != 0) {
 				valid = knightB.movePiece(this, coord1, coord2, checked);
+				if(valid)
+					this.knightsBB[1] = knightB.piece;
 			}
-			else if((coord1&this.blackBishops) != 0) {
+			else if((coord1&this.bishopsBB[1]) != 0) {
 				valid = bishopB.movePiece(this, coord1, coord2, checked);
+				if(valid)
+					this.bishopsBB[1] = bishopB.piece;
 			}
-			else if((coord1&this.blackRooks) != 0) {
+			else if((coord1&this.rooksBB[1]) != 0) {
 				valid = rookB.movePiece(this, coord1, coord2, checked);
+				if(valid)
+					this.rooksBB[1] = rookB.piece;
 			}
-			else if((coord1&this.blackQueens) != 0) {
+			else if((coord1&this.queensBB[1]) != 0) {
 				valid = queenB.movePiece(this, coord1, coord2, checked);
+				if(valid)
+					this.queensBB[1] = queenB.piece;
 			}
-			else if((coord1&this.blackKing) != 0) {
+			else if((coord1&this.kingBB[1]) != 0) {
 				valid = kingB.movePiece(this, coord1, coord2, checked);
+				if(valid) {
+					this.kingBB[1] = kingB.piece;
+					
+					if(coord2 == coord1<<2) {
+						this.rooksBB[1] ^= coord2>>1|(this.rooksBB[1]&(this.rookMoved&~(coord1-1)));
+					}
+					else if(coord2 == coord1>>2) {
+						this.rooksBB[1] ^= coord2<<1|(this.rooksBB[1]&(this.rookMoved&(coord1-1)));
+					}
+				}
 			}
+			
+			if(valid)
+				epBB[0] = 0;
 		}
 		if(valid)
 			currentState();
@@ -645,44 +664,44 @@ public void displayArray(long bitboard) {
 		long coord = convertToCoord(pos);
 		long moves = 0L;
 		
-		if((coord&(this.whitePieces|this.whiteKing)) != 0) {
-			if((coord&this.whitePawns) != 0) {
-				moves = pawnW.possibleMoves(this, coord);
+		if((coord&(this.teamBB[0]|this.kingBB[0])) != 0) {
+			if((coord&this.pawnsBB[0]) != 0) {
+				moves = pawnW.possibleMoves(this, coord, true);
 			}
-			else if((coord&this.whiteKnights) != 0) {
-				moves = knightW.possibleMoves(this, coord);
+			else if((coord&this.knightsBB[0]) != 0) {
+				moves = knightW.possibleMoves(this, coord, true);
 			}
-			else if((coord&this.whiteBishops) != 0) {
-				moves = bishopW.possibleMoves(this, coord);
+			else if((coord&this.bishopsBB[0]) != 0) {
+				moves = bishopW.possibleMoves(this, coord, true);
 			}
-			else if((coord&this.whiteRooks) != 0) {
-				moves = rookW.possibleMoves(this, coord);
+			else if((coord&this.rooksBB[0]) != 0) {
+				moves = rookW.possibleMoves(this, coord, true);
 			}
-			else if((coord&this.whiteQueens) != 0) {
-				moves = queenW.possibleMoves(this, coord);
+			else if((coord&this.queensBB[0]) != 0) {
+				moves = queenW.possibleMoves(this, coord, true);
 			}
-			else if((coord&this.whiteKing) != 0) {
-				moves = kingW.possibleMoves(this, coord);
+			else if((coord&this.kingBB[0]) != 0) {
+				moves = kingW.possibleMoves(this, coord, true);
 			}
 		}
-		else if((coord&(this.blackPieces|this.blackKing)) != 0) {
-			if((coord&this.blackPawns) != 0) {
-				moves = pawnB.possibleMoves(this, coord);
+		else if((coord&(this.teamBB[1]|this.kingBB[1])) != 0) {
+			if((coord&this.pawnsBB[1]) != 0) {
+				moves = pawnB.possibleMoves(this, coord, true);
 			}
-			else if((coord&this.blackKnights) != 0) {
-				moves = knightB.possibleMoves(this, coord);
+			else if((coord&this.knightsBB[1]) != 0) {
+				moves = knightB.possibleMoves(this, coord, true);
 			}
-			else if((coord&this.blackBishops) != 0) {
-				moves = bishopB.possibleMoves(this, coord);
+			else if((coord&this.bishopsBB[1]) != 0) {
+				moves = bishopB.possibleMoves(this, coord, true);
 			}
-			else if((coord&this.blackRooks) != 0) {
-				moves = rookB.possibleMoves(this, coord);
+			else if((coord&this.rooksBB[1]) != 0) {
+				moves = rookB.possibleMoves(this, coord, true);
 			}
-			else if((coord&this.blackQueens) != 0) {
-				moves = queenB.possibleMoves(this, coord);
+			else if((coord&this.queensBB[1]) != 0) {
+				moves = queenB.possibleMoves(this, coord, true);
 			}
-			else if((coord&this.blackKing) != 0) {
-				moves = kingB.possibleMoves(this, coord);
+			else if((coord&this.kingBB[1]) != 0) {
+				moves = kingB.possibleMoves(this, coord, true);
 			}
 		}
 		
@@ -695,57 +714,57 @@ public void displayArray(long bitboard) {
 		
 		switch(type) {
 		case "wA":
-			moves |= pawnW.getAllPM(this);
-			moves |= knightW.getAllPM(this);
-			moves |= bishopW.getAllPM(this);
-			moves |= rookW.getAllPM(this);
-			moves |= queenW.getAllPM(this);
-			moves |= kingW.getAllPM(this);
+			moves |= pawnW.getAllPM(this, false);
+			moves |= knightW.getAllPM(this, false);
+			moves |= bishopW.getAllPM(this, false);
+			moves |= rookW.getAllPM(this, false);
+			moves |= queenW.getAllPM(this, false);
+			moves |= kingW.getAllPM(this, false);
 			break;
 		case "wp":
-			moves = pawnW.getAllPM(this);
+			moves = pawnW.getAllPM(this, false);
 			break;
 		case "wk":
-			moves = knightW.getAllPM(this);
+			moves = knightW.getAllPM(this, false);
 			break;
 		case "wb":
-			moves = bishopW.getAllPM(this);
+			moves = bishopW.getAllPM(this, false);
 			break;
 		case "wr":
-			moves = rookW.getAllPM(this);
+			moves = rookW.getAllPM(this, false);
 			break;
 		case "wq":
-			moves = queenW.getAllPM(this);
+			moves = queenW.getAllPM(this, false);
 			break;
 		case "wK":
-			moves = kingW.getAllPM(this);
+			moves = kingW.getAllPM(this, false);
 			break;
 			
 		case "bA":
-			moves |= pawnB.getAllPM(this);
-			moves |= knightB.getAllPM(this);
-			moves |= bishopB.getAllPM(this);
-			moves |= rookB.getAllPM(this);
-			moves |= queenB.getAllPM(this);
-			moves |= kingB.getAllPM(this);
+			moves |= pawnB.getAllPM(this, false);
+			moves |= knightB.getAllPM(this, false);
+			moves |= bishopB.getAllPM(this, false);
+			moves |= rookB.getAllPM(this, false);
+			moves |= queenB.getAllPM(this, false);
+			moves |= kingB.getAllPM(this, false);
 			break;
 		case "bp":
-			moves = pawnB.getAllPM(this);
+			moves = pawnB.getAllPM(this, false);
 			break;
 		case "bk":
-			moves = knightB.getAllPM(this);
+			moves = knightB.getAllPM(this, false);
 			break;
 		case "bb":
-			moves = bishopB.getAllPM(this);
+			moves = bishopB.getAllPM(this, false);
 			break;
 		case "br":
-			moves = rookB.getAllPM(this);
+			moves = rookB.getAllPM(this, false);
 			break;
 		case "bq":
-			moves = queenB.getAllPM(this);
+			moves = queenB.getAllPM(this, false);
 			break;
 		case "bK":
-			moves = kingB.getAllPM(this);
+			moves = kingB.getAllPM(this, false);
 			break;
 		default:
 			System.out.println("Invalid syntax");

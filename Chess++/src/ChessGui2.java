@@ -1,23 +1,35 @@
 //Kieran Hsieh
 import javax.swing.*;
-import javax.swing.JFrame;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.EOFException;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.*;
 
 import javax.imageio.*;
 import javax.swing.border.Border;
 
-public class ChessGui extends JFrame
+public class ChessGui2 extends JFrame
 {
+	private ObjectOutputStream output;
+	private ObjectInputStream input;
+	private ServerSocket server;
+	private Socket connection;
+	private String message = null;
+	
         public int pawnID = 0;
         public int teamNum = 0;
         public boolean locked = false;
         public Board gameBoard = new Board();
         public int promoButtonClicked = 0;
-        public ChessGui thisGui = this;
+        public ChessGui2 thisGui = this;
 
         private JPanel mainPanel = new JPanel();
         private JPanel mainBoard = new JPanel();
@@ -34,7 +46,7 @@ public class ChessGui extends JFrame
 
         private int[] lastClicked = new int[2];
         ArrayList<ChessSquare> highlighted = new ArrayList<ChessSquare>();
-        public ChessGui()   //Basic Setup
+        public ChessGui2()   //Basic Setup
         {
             gameBoard.standardChess();
 
@@ -46,9 +58,6 @@ public class ChessGui extends JFrame
 
             JMenuBar menu = new MenuBuilder(colors,squares);
             setJMenuBar(menu);
-
-
-
 
             topLabel.setText("White Turn");
             topLabel.setFont(new Font("Serif", Font.BOLD, 20));
@@ -72,7 +81,64 @@ public class ChessGui extends JFrame
             add(rightPanel, BorderLayout.EAST);
             add(mainPanel, BorderLayout.CENTER);
             setVisible(true);
+            
+           startRunning();
         }
+        
+        public void startRunning() {
+    		try {
+    			server = new ServerSocket(6789, 100);
+    			while(true) {
+    				try {
+    			            try {
+    							connection = server.accept();
+    						} catch (IOException e) {
+    							// TODO Auto-generated catch block
+    							e.printStackTrace();
+    						}
+    			            try {
+    			            	output = new ObjectOutputStream(connection.getOutputStream());
+    			            	output.flush();
+    							input = new ObjectInputStream(connection.getInputStream());
+    			            } catch (IOException e) {
+    							// TODO Auto-generated catch block
+    							e.printStackTrace();
+    						}
+    			            readin();
+    				/*} catch(EOFException eofException) {
+    					System.out.println("FDFDDF");*/
+    				}
+    				finally {
+    					System.out.println(connection.getInputStream());
+    				}
+    			}
+    		} catch(IOException ioException) {
+    			ioException.printStackTrace();
+    		}
+    	}
+        
+        private void readin() {
+        	while(true) {
+	    		try {
+					try {
+						message = (String) input.readObject();
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    		if(teamNum == 1 && Board.convertToCoord(message) != -1L) {
+	    			if(gameBoard.makeMove(teamNum, message, false)) {
+	    				teamNum = Math.abs(teamNum - 1);
+	    				updateBoard(gameBoard);
+	    			}
+	    		}
+        	}
+    	}
+        
         //BASIC SETUP HELPER METHODS
         private void sidesSetup()
         {
@@ -164,10 +230,15 @@ public class ChessGui extends JFrame
                                         break;
                                     }
                                 }
-
-                                moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
-
-                                moveMade = gameBoard.makeMove(teamNum, moveString, true);                           //Check to see if a move has been made
+                                
+                                if(teamNum == 0) {
+	                                moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
+	
+	                                moveMade = gameBoard.makeMove(teamNum, moveString, true);                           //Check to see if a move has been made
+                                }
+                                //else if(Board.convertToCoord(message) != -1L) {
+                                	//moveMade = gameBoard.makeMove(teamNum, message, false);
+                                //}
                                 if (moveMade) {
                                     teamNum = Math.abs(teamNum - 1);
                                     String tempString = "";
@@ -177,6 +248,12 @@ public class ChessGui extends JFrame
                                     tempString += " " + actionCommandString.substring(6, spaceIndex);
                                     tempString += " has moved from " + moveString.substring(0, 2) + " to " + moveString.substring(2);
                                     historyPanel.addMove(tempString);
+                                    try {
+                            			output.writeObject(moveString);
+                            			output.flush();
+                            		} catch(IOException ioException) {
+                            			System.out.println("wut");
+                            		}
                                 } else {
                                     String teamString = "";
                                     if (teamNum == 0) {
