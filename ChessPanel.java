@@ -9,6 +9,7 @@ public class ChessPanel extends JPanel
     MainBoardPanel mbp;
     JPanel leftPanel, botPanel;
     public static BufferedImage colors[][] = new BufferedImage[3][6];
+
     public ChessPanel(ChessGui g)
     {
         setUpImages();
