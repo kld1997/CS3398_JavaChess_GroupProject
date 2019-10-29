@@ -21,7 +21,7 @@ public class PawnPromotePanel extends JPanel
             choiceButton.setActionCommand(i + "");
             choiceButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    mp = thisGui.getMainPanel();
+                    mp = (MainBoardPanel)thisGui.getMainPanel();
                     mp.setLocked(false);
                     JButton temp = (JButton) e.getSource();
                     promoButtonClicked = Integer.parseInt(temp.getActionCommand());
