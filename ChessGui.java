@@ -11,7 +11,7 @@ public class ChessGui extends JFrame
     public ChessGui(Board b)
     {
         topPanel = new InfoPanel(this);
-        mainPanel = new ChessPanel(this);
+        mainPanel = new ChessPanel(this, false);
         rightPanel = new HistoryPanel(this);
         mainPanel.getMainPanel().updateBoard();
         rightPanel.pp.setGui(this);
