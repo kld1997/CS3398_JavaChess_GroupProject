@@ -1,62 +1,25 @@
 import javax.swing.*;
+import java.awt.*;
 import java.util.Observer;
 
 //Top Panel of ChessGui
 //Has Labels for time and team.
-public class InfoPanel extends JPanel
+public class InfoPanel extends GenericInfoPanel
 {
-    private int currTeam = 0;
-    private JLabel teamText;
-    public InfoPanel()
+    ChessGui thisGui;
+    public InfoPanel(ChessGui g)
     {
+        thisGui = g;
+        setLayout(new BorderLayout());
         teamText = new JLabel();
+        teamText.setFont(new Font("Serif", Font.BOLD, 20));
+        teamText.setHorizontalAlignment(JLabel.CENTER);
         teamText.setText("White Turn");
-        add(teamText);
+        add(teamText, BorderLayout.CENTER);
     }
-    public int getCurrTeam()
-    {
-        return currTeam;
-    }
-    public void setTeamText(int ct)
-    {
-        if(ct == 1)
-        {
-            teamText.setText("Black Turn");
-        }
-        else
-        {
-            teamText.setText("White Turn");
-        }
-    }
-    public void switchTeam()
-    {
-        currTeam = currTeam==0?1:0;
-        setTeamText(currTeam);
-    }
-    public void setCheck(int t)
-    {
-        /*
-            1 means white is in check
-            else black is in check
-         */
-        if(t == 1)
-        {
-            teamText.setText("Check! White Turn");
-        }
-        else
-        {
-            teamText.setText("Check! BlackTurn");
-        }
-    }
-    public void setWinner(int t)
-    {
-        if(t == 1)
-        {
-            teamText.setText("White team wins!");
-        }
-        else
-        {
-            teamText.setText("Black team wins!");
-        }
+
+    @Override
+    public int getType() {
+        return 0;
     }
 }
