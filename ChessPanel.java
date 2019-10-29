@@ -10,10 +10,10 @@ public class ChessPanel extends JPanel
     JPanel leftPanel, botPanel;
     public static BufferedImage colors[][] = new BufferedImage[3][6];
 
-    public ChessPanel(ChessGui g)
+    public ChessPanel(ChessGui g, boolean plusPlus)
     {
         setUpImages();
-        mbp = new MainBoardPanel(g);
+        mbp = new MainBoardPanel(g, plusPlus);
         leftPanel = new JPanel();
         botPanel = new JPanel();
         setLayout(new BorderLayout());
