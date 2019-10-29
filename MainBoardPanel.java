@@ -16,16 +16,17 @@ import java.util.Vector;
 public class MainBoardPanel extends JPanel
 {
     Board gameBoard = new Board();
-    InfoPanel top;
+    GenericInfoPanel top;
     HistoryPanel right;
     boolean locked = false;
     int pawnID = 0;
-    private ChessSquare[][] squares = new ChessSquare[8][8];
-    private int[] lastClicked = new int[2];
-    private ArrayList<ChessSquare> highlightedSquares = new ArrayList<ChessSquare>();
+    public ChessSquare[][] squares = new ChessSquare[8][8];
+    public int[] lastClicked = new int[2];
+    public ArrayList<ChessSquare> highlightedSquares = new ArrayList<ChessSquare>();
     public static BufferedImage pieces[][] = new BufferedImage[2][6];
 
     ChessGui thisGui;
+    public MainBoardPanel(){}
     public MainBoardPanel(ChessGui g)
     {
         thisGui = g;
@@ -73,6 +74,10 @@ public class MainBoardPanel extends JPanel
                             moveMade = gameBoard.makeMove(teamNum, moveString, true);                           //Check to see if a move has been made
                             if (moveMade)
                             {
+                                if(g.getInfoPanel().getType() == 1)
+                                {
+                                    ((BulletInfoPanel)g.getInfoPanel()).pauseAndSwitch();
+                                }
                                 g.getInfoPanel().switchTeam();
 
                                 String tempString = "";
@@ -134,7 +139,7 @@ public class MainBoardPanel extends JPanel
         ret+= 8-x;
         return ret;
     }
-    private void setUpImages()                                                                                      //Separates consolidated image file into different images
+    public void setUpImages()                                                                                      //Separates consolidated image file into different images
     {
         try
         {
@@ -171,6 +176,8 @@ public class MainBoardPanel extends JPanel
         {
             top.setCheck(0);
         }
+        if(gameBoard.teamWon == 0){ top.setWinner(1); }
+        else if(gameBoard.teamWon == 1){ top.setWinner(0); }
         for(int x = 0; x < 8; x ++)
         {
             for(int y = 0; y < 8; y++)
