@@ -6,8 +6,8 @@ public class BulletInfoPanel extends GenericInfoPanel
 {
     Timer wt, bt;
     JLabel whiteTime, blackTime;
-    BulletChessGui thisGui;
-    public BulletInfoPanel(BulletChessGui g)
+    ChessGui thisGui;
+    public BulletInfoPanel(ChessGui g)
     {
         thisGui = g;
         setLayout(new GridLayout(1, 3));
