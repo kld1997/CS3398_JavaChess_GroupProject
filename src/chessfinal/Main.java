@@ -1,9 +1,13 @@
+
 //Roy Grady
-package chessfinal;
 import java.util.Scanner;
+
 
 class Main {
     public static void main(String[] args) {
-    	new ChessGui();
+
+      Images.setUpImages();
+      Images.readMenuIcons();
+    	new ChessGui(new Board());
     }
 }
