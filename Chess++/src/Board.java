@@ -143,7 +143,6 @@ class Board {
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
 				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
 		
-		//arrayToBitboards(standardChessBoard);
 		setStuff(standardChessBoard);
 	}
 	
@@ -158,7 +157,7 @@ class Board {
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
 				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
 
-		//arrayToBitboards(standardChessBoard);
+		setStuff(standardChessBoard);
 	}
 	
 	public void setStuff(String[][] chessBoard) {
