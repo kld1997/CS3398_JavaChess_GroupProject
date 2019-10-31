@@ -5,6 +5,8 @@ public class Bishop extends Pieces
 	public Bishop(int t) {
 		super(t);
 		value = 3;
+		name = "Bishop";
+		image = Images.pieces[Math.abs(team-1)][4];
 	}
 	
 	public long pieceType(Board board) {

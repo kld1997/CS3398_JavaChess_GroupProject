@@ -5,6 +5,8 @@ public class Pawn extends Pieces
 	public Pawn(int t) {
 		super(t);
 		value = 1;
+		name = "Pawn";
+		image = Images.pieces[Math.abs(team-1)][5];
 	}
 	
 	public long pieceType(Board board) {

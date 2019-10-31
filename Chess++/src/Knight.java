@@ -5,6 +5,8 @@ public class Knight extends Pieces
 	public Knight(int t) {
 		super(t);
 		value = 3;
+		name = "Knight";
+		image = Images.pieces[Math.abs(team-1)][3];
 	}
 	
 	public long pieceType(Board board) {

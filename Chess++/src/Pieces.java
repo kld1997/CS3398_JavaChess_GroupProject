@@ -1,8 +1,12 @@
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
 //Roy Grady
 public abstract class Pieces
 {
 	
 	public int team;
+	public String name;
 	public int value;
 	public long piece;
 	public long moves;
@@ -11,6 +15,7 @@ public abstract class Pieces
 	public int check;
 	public long pinned;
 	public boolean threat = false;
+	public BufferedImage image;
 	
 	public Pieces(int t) {
 		this.team = t;
@@ -19,18 +24,19 @@ public abstract class Pieces
 	
 	public void update(Board board) {
 		
-		piece = pieceType(board);
 		check = board.check[team];
 		enemyPieces = board.teamBB[Math.abs(team-1)];
 		notAlly = board.notTeamBB[team];
 		pinned = board.pinnedBB[team];
 	}
 	
-	public long pieceType(Board board) {
-		if(team == 0)
-			return 0L;
-		else
-			return 0L;
+	public static ArrayList<int[]> bitboardToCoords() {
+		
+		ArrayList coords = new ArrayList<int[]>();
+		
+		
+		
+		return coords;
 	}
 	
 	public long possibleMoves(Board board, long coord, boolean update) {
@@ -52,9 +58,6 @@ public abstract class Pieces
 			else if((coord & pinned) != 0)
 				moves &= Check.pinRestrict(board, coord, team);
 		}	
-		
-		System.out.println(value + ": ");
-		board.displayBitboard(moves);
 	
 		return moves;
 	}

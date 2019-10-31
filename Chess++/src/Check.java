@@ -84,17 +84,11 @@ class Check {														//special check restrictions and pin calculations
 		long king = 0;
 		long cardinals = 0;
 		long ordinals = 0;
+		int notTeam = Math.abs(team-1);
 		
-		if(team == 0) {
-			king = board.kingBB[0];
-			cardinals = board.rooksBB[1] | board.queensBB[1];
-			ordinals = board.bishopsBB[1] | board.queensBB[1];
-		}
-		else {
-			king = board.kingBB[1];
-			cardinals = board.rooksBB[0] | board.queensBB[0];
-			ordinals = board.bishopsBB[0] | board.queensBB[0];
-		}
+		king = board.kingBB[team];
+		cardinals = board.cardinalsBB[notTeam];
+		ordinals = board.ordinalsBB[notTeam];
 		
 		int trail = Long.numberOfTrailingZeros(king);
 		long occ = ~board.empty;
@@ -138,57 +132,45 @@ class Check {														//special check restrictions and pin calculations
         
         threats &= ~(cardinals|ordinals);
         
-		if(team == 0) {
-			board.interfereBB[0] = interfere;
-			board.slideThreatsBB[0] = threats;
-		}
-		else {
-			board.interfereBB[1] = interfere;
-			board.slideThreatsBB[1] = threats;
-		}
+		board.interfereBB[team] = interfere;
+		board.slideThreatsBB[team] = threats;
+		
 	}
 	
 	static public void getPinned(Board board) {
 		
-		board.pinnedBB[1] = 0L;
-		board.pinnersBB[0] = 0L;
-		board.interfereBB[1] = 0L;
-		board.pinnedBB[0] = 0L;
-		board.pinnersBB[1] = 0L;
-		board.interfereBB[0] = 0L;
+		int noti;
+		for(int i = 0; i < board.teamNum; i++) {
+			noti = Math.abs(i-1);
+			board.pinnedBB[i] = 0L;
+			board.pinnersBB[i] = Moves.xrayHV(~board.empty, board.kingBB[noti], board.teamBB[noti]) & board.cardinalsBB[i]
+					| Moves.xrayDX(~board.empty, board.kingBB[noti], board.teamBB[noti]) & board.ordinalsBB[i];
+			board.interfereBB[i] = 0L;
+		}
+
 		long coord = 0L;
 		long temp = 0L;
 		int pinPos = 0;
 
-		board.pinnersBB[0] |= Moves.xrayHV(~board.empty, board.kingBB[1], board.teamBB[1]) & (board.rooksBB[0] | board.queensBB[0]);
+		/*board.pinnersBB[0] |= Moves.xrayHV(~board.empty, board.kingBB[1], board.teamBB[1]) & (board.rooksBB[0] | board.queensBB[0]);
 		board.pinnersBB[0] |= Moves.xrayDX(~board.empty, board.kingBB[1], board.teamBB[1]) & (board.bishopsBB[0] | board.queensBB[0]);
 		board.pinnersBB[1] |= Moves.xrayHV(~board.empty, board.kingBB[0], board.teamBB[0]) & (board.rooksBB[1] | board.queensBB[1]);
-		board.pinnersBB[1] |= Moves.xrayDX(~board.empty, board.kingBB[0], board.teamBB[0]) & (board.bishopsBB[1] | board.queensBB[1]);
+		board.pinnersBB[1] |= Moves.xrayDX(~board.empty, board.kingBB[0], board.teamBB[0]) & (board.bishopsBB[1] | board.queensBB[1]);*/
 		
-		temp = board.pinnersBB[0];
-		
-		while(temp != 0) {
+		for(int i = 0; i < board.teamNum; i++) {
+			noti = Math.abs(i-1);
 			
-			pinPos = Long.numberOfTrailingZeros(temp);
-			coord = 1L<<pinPos;
-			
-			board.pinnedBB[1] |= Check.obstruct(coord, board.kingBB[1]) & (board.teamBB[1]&~board.kingBB[1]);
-			
-			temp &= temp - 1;
+			temp = board.pinnersBB[i];
+			while(temp != 0) {
+				
+				pinPos = Long.numberOfTrailingZeros(temp);
+				coord = 1L<<pinPos;
+				
+				board.pinnedBB[noti] |= Check.obstruct(coord, board.kingBB[noti]) & (board.teamBB[noti]&~board.kingBB[noti]);
+				
+				temp &= temp - 1;
+			}
 		}
-
-		temp = board.pinnersBB[1];
-		
-		while(temp != 0) {
-			
-			pinPos = Long.numberOfTrailingZeros(temp);
-			coord = 1L<<pinPos;
-			
-			board.pinnedBB[0] |= Check.obstruct(coord, board.kingBB[0]) & (board.teamBB[0]&~board.kingBB[0]);
-			
-			temp &= temp - 1;
-		}
-		
 	}
 	
 }

@@ -3,11 +3,13 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 class Board {
 	
 	int teamNum = 2;
-	int pieceNum = 6;
+	int pieceNum = 7;
 	
 	// pieces
 	long[] kingBB = new long[teamNum];
@@ -18,7 +20,12 @@ class Board {
 	long[] pawnsBB = new long[teamNum];	
 	long[] teamBB = new long[teamNum];
 	
-	long[][] pieceBBArr = {kingBB, queensBB, rooksBB, bishopsBB, knightsBB, pawnsBB};
+	long[] wallsBB = new long[teamNum];
+	
+	long[] cardinalsBB = new long[teamNum];
+	long[] ordinalsBB = new long[teamNum];
+	
+	List<long[]> pieceBBList;
 	
 	//king and sliders
 	long[] pinnersBB = new long[teamNum];
@@ -78,77 +85,71 @@ class Board {
 		0x804020100000000L, 0x402010000000000L, 0x201000000000000L, 0x100000000000000L
 	};
 	
-	Pawn pawnW = new Pawn(0);
-	Pawn pawnB = new Pawn(1);
+	Pawn pawnW;
+	Pawn pawnB;
 	
-	Knight knightW = new Knight(0);
-	Knight knightB = new Knight(1);
+	Wall wallW;
+	Wall wallB;
 	
-	Bishop bishopW = new Bishop(0);
-	Bishop bishopB = new Bishop(1);
+	Knight knightW;
+	Knight knightB;
 	
-	Rook rookW = new Rook(0);
-	Rook rookB = new Rook(1);
+	Bishop bishopW;
+	Bishop bishopB;
 	
-	Queen queenW = new Queen(0);
-	Queen queenB = new Queen(1);
+	Rook rookW;
+	Rook rookB;
 	
-	King kingW = new King(0);
-	King kingB = new King(1);
+	Queen queenW;
+	Queen queenB;
 	
-	Pieces[][] pieceArr = {{pawnW, knightW, bishopW, rookW, queenW, kingW}, {pawnB, knightB, bishopB, rookB, queenB, kingB}};
+	King kingW;
+	King kingB;
+	
+	List<List<Pieces>> pieceList;
+	List<List<Pieces>> cardinalList;
+	List<List<Pieces>> ordinalList;
 	
 	public Board() {                                                   //initializes all of the bitboards
 		
+		pieceBBList = new ArrayList<long[]>();
+		pieceList = new ArrayList<List<Pieces>>();
+		cardinalList = new ArrayList<List<Pieces>>();
+		ordinalList = new ArrayList<List<Pieces>>();
+		
 		for(int i = 0; i < teamNum; i++) {
-			this.kingBB[i] = 0;
-			this.queensBB[i] = 0;
-			this.rooksBB[i] = 0;
-			this.bishopsBB[i] = 0;
-			this.knightsBB[i] = 0;
-			this.pawnsBB[i] = 0;
-			this.teamBB[i] = 0;
-			this.notTeamBB[i] = 0;
+			kingBB[i] = 0L;
+			queensBB[i] = 0L;
+			rooksBB[i] = 0L;
+			bishopsBB[i] = 0L;
+			knightsBB[i] = 0L;
+			pawnsBB[i] = 0L;
+			teamBB[i] = 0L;
+			notTeamBB[i] = 0;
 			
-			this.pinnersBB[i] = 0;
-			this.pinnedBB[i] = 0;
-			this.interfereBB[i] = 0;
-			this.slideThreatsBB[i] = 0;
+			pinnersBB[i] = 0;
+			pinnedBB[i] = 0;
+			interfereBB[i] = 0;
+			slideThreatsBB[i] = 0;
 			
-			this.threatenBB[i] = 0;
-			this.allPMBB[i] = 0;
-			this.kThreatsBB[i] = 0;
-			this.check[i] = 0;
-			this.epBB[i] = 0;
+			threatenBB[i] = 0;
+			allPMBB[i] = 0;
+			kThreatsBB[i] = 0;
+			check[i] = 0;
+			epBB[i] = 0;
 			
-			/*this.pieceBBArr[i][0] = this.pawnsBB[i];
-			this.pieceBBArr[i][1] = this.knightsBB[i];
-			this.pieceBBArr[i][2] = this.bishopsBB[i];
-			this.pieceBBArr[i][3] = this.rooksBB[i];
-			this.pieceBBArr[i][4] = this.queensBB[i];
-			this.pieceBBArr[i][5] = this.kingBB[i];*/
+			wallsBB[i] = 0L;
+			
+			cardinalsBB[i] = 0L;
+			ordinalsBB[i] = 0L;
 		}
 		
-		/*pieceArr[0][0] = pawnW;
-		pieceArr[0][1] = knightW;
-		pieceArr[0][2] = bishopW;
-		pieceArr[0][3] = rookW;
-		pieceArr[0][4] = queenW;
-		pieceArr[0][5] = kingW;
+		empty = 0;
 		
-		pieceArr[1][0] = pawnB;
-		pieceArr[1][1] = knightB;
-		pieceArr[1][2] = bishopB;
-		pieceArr[1][3] = rookB;
-		pieceArr[1][4] = queenB;
-		pieceArr[1][5] = kingB;*/
-
-		this.empty = 0;
+		kingMoved = 0x1000000000000010L;
+		rookMoved = 0x8100000000000081L;
 		
-		this.kingMoved = 0x1000000000000010L;
-		this.rookMoved = 0x8100000000000081L;
-		
-		this.teamWon = 2;
+		teamWon = 2;
 		
 		//currentState();
 	}
@@ -165,7 +166,112 @@ class Board {
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
 				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
 		
-		arrayToBitboards(standardChessBoard);
+		//arrayToBitboards(standardChessBoard);
+		setStuff(standardChessBoard);
+	}
+	
+	public void chessPlusPlus() {
+		String standardChessBoard[][] = {
+				{"br","bk","bb","bq","bK","bb","bk","br"},
+				{"bp","bp","bp","bp","bp","bp","bp","bp"},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"wW","  ","wW","  ","wW","  ","wW","  "},
+				{"  ","bW","  ","bW","  ","bW","  ","bW"},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"wp","wp","wp","wp","wp","wp","wp","wp"},
+				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
+
+		//arrayToBitboards(standardChessBoard);
+	}
+	
+	public void setStuff(String[][] chessBoard) {
+		
+		pieceList = PieceInit.pieceInit(chessBoard);
+		
+		List<Pieces> cardinal1 = new ArrayList<Pieces>();
+		List<Pieces> cardinal2 = new ArrayList<Pieces>();
+		
+		List<Pieces> ordinal1 = new ArrayList<Pieces>();
+		List<Pieces> ordinal2 = new ArrayList<Pieces>();
+		
+		for(int i = 0; i < teamNum; i++) {	
+			for(Pieces piece : pieceList.get(i)) {
+				if(piece.name.equals("Pawn")) {
+					if(i==0)
+					pawnW = (Pawn) piece;
+				else
+					pawnB = (Pawn) piece;
+					pawnsBB[i] = piece.piece;
+				}
+				else if(piece.name.equals("Knight")) {
+					if(i==0)
+						knightW = (Knight) piece;
+					else
+						knightB = (Knight) piece;
+					knightsBB[i] = piece.piece;
+				}
+				else if(piece.name.equals("Bishop")) {
+					if(i==0) {
+						bishopW = (Bishop) piece;
+						ordinal1.add(piece);
+					}
+					else {
+						bishopB = (Bishop) piece;
+						ordinal2.add(piece);
+					}
+					bishopsBB[i] = piece.piece;
+				}
+				else if(piece.name.equals("Rook")) {
+					if(i==0) {
+						rookW = (Rook) piece;
+						cardinal1.add(piece);
+					}
+					else {
+						rookB = (Rook) piece;
+						cardinal2.add(piece);
+						}
+					rooksBB[i] = piece.piece;
+				}
+				else if(piece.name.equals("Queen")) {
+					if(i==0) {
+						queenW = (Queen) piece;
+						cardinal1.add(piece);
+						ordinal1.add(piece);
+					}
+					else {
+						queenB = (Queen) piece;
+						cardinal2.add(piece);
+						ordinal2.add(piece);
+						}
+					queensBB[i] = piece.piece;
+					
+				}
+				else if(piece.name.equals("King")) {
+					if(i==0)
+						kingW = (King) piece;
+					else
+						kingB = (King) piece;
+					kingBB[i] = piece.piece;
+				}
+			}
+		}
+		
+		cardinalList.add(cardinal1);
+		cardinalList.add(cardinal2);
+		
+		ordinalList.add(ordinal1);
+		ordinalList.add(ordinal2);
+		
+		pieceBBList.add(pawnsBB);
+		pieceBBList.add(knightsBB);
+		pieceBBList.add(bishopsBB);
+		pieceBBList.add(rooksBB);
+		pieceBBList.add(queensBB);
+		pieceBBList.add(kingBB);
+		pieceBBList.add(wallsBB);
+
+		currentState();
+		
 	}
 	
 	public void arrayToBitboards(String[][] chessBoard) {                   //turns an array representation of a chessboard into bitboards for each piece
@@ -175,30 +281,34 @@ class Board {
             Binary="0000000000000000000000000000000000000000000000000000000000000000";
             Binary=Binary.substring(i+1)+"1"+Binary.substring(0, i);
             switch (chessBoard[i/8][i%8]) {
-                case "wp": this.pawnsBB[0] += convertStringToBitboard(Binary);
+                case "wp": pawnsBB[0] += convertStringToBitboard(Binary);
                     break;
-                case "wk": this.knightsBB[0] += convertStringToBitboard(Binary);
+                case "wk": knightsBB[0] += convertStringToBitboard(Binary);
                     break;
-                case "wb": this.bishopsBB[0] += convertStringToBitboard(Binary);
+                case "wb": bishopsBB[0] += convertStringToBitboard(Binary);
                     break;
-                case "wr": this.rooksBB[0] += convertStringToBitboard(Binary);
+                case "wr": rooksBB[0] += convertStringToBitboard(Binary);
                     break;
-                case "wq": this.queensBB[0] += convertStringToBitboard(Binary);
+                case "wq": queensBB[0] += convertStringToBitboard(Binary);
                     break;
-                case "wK": this.kingBB[0] += convertStringToBitboard(Binary);
+                case "wK": kingBB[0] += convertStringToBitboard(Binary);
                     break;
-                case "bp": this.pawnsBB[1] += convertStringToBitboard(Binary);
+                case "wW": wallsBB[0] += convertStringToBitboard(Binary);
+            		break;
+                case "bp": pawnsBB[1] += convertStringToBitboard(Binary);
                     break;
-                case "bk": this.knightsBB[1] += convertStringToBitboard(Binary);
+                case "bk": knightsBB[1] += convertStringToBitboard(Binary);
                     break;
-                case "bb": this.bishopsBB[1] += convertStringToBitboard(Binary);
+                case "bb": bishopsBB[1] += convertStringToBitboard(Binary);
                     break;
-                case "br": this.rooksBB[1] += convertStringToBitboard(Binary);
+                case "br": rooksBB[1] += convertStringToBitboard(Binary);
                     break;
-                case "bq": this.queensBB[1] += convertStringToBitboard(Binary);
+                case "bq": queensBB[1] += convertStringToBitboard(Binary);
                     break;
-                case "bK": this.kingBB[1] += convertStringToBitboard(Binary);
+                case "bK": kingBB[1] += convertStringToBitboard(Binary);
                     break;
+                case "bW": wallsBB[1] += convertStringToBitboard(Binary);
+                	break;
             }
         }
         
@@ -216,16 +326,37 @@ class Board {
 	
 	public void currentState() {
 		
-		check[0] = 0;
-		check[1] = 0;
+		//check[0] = 0;
+		//check[1] = 0;
+		kingBB[0] = kingW.piece;
+		kingBB[1] = kingB.piece;
 		
-		this.teamBB[0] = queensBB[0]|rooksBB[0]|knightsBB[0]|bishopsBB[0]|pawnsBB[0]|kingBB[0];
-		this.teamBB[1] = queensBB[1]|rooksBB[1]|knightsBB[1]|bishopsBB[1]|pawnsBB[1]|kingBB[1];
+		for(int i = 0; i < teamNum; i++) {
+			check[i] = 0;
+			teamBB[i] = 0L;
+			cardinalsBB[i] = 0L;
+			ordinalsBB[i] = 0L;
+			
+			for(Pieces piece : pieceList.get(i)) {
+				teamBB[i] |= piece.piece;
+			}
+			
+			for(Pieces piece : cardinalList.get(i)) {
+				cardinalsBB[i] |= piece.piece;
+			}
+
+			for(Pieces piece : ordinalList.get(i)) {
+				ordinalsBB[i] |= piece.piece;
+			}
+		}
+
+		//teamBB[0] = queensBB[0]|rooksBB[0]|knightsBB[0]|bishopsBB[0]|pawnsBB[0]|kingBB[0]|wallsBB[0];
+		//teamBB[1] = queensBB[1]|rooksBB[1]|knightsBB[1]|bishopsBB[1]|pawnsBB[1]|kingBB[1]|wallsBB[1];
 		
-		this.notTeamBB[0] = ~(teamBB[0]);
-		this.notTeamBB[1] = ~(teamBB[1]);
+		notTeamBB[0] = ~(teamBB[0]);
+		notTeamBB[1] = ~(teamBB[1]);
 		
-		this.empty = ~(teamBB[0]|teamBB[1]);
+		empty = ~(teamBB[0]|teamBB[1]);
 		
 		pieceMoved();
 		
@@ -239,9 +370,13 @@ class Board {
 
 		checkmate();
 		
-		if(((this.pawnsBB[0]&row8)|(this.pawnsBB[1]&row1)) != 0) {
+		if(((pawnsBB[0]&row8)|(pawnsBB[1]&row1)) != 0) {
 			PawnPromote.pawnPromotion(this);
-		}
+		} 
+		
+		displayBitboard(cardinalsBB[0]);
+		System.out.println("ee");
+		displayBitboard(cardinalsBB[1]);
 
 	}
 	
@@ -260,8 +395,8 @@ class Board {
 		for(int i = 0; i < teamNum; i++) {
 			allPMBB[i] = 0;
 			
-			for(int j = 0; j < pieceNum; j++) {
-				allPMBB[i] |= pieceArr[i][j].getAllPM(this, false);
+			for(Pieces piece : pieceList.get(i)) {
+				allPMBB[i] |= piece.getAllPM(this, false);
 			}
 			
 			if(allPMBB[i] == 0) {
@@ -283,69 +418,14 @@ class Board {
 			currentThreat = 0;
 			noti = Math.abs(i-1);
 			
-			for(int j = 0; j < pieceNum; j++) {
-				currentThreat = pieceArr[i][j].getAllPM(this, true);
+			for(Pieces piece : pieceList.get(i)) {
+				currentThreat = piece.getAllPM(this, true);
 				threatenBB[i] |= currentThreat;
-				if((currentThreat&this.kingBB[noti]) != 0) {
-					kThreatsBB[noti] |= pieceArr[i][j].threatPos(this, this.kingBB[noti]);
+				if((currentThreat&kingBB[noti]) != 0) {
+					kThreatsBB[noti] |= piece.threatPos(this, kingBB[noti]);
 				}
 			}
 		}
-		/*whiteThreaten = 
-				pawnW.getAllPM(this, true)|knightW.getAllPM(this, true)|bishopW.getAllPM(this, true)|
-				rookW.getAllPM(this, true)|queenW.getAllPM(this, true)|kingW.getAllPM(this, true);
-		
-		if((whiteThreaten&this.kingBB[1]) != 0) {
-			bKThreats = 0;
-			if((this.kingBB[1]&pawnW.getAllPM(this, true)) != 0) {
-				bKThreats |= pawnW.threatPos(this, this.kingBB[1]);
-			}
-			if((this.kingBB[1]&knightW.getAllPM(this, true)) != 0) {
-				bKThreats |= knightW.threatPos(this, this.kingBB[1]);
-			}
-			if((this.kingBB[1]&bishopW.getAllPM(this, true)) != 0) {
-				bKThreats |= bishopW.threatPos(this, this.kingBB[1]);
-			}
-			if((this.kingBB[1]&rookW.getAllPM(this, true)) != 0) {
-				bKThreats |= rookW.threatPos(this, this.kingBB[1]);
-			}
-			if((this.kingBB[1]&queenW.getAllPM(this, true)) != 0) {
-				bKThreats |= queenW.threatPos(this, this.kingBB[1]);
-			}
-			if((this.kingBB[1]&kingW.getAllPM(this, true)) != 0) {
-				bKThreats |= kingW.threatPos(this, this.kingBB[1]);
-			}
-		}
-		else
-			blackCheck = 0;
-		
-		blackThreaten = 
-				pawnB.getAllPM(this, true)|knightB.getAllPM(this, true)|bishopB.getAllPM(this, true)|
-				rookB.getAllPM(this, true)|queenB.getAllPM(this, true)|kingB.getAllPM(this, true);
-
-		if((blackThreaten&this.kingBB[0]) != 0) {
-			wKThreats = 0;
-			if((this.kingBB[0]&pawnB.getAllPM(this, true)) != 0) {
-				wKThreats |= pawnB.threatPos(this, this.kingBB[0]);
-			}
-			if((this.kingBB[0]&knightB.getAllPM(this, true)) != 0) {
-				wKThreats |= knightB.threatPos(this, this.kingBB[0]);
-			}
-			if((this.kingBB[0]&bishopB.getAllPM(this, true)) != 0) {
-				wKThreats |= bishopB.threatPos(this, this.kingBB[0]);
-			}
-			if((this.kingBB[0]&rookB.getAllPM(this, true)) != 0) {
-				wKThreats |= rookB.threatPos(this, this.kingBB[0]);
-			}
-			if((this.kingBB[0]&queenB.getAllPM(this, true)) != 0) {
-				wKThreats |= queenB.threatPos(this, this.kingBB[0]);
-			}
-			if((this.kingBB[0]&kingB.getAllPM(this, true)) != 0) {
-				wKThreats |= kingB.threatPos(this, this.kingBB[0]);
-			}
-		}
-		else
-			whiteCheck = 0;*/
 	}
 	
 	public void displayArray() {
@@ -363,31 +443,31 @@ class Board {
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {
 				//white pieces
-				if(((this.kingBB[0]>>(i*8)+j)&1) == 1)
+				if(((kingBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wK";
-				else if(((this.queensBB[0]>>(i*8)+j)&1) == 1)
+				else if(((queensBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wq";
-				else if(((this.rooksBB[0]>>(i*8)+j)&1) == 1)
+				else if(((rooksBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wr";
-				else if(((this.knightsBB[0]>>(i*8)+j)&1) == 1)
+				else if(((knightsBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wk";
-				else if(((this.bishopsBB[0]>>(i*8)+j)&1) == 1)
+				else if(((bishopsBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wb";
-				else if(((this.pawnsBB[0]>>(i*8)+j)&1) == 1)
+				else if(((pawnsBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wp";
 				
 				//black pieces
-				else if(((this.kingBB[1]>>(i*8)+j)&1) == 1)
+				else if(((kingBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bK";
-				else if(((this.queensBB[1]>>(i*8)+j)&1) == 1)
+				else if(((queensBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bq";
-				else if(((this.rooksBB[1]>>(i*8)+j)&1) == 1)
+				else if(((rooksBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "br";
-				else if(((this.knightsBB[1]>>(i*8)+j)&1) == 1)
+				else if(((knightsBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bk";
-				else if(((this.bishopsBB[1]>>(i*8)+j)&1) == 1)
+				else if(((bishopsBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bb";
-				else if(((this.pawnsBB[1]>>(i*8)+j)&1) == 1)
+				else if(((pawnsBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bp";
 			}
 		}
@@ -420,31 +500,31 @@ class Board {
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {
 				//white pieces
-				if(((this.kingBB[0]>>(i*8)+j)&1) == 1)
+				if(((kingBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wK";
-				else if(((this.queensBB[0]>>(i*8)+j)&1) == 1)
+				else if(((queensBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wq";
-				else if(((this.rooksBB[0]>>(i*8)+j)&1) == 1)
+				else if(((rooksBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wr";
-				else if(((this.knightsBB[0]>>(i*8)+j)&1) == 1)
+				else if(((knightsBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wk";
-				else if(((this.bishopsBB[0]>>(i*8)+j)&1) == 1)
+				else if(((bishopsBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wb";
-				else if(((this.pawnsBB[0]>>(i*8)+j)&1) == 1)
+				else if(((pawnsBB[0]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "wp";
 				
 				//black pieces
-				else if(((this.kingBB[1]>>(i*8)+j)&1) == 1)
+				else if(((kingBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bK";
-				else if(((this.queensBB[1]>>(i*8)+j)&1) == 1)
+				else if(((queensBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bq";
-				else if(((this.rooksBB[1]>>(i*8)+j)&1) == 1)
+				else if(((rooksBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "br";
-				else if(((this.knightsBB[1]>>(i*8)+j)&1) == 1)
+				else if(((knightsBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bk";
-				else if(((this.bishopsBB[1]>>(i*8)+j)&1) == 1)
+				else if(((bishopsBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bb";
-				else if(((this.pawnsBB[1]>>(i*8)+j)&1) == 1)
+				else if(((pawnsBB[1]>>(i*8)+j)&1) == 1)
 					displayChessBoard[i][j] = "bp";
 			}
 		}
@@ -466,45 +546,13 @@ class Board {
 	}
 	
 	public void removePiece(long coord) {
-		/*if((this.teamBB[0]&coord) != 0) {
-			if((this.pawnsBB[0]&coord) != 0) {
-				this.pawnsBB[0] = this.pawnsBB[0]^coord;
-			}
-			else if((this.bishopsBB[0]&coord) != 0) {
-				this.bishopsBB[0] = this.bishopsBB[0]^coord;
-			}
-			else if((this.knightsBB[0]&coord) != 0) {
-				this.knightsBB[0] = this.knightsBB[0]^coord;
-			}
-			else if((this.rooksBB[0]&coord) != 0) {
-				this.rooksBB[0] = this.rooksBB[0]^coord;
-			}
-			else if((this.queensBB[0]&coord) != 0) {
-				this.queensBB[0] = this.queensBB[0]^coord;
-			}
-		}
-		else if((this.teamBB[1]&coord) != 0) {
-			if((this.pawnsBB[1]&coord) != 0) {
-				this.pawnsBB[1] = this.pawnsBB[1]^coord;
-			}
-			else if((this.bishopsBB[1]&coord) != 0) {
-				this.bishopsBB[1] = this.bishopsBB[1]^coord;
-			}
-			else if((this.knightsBB[1]&coord) != 0) {
-				this.knightsBB[1] = this.knightsBB[1]^coord;
-			}
-			else if((this.rooksBB[1]&coord) != 0) {
-				this.rooksBB[1] = this.rooksBB[1]^coord;
-			}
-			else if((this.queensBB[1]&coord) != 0) {
-				this.queensBB[1] = this.queensBB[1]^coord;
-			}
-		}*/
+		
 		for(int i = 0; i < teamNum; i++) {
-			if((this.teamBB[i]&coord) != 0) {
-				for(int j = 0; j < pieceNum; j++) {
-					if((pieceBBArr[j][i]&coord) != 0) {
-						pieceBBArr[j][i] ^= coord;
+			if((teamBB[i]&coord) != 0) {
+				for(Pieces piece : pieceList.get(i)) {
+					if((piece.piece&coord) != 0) {
+						piece.piece &= ~coord;
+						return;
 					}
 				}
 			}
@@ -548,6 +596,32 @@ class Board {
 		return coord;
 	}
 	
+	public void enPassant(long coord1, long coord2, int team) {
+		
+		if(team == 0) {
+			if(coord2 == coord1>>16)
+				epBB[0] |= coord1>>8;
+			else if((coord2&epBB[1]) != 0)
+				removePiece(coord2<<8);
+		}
+		else {
+			if(coord2 == coord1<<16)
+				epBB[1] |= coord1<<8;
+			else if((coord2&epBB[0]) != 0)
+				removePiece(coord2>>8);
+		}
+	}
+	
+	public void castle(long coord1, long coord2, int team) {
+		
+		if(coord2 == coord1<<2) {
+			rooksBB[team] ^= coord2>>1|(rooksBB[team]&(rookMoved&~(coord1-1)));
+		}
+		else if(coord2 == coord1>>2) {
+			rooksBB[team] ^= coord2<<1|(rooksBB[team]&(rookMoved&(coord1-1)));
+		}
+	}
+	
 	public boolean makeMove(int team, String pos, boolean checked) {
 		
 		long coord1 = convertToCoord(pos.substring(0,2));
@@ -555,11 +629,34 @@ class Board {
 		
 		boolean valid = false;
 		
-		if(team == 0 && (coord1&this.teamBB[0]) != 0) {
-			if((coord1&this.pawnsBB[0]) != 0) {
+		if((coord1&teamBB[team]) != 0) {
+			for(Pieces piece : pieceList.get(team)) {	
+				if((coord1&piece.piece) != 0) {
+					valid = piece.movePiece(this, coord1, coord2, checked);
+					
+					if(valid) {
+						if(piece.name == "Pawn") {
+							enPassant(coord1, coord2, team);
+						}
+						else if(piece.name == "King") {
+							castle(coord1, coord2, team);
+						}
+						
+						epBB[Math.abs(team-1)] = 0;
+						currentState();
+						break;
+					}
+				}
+			}
+		}
+		
+		return valid;
+		
+		/*if(team == 0 && (coord1&teamBB[0]) != 0) {
+			if((coord1&pawnsBB[0]) != 0) {
 				valid = pawnW.movePiece(this, coord1, coord2, checked);
 				if(valid) {
-					this.pawnsBB[0] = pawnW.piece;
+					pawnsBB[0] = pawnW.piece;
 					
 					if(coord2 == coord1>>16)
 						epBB[0] |= coord1>>8;
@@ -567,36 +664,36 @@ class Board {
 						removePiece(coord2<<8); 
 				}
 			}
-			else if((coord1&this.knightsBB[0]) != 0) {
+			else if((coord1&knightsBB[0]) != 0) {
 				valid = knightW.movePiece(this, coord1, coord2, checked);
 				if(valid)
-					this.knightsBB[0] = knightW.piece;
+					knightsBB[0] = knightW.piece;
 			}
-			else if((coord1&this.bishopsBB[0]) != 0) {
+			else if((coord1&bishopsBB[0]) != 0) {
 				valid = bishopW.movePiece(this, coord1, coord2, checked);
 				if(valid)
-					this.bishopsBB[0] = bishopW.piece;
+					bishopsBB[0] = bishopW.piece;
 			}
-			else if((coord1&this.rooksBB[0]) != 0) {
+			else if((coord1&rooksBB[0]) != 0) {
 				valid = rookW.movePiece(this, coord1, coord2, checked);
 				if(valid)
-					this.rooksBB[0] = rookW.piece;
+					rooksBB[0] = rookW.piece;
 			}
-			else if((coord1&this.queensBB[0]) != 0) {
+			else if((coord1&queensBB[0]) != 0) {
 				valid = queenW.movePiece(this, coord1, coord2, checked);
 				if(valid)
-					this.queensBB[0] = queenW.piece;
+					queensBB[0] = queenW.piece;
 			}
-			else if((coord1&this.kingBB[0]) != 0) {
+			else if((coord1&kingBB[0]) != 0) {
 				valid = kingW.movePiece(this, coord1, coord2, checked);
 				if(valid) {
-					this.kingBB[0] = kingW.piece;
+					kingBB[0] = kingW.piece;
 					
 					if(coord2 == coord1<<2) {
-						this.rooksBB[0] ^= coord2>>1|(this.rooksBB[0]&(this.rookMoved&~(coord1-1)));
+						rooksBB[0] ^= coord2>>1|(rooksBB[0]&(rookMoved&~(coord1-1)));
 					}
 					else if(coord2 == coord1>>2) {
-						this.rooksBB[0] ^= coord2<<1|(this.rooksBB[0]&(this.rookMoved&(coord1-1)));
+						rooksBB[0] ^= coord2<<1|(rooksBB[0]&(rookMoved&(coord1-1)));
 					}
 				}
 			}
@@ -604,11 +701,11 @@ class Board {
 			if(valid)
 				epBB[1] = 0;
 		}
-		else if(team == 1 && (coord1&this.teamBB[1]) != 0) {
-			if((coord1&this.pawnsBB[1]) != 0) {
+		else if(team == 1 && (coord1&teamBB[1]) != 0) {
+			if((coord1&pawnsBB[1]) != 0) {
 				valid = pawnB.movePiece(this, coord1, coord2, checked);
 				if(valid) {
-					this.pawnsBB[1] = pawnB.piece;
+					pawnsBB[1] = pawnB.piece;
 					
 					if(coord2 == coord1<<16)
 						epBB[1] |= coord1<<8;
@@ -616,36 +713,36 @@ class Board {
 						removePiece(coord2>>8);
 				}
 			}
-			else if((coord1&this.knightsBB[1]) != 0) {
+			else if((coord1&knightsBB[1]) != 0) {
 				valid = knightB.movePiece(this, coord1, coord2, checked);
 				if(valid)
-					this.knightsBB[1] = knightB.piece;
+					knightsBB[1] = knightB.piece;
 			}
-			else if((coord1&this.bishopsBB[1]) != 0) {
+			else if((coord1&bishopsBB[1]) != 0) {
 				valid = bishopB.movePiece(this, coord1, coord2, checked);
 				if(valid)
-					this.bishopsBB[1] = bishopB.piece;
+					bishopsBB[1] = bishopB.piece;
 			}
-			else if((coord1&this.rooksBB[1]) != 0) {
+			else if((coord1&rooksBB[1]) != 0) {
 				valid = rookB.movePiece(this, coord1, coord2, checked);
 				if(valid)
-					this.rooksBB[1] = rookB.piece;
+					rooksBB[1] = rookB.piece;
 			}
-			else if((coord1&this.queensBB[1]) != 0) {
+			else if((coord1&queensBB[1]) != 0) {
 				valid = queenB.movePiece(this, coord1, coord2, checked);
 				if(valid)
-					this.queensBB[1] = queenB.piece;
+					queensBB[1] = queenB.piece;
 			}
-			else if((coord1&this.kingBB[1]) != 0) {
+			else if((coord1&kingBB[1]) != 0) {
 				valid = kingB.movePiece(this, coord1, coord2, checked);
 				if(valid) {
-					this.kingBB[1] = kingB.piece;
+					kingBB[1] = kingB.piece;
 					
 					if(coord2 == coord1<<2) {
-						this.rooksBB[1] ^= coord2>>1|(this.rooksBB[1]&(this.rookMoved&~(coord1-1)));
+						rooksBB[1] ^= coord2>>1|(rooksBB[1]&(rookMoved&~(coord1-1)));
 					}
 					else if(coord2 == coord1>>2) {
-						this.rooksBB[1] ^= coord2<<1|(this.rooksBB[1]&(this.rookMoved&(coord1-1)));
+						rooksBB[1] ^= coord2<<1|(rooksBB[1]&(rookMoved&(coord1-1)));
 					}
 				}
 			}
@@ -656,7 +753,7 @@ class Board {
 		if(valid)
 			currentState();
 		
-		return valid;
+		return valid;*/
 	}
 	
 	public long showMoves(String pos) {
@@ -664,51 +761,18 @@ class Board {
 		long coord = convertToCoord(pos);
 		long moves = 0L;
 		
-		if((coord&(this.teamBB[0]|this.kingBB[0])) != 0) {
-			if((coord&this.pawnsBB[0]) != 0) {
-				moves = pawnW.possibleMoves(this, coord, true);
-			}
-			else if((coord&this.knightsBB[0]) != 0) {
-				moves = knightW.possibleMoves(this, coord, true);
-			}
-			else if((coord&this.bishopsBB[0]) != 0) {
-				moves = bishopW.possibleMoves(this, coord, true);
-			}
-			else if((coord&this.rooksBB[0]) != 0) {
-				moves = rookW.possibleMoves(this, coord, true);
-			}
-			else if((coord&this.queensBB[0]) != 0) {
-				moves = queenW.possibleMoves(this, coord, true);
-			}
-			else if((coord&this.kingBB[0]) != 0) {
-				moves = kingW.possibleMoves(this, coord, true);
+		for(int i = 0; i < teamNum; i++) {
+			if((coord&teamBB[i]) != 0) {
+				for(Pieces piece : pieceList.get(i)) {
+					if((coord&piece.piece) != 0)
+						return piece.possibleMoves(this, coord, true);
+				}
 			}
 		}
-		else if((coord&(this.teamBB[1]|this.kingBB[1])) != 0) {
-			if((coord&this.pawnsBB[1]) != 0) {
-				moves = pawnB.possibleMoves(this, coord, true);
-			}
-			else if((coord&this.knightsBB[1]) != 0) {
-				moves = knightB.possibleMoves(this, coord, true);
-			}
-			else if((coord&this.bishopsBB[1]) != 0) {
-				moves = bishopB.possibleMoves(this, coord, true);
-			}
-			else if((coord&this.rooksBB[1]) != 0) {
-				moves = rookB.possibleMoves(this, coord, true);
-			}
-			else if((coord&this.queensBB[1]) != 0) {
-				moves = queenB.possibleMoves(this, coord, true);
-			}
-			else if((coord&this.kingBB[1]) != 0) {
-				moves = kingB.possibleMoves(this, coord, true);
-			}
-		}
-		
-		return moves;
+		return 0L;
 	}
 	
-	public long showAllMoves(String type) {
+	/*public long showAllMoves(String type) {
 		
 		long moves = 0L;
 		
@@ -771,6 +835,6 @@ class Board {
 		}
 		
 		return moves;
-	}
+	}*/
 	
 }

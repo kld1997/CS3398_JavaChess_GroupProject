@@ -5,6 +5,8 @@ public class Rook extends Pieces
 	public Rook(int t) {
 		super(t);
 		value = 5;
+		name = "Rook";
+		image = Images.pieces[Math.abs(team-1)][2];
 	}
 	
 	public long pieceType(Board board) {
