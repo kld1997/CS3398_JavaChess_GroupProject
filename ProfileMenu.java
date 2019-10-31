@@ -97,7 +97,7 @@ public class ProfileMenu extends JPanel {
 
         add(Box.createVerticalStrut(10));
 
-        JTextField createField = new JTextField(1);
+        JTextField createField = new JTextField(10);
         JButton createButton = new JButton("Submit");
 
         createButton.addActionListener(new AbstractAction() {

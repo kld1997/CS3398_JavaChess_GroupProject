@@ -132,7 +132,8 @@ public class Menu extends JPanel {
                 // int gamemode = 0
                 // bool highlight = 0;
                 //new ChessGui(0, false);
-                selectGameMode();
+                selectOnlineMode();
+                //selectGameMode();
             }
         });
         add(twoplayerbutton);
@@ -200,6 +201,158 @@ public class Menu extends JPanel {
         });
 
         add(plusbutton);
+    }
+
+    public void selectOnlineMode() {
+        removeAll();
+        updateUI();
+
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        JLabel jlabel = new JLabel("Online Mode");
+        jlabel.setFont(new Font("Algerian", Font.BOLD, 50));
+        jlabel.setForeground(Color.BLUE);
+        jlabel.setVerticalAlignment(jlabel.TOP);
+        jlabel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+
+        add(jlabel);
+
+        add(Box.createVerticalStrut(100));
+
+        Button connectButton = new Button("Connect");
+        connectButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        connectButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // int gamemode = 2;
+                // bool highlight = 0;
+                // new ChessGui(2, false);
+                selectConnectMode();
+            }
+        });
+        add(connectButton);
+
+        add(Box.createVerticalStrut(10));
+
+        Button hostButton = new Button("Host");
+        hostButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        hostButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // int gamemode = 2;
+                // bool highlight = 0;
+                // new ChessGui(2, false);
+                selectHostMode();
+            }
+        });
+        add(hostButton);
+    }
+
+    public void selectConnectMode() {
+        String ipaddress;
+        String port;
+
+        removeAll();
+        updateUI();
+
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        JLabel jlabel = new JLabel("Enter IP and Port");
+        jlabel.setFont(new Font("Algerian", Font.BOLD, 40));
+        jlabel.setForeground(Color.BLUE);
+        jlabel.setVerticalAlignment(jlabel.TOP);
+        jlabel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+
+        add(jlabel);
+
+        add(Box.createVerticalStrut(50));
+
+        JLabel iplabel = new JLabel("IP Address:");
+        iplabel.setFont(new Font("Algerian", Font.BOLD, 30));
+        iplabel.setForeground(Color.BLUE);
+        iplabel.setVerticalAlignment(jlabel.TOP);
+        iplabel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+
+        add(iplabel);
+
+        add(Box.createVerticalStrut(10));
+
+        JTextField ipField = new JTextField(10);
+        //ipField.setColumns(10);
+        ipField.setMaximumSize(new Dimension(300, 25));
+        add(ipField);
+
+        add(Box.createVerticalStrut(20));
+
+        JLabel portlabel = new JLabel("Port Number:");
+        portlabel.setFont(new Font("Algerian", Font.BOLD, 30));
+        portlabel.setForeground(Color.BLUE);
+        portlabel.setVerticalAlignment(jlabel.TOP);
+        portlabel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+
+        add(portlabel);
+
+        add(Box.createVerticalStrut(10));
+
+        JTextField portField = new JTextField(10);
+        portField.setMaximumSize(new Dimension(300, 25));
+
+        add(portField);
+
+        add(Box.createVerticalStrut(20));
+
+        JButton submitButton = new JButton("Submit");
+        submitButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        submitButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String ipaddress;
+                String port;
+                ipaddress = ipField.getText();
+                port = portField.getText();
+                Integer.parseInt(port);
+                System.out.println(ipaddress + "\n");
+                System.out.println(port);
+            }
+        });
+        add(submitButton);
+    }
+
+    public void selectHostMode() {
+        removeAll();
+        updateUI();
+
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        JLabel jlabel = new JLabel("Enter Port Number:");
+        jlabel.setFont(new Font("Algerian", Font.BOLD, 40));
+        jlabel.setForeground(Color.BLUE);
+        jlabel.setVerticalAlignment(jlabel.TOP);
+        jlabel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+
+        add(jlabel);
+
+        add(Box.createVerticalStrut(50));
+
+        JTextField portField = new JTextField(10);
+        portField.setMaximumSize(new Dimension(300, 25));
+
+        add(portField);
+
+        add(Box.createVerticalStrut(20));
+
+        JButton submitButton = new JButton("Submit");
+        submitButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        submitButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String port;
+                port = portField.getText();
+                Integer.parseInt(port);
+                System.out.println(port);
+            }
+        });
+        add(submitButton);
     }
 
 
