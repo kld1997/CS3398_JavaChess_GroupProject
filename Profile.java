@@ -20,10 +20,11 @@ public class Profile {
     }
 
     public void findProfile(String usernameToFind, Profile p) {
-        for (int i = 0; i < profiles.size(); i++ ) {
-            if (p.username == usernameToFind) {
-            }
-            }
+       // for (int i = 0; i < profiles.size(); i++ ) {
+            //if (profiles[i].username == usernameToFind) {
+
+         //   }
+           // }
         }
 
 }

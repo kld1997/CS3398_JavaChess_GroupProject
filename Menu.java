@@ -1,4 +1,4 @@
-package Menu;
+//package Menu;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -18,7 +18,6 @@ import javax.sound.sampled.AudioInputStream;
 public class Menu extends JPanel {
 
     public boolean started = false;
-    public boolean clear = false;
 
     public Menu() {
 
@@ -42,7 +41,6 @@ public class Menu extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectNumPlayers();
-                //start();
             }
         });
 
@@ -56,7 +54,6 @@ public class Menu extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new ProfileMain();
-                start();
             }
         });
 
@@ -70,26 +67,19 @@ public class Menu extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new SettingsMain();
-                start();
             }
         });
         add(settingsButton);
-        //add(Box.createVerticalGlue());
+
         /***
          try {
          We can put background music later here.
          }
          ***/
-
-        //setVisible(false);
     }
 
     public void start() {
         started = true;
-    }
-
-    public void clear() {
-        clear = true;
     }
 
     public void selectNumPlayers() {
@@ -114,9 +104,6 @@ public class Menu extends JPanel {
         oneplayerbutton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // int gamemode = 0
-                // bool highlight = 0;
-                //new ChessGui(0, false);
                 selectGameMode();
             }
         });
@@ -129,18 +116,13 @@ public class Menu extends JPanel {
         twoplayerbutton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // int gamemode = 0
-                // bool highlight = 0;
-                //new ChessGui(0, false);
                 selectOnlineMode();
-                //selectGameMode();
             }
         });
         add(twoplayerbutton);
     }
 
     public void selectGameMode() {
-
         removeAll();
         updateUI();
 
@@ -224,9 +206,6 @@ public class Menu extends JPanel {
         connectButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // int gamemode = 2;
-                // bool highlight = 0;
-                // new ChessGui(2, false);
                 selectConnectMode();
             }
         });
@@ -239,9 +218,6 @@ public class Menu extends JPanel {
         hostButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // int gamemode = 2;
-                // bool highlight = 0;
-                // new ChessGui(2, false);
                 selectHostMode();
             }
         });
@@ -249,9 +225,6 @@ public class Menu extends JPanel {
     }
 
     public void selectConnectMode() {
-        String ipaddress;
-        String port;
-
         removeAll();
         updateUI();
 
@@ -291,7 +264,6 @@ public class Menu extends JPanel {
         portlabel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
 
         add(portlabel);
-
         add(Box.createVerticalStrut(10));
 
         JTextField portField = new JTextField(10);
@@ -363,10 +335,6 @@ public class Menu extends JPanel {
             g.drawImage(new ImageIcon(Menu.class.getResource("Chess.jpg")).getImage(), 0, 0, 640, 480, this);
         } else {
             setBackground(Color.RED);
-        }
-        if (clear) {
-            removeAll();
-            updateUI();
         }
     }
 }

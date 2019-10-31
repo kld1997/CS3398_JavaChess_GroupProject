@@ -1,7 +1,5 @@
 package Menu;
 
-import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion;
-
 import javax.swing.JFrame;
 
 public class Main extends JFrame {

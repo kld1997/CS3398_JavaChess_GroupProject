@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class SettingsMenu extends JPanel {
@@ -37,20 +36,19 @@ public class SettingsMenu extends JPanel {
             ///// turn off music
         }
 
-
-
         add(Box.createVerticalStrut(10));
 
-        Button changeprofile = new Button("Change Profile");
-        changeprofile.setAlignmentX(JPanel.CENTER_ALIGNMENT);
-        changeprofile.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                start();
-            }
-        });
+        JCheckBox toggleSFX = new JCheckBox("Toggle Sound Effects");
+        toggleSFX.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        add(toggleSFX);
 
-        add(changeprofile);
+        toggleMusic.setSelected(false);
+
+        if (toggleMusic.isSelected()) {
+            //// turn on SFX
+        } else {
+            ///// turn off SFX
+        }
 
         add(Box.createVerticalStrut(10));
 
@@ -66,6 +64,19 @@ public class SettingsMenu extends JPanel {
         } else {
             //new ChessGui(false);
         }
+
+        add(Box.createVerticalStrut(100));
+
+        Button exitButton = new Button("Exit");
+        exitButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+
+        exitButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+        add(exitButton);
     }
 
     //// Placeholders until button implementations.

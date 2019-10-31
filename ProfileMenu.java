@@ -83,14 +83,13 @@ public class ProfileMenu extends JPanel {
     }
 
     public void createMenu() {
-
         removeAll();
         updateUI();
 
         add(Box.createVerticalStrut(50));
 
         JLabel addlabel = new JLabel("Create a user name for your profile:");
-        addlabel.setFont(new Font("Algerian", Font.BOLD, 10));
+        addlabel.setFont(new Font("Algerian", Font.BOLD, 25));
         addlabel.setForeground(Color.BLUE);
         addlabel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
         add(addlabel);
@@ -98,17 +97,30 @@ public class ProfileMenu extends JPanel {
         add(Box.createVerticalStrut(10));
 
         JTextField createField = new JTextField(10);
+        createField.setMaximumSize(new Dimension(300, 25));
+        add(createField);
+
+        add(Box.createVerticalStrut(20));
+
         JButton createButton = new JButton("Submit");
+        createButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
 
         createButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String username;
                 username = createField.getText();
-                Profile newProfile = new Profile(username);
+                //Profile newProfile = new Profile(username);
+
+                add(Box.createVerticalStrut(20));
+
+                JLabel namelabel = new JLabel(username + " was added!");
+                namelabel.setFont(new Font("Algerian", Font.BOLD, 30));
+                namelabel.setForeground(Color.BLUE);
+                namelabel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+                add(namelabel);
             }
         });
-        add(createField);
         add(createButton);
     }
 
