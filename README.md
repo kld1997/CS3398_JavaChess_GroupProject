@@ -69,6 +69,7 @@ Project is: in progress. Sprint 1 is complete. See each member's status down in 
 
 ## Inspiration
 Add here credits. Project inspired by..., based on...
+
 "Characters" Icons made by Eucalyp from www.flaticon.com
 "Characters2" Icons made by Freepik from www.flaticon.com
 
