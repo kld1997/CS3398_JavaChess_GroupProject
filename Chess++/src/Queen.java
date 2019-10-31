@@ -1,5 +1,5 @@
 //Roy Grady, queen
-public class Queen extends Pieces
+public class Queen extends Pieces implements Cardinal, Ordinal
 {
 	
 	public Queen(int t) {

@@ -137,6 +137,11 @@ class Check {														//special check restrictions and pin calculations
 		
 	}
 	
+	static public void slideThreats(Board board) {
+		slideThreats(board, 0);
+		slideThreats(board, 1);
+	}
+	
 	static public void getPinned(Board board) {
 		
 		int noti;
@@ -151,11 +156,6 @@ class Check {														//special check restrictions and pin calculations
 		long coord = 0L;
 		long temp = 0L;
 		int pinPos = 0;
-
-		/*board.pinnersBB[0] |= Moves.xrayHV(~board.empty, board.kingBB[1], board.teamBB[1]) & (board.rooksBB[0] | board.queensBB[0]);
-		board.pinnersBB[0] |= Moves.xrayDX(~board.empty, board.kingBB[1], board.teamBB[1]) & (board.bishopsBB[0] | board.queensBB[0]);
-		board.pinnersBB[1] |= Moves.xrayHV(~board.empty, board.kingBB[0], board.teamBB[0]) & (board.rooksBB[1] | board.queensBB[1]);
-		board.pinnersBB[1] |= Moves.xrayDX(~board.empty, board.kingBB[0], board.teamBB[0]) & (board.bishopsBB[1] | board.queensBB[1]);*/
 		
 		for(int i = 0; i < board.teamNum; i++) {
 			noti = Math.abs(i-1);

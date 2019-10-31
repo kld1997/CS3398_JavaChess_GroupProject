@@ -1,5 +1,5 @@
 //Roy Grady, bishop
-public class Bishop extends Pieces
+public class Bishop extends Pieces implements Ordinal
 {
 	
 	public Bishop(int t) {

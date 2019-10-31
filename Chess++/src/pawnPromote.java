@@ -20,19 +20,23 @@ class PawnPromote {
 		switch(newP) {
 		  case 3: //knight
 			board.removePiece(coord);
-			board.knightsBB[team] |= coord;
+			board.pawnsBB[team] &= ~coord;
+			board.pieceList.get(team).stream().filter(p -> p instanceof Knight).findFirst().get().piece |= coord;
 		    break;
 		  case 4: //bishop
 			board.removePiece(coord);
-			board.bishopsBB[team] |= coord;
+			board.pawnsBB[team] &= ~coord;
+			board.pieceList.get(team).stream().filter(p -> p instanceof Bishop).findFirst().get().piece |= coord;
 		    break;
 		  case 2: //rook
 			board.removePiece(coord);
-			board.rooksBB[team] |= coord;
+			board.pawnsBB[team] &= ~coord;
+			board.pieceList.get(team).stream().filter(p -> p instanceof Rook).findFirst().get().piece |= coord;
 		    break;
 		  case 1: //queen
 			board.removePiece(coord);
-			board.queensBB[team] |= coord;
+			board.pawnsBB[team] &= ~coord;
+			board.pieceList.get(team).stream().filter(p -> p instanceof Queen).findFirst().get().piece |= coord;
 		    break;
 		  default:
 		    System.out.println("error");

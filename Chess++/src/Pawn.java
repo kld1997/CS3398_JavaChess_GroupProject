@@ -1,5 +1,5 @@
 //Roy Grady, pawn
-public class Pawn extends Pieces
+public class Pawn extends Pieces implements Promoteable
 {
 	
 	public Pawn(int t) {

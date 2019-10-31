@@ -1,5 +1,5 @@
 //Roy Grady, rook
-public class Rook extends Pieces
+public class Rook extends Pieces implements Cardinal, Castleable
 {
 	
 	public Rook(int t) {

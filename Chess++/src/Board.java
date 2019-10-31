@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class Board {
 	
@@ -85,30 +86,12 @@ class Board {
 		0x804020100000000L, 0x402010000000000L, 0x201000000000000L, 0x100000000000000L
 	};
 	
-	Pawn pawnW;
-	Pawn pawnB;
-	
-	Wall wallW;
-	Wall wallB;
-	
-	Knight knightW;
-	Knight knightB;
-	
-	Bishop bishopW;
-	Bishop bishopB;
-	
-	Rook rookW;
-	Rook rookB;
-	
-	Queen queenW;
-	Queen queenB;
-	
-	King kingW;
-	King kingB;
-	
 	List<List<Pieces>> pieceList;
 	List<List<Pieces>> cardinalList;
 	List<List<Pieces>> ordinalList;
+	List<Pieces> castleableList;
+	List<List<Pieces>> promoteableList;
+	List<Pieces> kingList;
 	
 	public Board() {                                                   //initializes all of the bitboards
 		
@@ -116,15 +99,12 @@ class Board {
 		pieceList = new ArrayList<List<Pieces>>();
 		cardinalList = new ArrayList<List<Pieces>>();
 		ordinalList = new ArrayList<List<Pieces>>();
+		castleableList = new ArrayList<Pieces>();
+		promoteableList = new ArrayList<List<Pieces>>();
+		kingList = new ArrayList<Pieces>();
 		
 		for(int i = 0; i < teamNum; i++) {
 			kingBB[i] = 0L;
-			queensBB[i] = 0L;
-			rooksBB[i] = 0L;
-			bishopsBB[i] = 0L;
-			knightsBB[i] = 0L;
-			pawnsBB[i] = 0L;
-			teamBB[i] = 0L;
 			notTeamBB[i] = 0;
 			
 			pinnersBB[i] = 0;
@@ -138,8 +118,6 @@ class Board {
 			check[i] = 0;
 			epBB[i] = 0;
 			
-			wallsBB[i] = 0L;
-			
 			cardinalsBB[i] = 0L;
 			ordinalsBB[i] = 0L;
 		}
@@ -151,7 +129,6 @@ class Board {
 		
 		teamWon = 2;
 		
-		//currentState();
 	}
 	
 	public void standardChess() {                                           //sets up the positions of a standard chess game
@@ -188,87 +165,44 @@ class Board {
 		
 		pieceList = PieceInit.pieceInit(chessBoard);
 		
-		List<Pieces> cardinal1 = new ArrayList<Pieces>();
-		List<Pieces> cardinal2 = new ArrayList<Pieces>();
-		
-		List<Pieces> ordinal1 = new ArrayList<Pieces>();
-		List<Pieces> ordinal2 = new ArrayList<Pieces>();
+		List<Pieces> cardinal;
+		List<Pieces> ordinal;
+		List<Pieces> castleable;
+		List<Pieces> promoteable;
+		List<Pieces> kings;
 		
 		for(int i = 0; i < teamNum; i++) {	
-			for(Pieces piece : pieceList.get(i)) {
-				if(piece.name.equals("Pawn")) {
-					if(i==0)
-					pawnW = (Pawn) piece;
-				else
-					pawnB = (Pawn) piece;
-					pawnsBB[i] = piece.piece;
-				}
-				else if(piece.name.equals("Knight")) {
-					if(i==0)
-						knightW = (Knight) piece;
-					else
-						knightB = (Knight) piece;
-					knightsBB[i] = piece.piece;
-				}
-				else if(piece.name.equals("Bishop")) {
-					if(i==0) {
-						bishopW = (Bishop) piece;
-						ordinal1.add(piece);
-					}
-					else {
-						bishopB = (Bishop) piece;
-						ordinal2.add(piece);
-					}
-					bishopsBB[i] = piece.piece;
-				}
-				else if(piece.name.equals("Rook")) {
-					if(i==0) {
-						rookW = (Rook) piece;
-						cardinal1.add(piece);
-					}
-					else {
-						rookB = (Rook) piece;
-						cardinal2.add(piece);
-						}
-					rooksBB[i] = piece.piece;
-				}
-				else if(piece.name.equals("Queen")) {
-					if(i==0) {
-						queenW = (Queen) piece;
-						cardinal1.add(piece);
-						ordinal1.add(piece);
-					}
-					else {
-						queenB = (Queen) piece;
-						cardinal2.add(piece);
-						ordinal2.add(piece);
-						}
-					queensBB[i] = piece.piece;
-					
-				}
-				else if(piece.name.equals("King")) {
-					if(i==0)
-						kingW = (King) piece;
-					else
-						kingB = (King) piece;
-					kingBB[i] = piece.piece;
-				}
-			}
+			cardinal = pieceList.get(i)
+					.stream()
+					.filter(p -> p instanceof Cardinal)
+					.collect(Collectors.toList());
+			
+			ordinal = pieceList.get(i)
+					.stream()
+					.filter(p -> p instanceof Ordinal)
+					.collect(Collectors.toList());
+			
+			castleable = pieceList.get(i)
+					.stream()
+					.filter(p -> p instanceof Castleable)
+					.collect(Collectors.toList());
+			
+			promoteable = pieceList.get(i)
+					.stream()
+					.filter(p -> p instanceof Promoteable)
+					.collect(Collectors.toList());
+			
+			kings = pieceList.get(i)
+					.stream()
+					.filter(p -> p instanceof King)
+					.collect(Collectors.toList());
+			
+			cardinalList.add(cardinal);
+			ordinalList.add(ordinal);
+			castleableList.addAll(castleable);
+			promoteableList.add(promoteable);
+			kingList.addAll(kings);
 		}
-		
-		cardinalList.add(cardinal1);
-		cardinalList.add(cardinal2);
-		
-		ordinalList.add(ordinal1);
-		ordinalList.add(ordinal2);
-		
-		pieceBBList.add(pawnsBB);
-		pieceBBList.add(knightsBB);
-		pieceBBList.add(bishopsBB);
-		pieceBBList.add(rooksBB);
-		pieceBBList.add(queensBB);
-		pieceBBList.add(kingBB);
-		pieceBBList.add(wallsBB);
 
 		currentState();
 		
@@ -326,12 +260,8 @@ class Board {
 	
 	public void currentState() {
 		
-		//check[0] = 0;
-		//check[1] = 0;
-		kingBB[0] = kingW.piece;
-		kingBB[1] = kingB.piece;
-		
 		for(int i = 0; i < teamNum; i++) {
+			kingBB[i] = kingList.get(i).piece;
 			check[i] = 0;
 			teamBB[i] = 0L;
 			cardinalsBB[i] = 0L;
@@ -348,10 +278,11 @@ class Board {
 			for(Pieces piece : ordinalList.get(i)) {
 				ordinalsBB[i] |= piece.piece;
 			}
+			
+			for(Pieces piece : promoteableList.get(i)) {
+				pawnsBB[i] |= piece.piece;
+			}
 		}
-
-		//teamBB[0] = queensBB[0]|rooksBB[0]|knightsBB[0]|bishopsBB[0]|pawnsBB[0]|kingBB[0]|wallsBB[0];
-		//teamBB[1] = queensBB[1]|rooksBB[1]|knightsBB[1]|bishopsBB[1]|pawnsBB[1]|kingBB[1]|wallsBB[1];
 		
 		notTeamBB[0] = ~(teamBB[0]);
 		notTeamBB[1] = ~(teamBB[1]);
@@ -365,28 +296,29 @@ class Board {
 		//code for making a bitboard of all of the pinnedB and pinning pieces
 		Check.getPinned(this);
 		
-		Check.slideThreats(this, 0);
-		Check.slideThreats(this, 1);
+		Check.slideThreats(this);
 
 		checkmate();
 		
 		if(((pawnsBB[0]&row8)|(pawnsBB[1]&row1)) != 0) {
 			PawnPromote.pawnPromotion(this);
 		} 
-		
-		displayBitboard(cardinalsBB[0]);
-		System.out.println("ee");
-		displayBitboard(cardinalsBB[1]);
 
 	}
 	
 	public void pieceMoved() {
 		
+		long rooks = 0L;
+		
+		for(int i = 0; i < teamNum; i++) {
+			rooks |= castleableList.get(i).piece;
+		}
+		
 		if(kingMoved != 0 && kingMoved != ((kingBB[0]|kingBB[1])&kingMoved)) {  	//if king moves
 			kingMoved &= (kingBB[0]|kingBB[1]);
 		}
-		if(rookMoved != 0 && rookMoved != ((rooksBB[0]|rooksBB[1])&rookMoved)) {	//if rook moves
-			rookMoved &= (rooksBB[0]|rooksBB[1]);
+		if(rookMoved != 0 && rookMoved != (rooks&rookMoved)) {	//if rook moves
+			rookMoved &= rooks;
 		}
 	}
 
@@ -415,6 +347,7 @@ class Board {
 		
 		for(int i = 0; i < teamNum; i++) {
 			threatenBB[i] = 0;
+			kThreatsBB[i] = 0;
 			currentThreat = 0;
 			noti = Math.abs(i-1);
 			
@@ -615,10 +548,10 @@ class Board {
 	public void castle(long coord1, long coord2, int team) {
 		
 		if(coord2 == coord1<<2) {
-			rooksBB[team] ^= coord2>>1|(rooksBB[team]&(rookMoved&~(coord1-1)));
+			castleableList.get(team).piece ^= coord2>>1|(castleableList.get(team).piece&(rookMoved&~(coord1-1)));
 		}
 		else if(coord2 == coord1>>2) {
-			rooksBB[team] ^= coord2<<1|(rooksBB[team]&(rookMoved&(coord1-1)));
+			castleableList.get(team).piece ^= coord2<<1|(castleableList.get(team).piece&(rookMoved&(coord1-1)));
 		}
 	}
 	
@@ -651,109 +584,6 @@ class Board {
 		}
 		
 		return valid;
-		
-		/*if(team == 0 && (coord1&teamBB[0]) != 0) {
-			if((coord1&pawnsBB[0]) != 0) {
-				valid = pawnW.movePiece(this, coord1, coord2, checked);
-				if(valid) {
-					pawnsBB[0] = pawnW.piece;
-					
-					if(coord2 == coord1>>16)
-						epBB[0] |= coord1>>8;
-					else if((coord2&epBB[1]) != 0)
-						removePiece(coord2<<8); 
-				}
-			}
-			else if((coord1&knightsBB[0]) != 0) {
-				valid = knightW.movePiece(this, coord1, coord2, checked);
-				if(valid)
-					knightsBB[0] = knightW.piece;
-			}
-			else if((coord1&bishopsBB[0]) != 0) {
-				valid = bishopW.movePiece(this, coord1, coord2, checked);
-				if(valid)
-					bishopsBB[0] = bishopW.piece;
-			}
-			else if((coord1&rooksBB[0]) != 0) {
-				valid = rookW.movePiece(this, coord1, coord2, checked);
-				if(valid)
-					rooksBB[0] = rookW.piece;
-			}
-			else if((coord1&queensBB[0]) != 0) {
-				valid = queenW.movePiece(this, coord1, coord2, checked);
-				if(valid)
-					queensBB[0] = queenW.piece;
-			}
-			else if((coord1&kingBB[0]) != 0) {
-				valid = kingW.movePiece(this, coord1, coord2, checked);
-				if(valid) {
-					kingBB[0] = kingW.piece;
-					
-					if(coord2 == coord1<<2) {
-						rooksBB[0] ^= coord2>>1|(rooksBB[0]&(rookMoved&~(coord1-1)));
-					}
-					else if(coord2 == coord1>>2) {
-						rooksBB[0] ^= coord2<<1|(rooksBB[0]&(rookMoved&(coord1-1)));
-					}
-				}
-			}
-			
-			if(valid)
-				epBB[1] = 0;
-		}
-		else if(team == 1 && (coord1&teamBB[1]) != 0) {
-			if((coord1&pawnsBB[1]) != 0) {
-				valid = pawnB.movePiece(this, coord1, coord2, checked);
-				if(valid) {
-					pawnsBB[1] = pawnB.piece;
-					
-					if(coord2 == coord1<<16)
-						epBB[1] |= coord1<<8;
-					else if((coord2&epBB[0]) != 0)
-						removePiece(coord2>>8);
-				}
-			}
-			else if((coord1&knightsBB[1]) != 0) {
-				valid = knightB.movePiece(this, coord1, coord2, checked);
-				if(valid)
-					knightsBB[1] = knightB.piece;
-			}
-			else if((coord1&bishopsBB[1]) != 0) {
-				valid = bishopB.movePiece(this, coord1, coord2, checked);
-				if(valid)
-					bishopsBB[1] = bishopB.piece;
-			}
-			else if((coord1&rooksBB[1]) != 0) {
-				valid = rookB.movePiece(this, coord1, coord2, checked);
-				if(valid)
-					rooksBB[1] = rookB.piece;
-			}
-			else if((coord1&queensBB[1]) != 0) {
-				valid = queenB.movePiece(this, coord1, coord2, checked);
-				if(valid)
-					queensBB[1] = queenB.piece;
-			}
-			else if((coord1&kingBB[1]) != 0) {
-				valid = kingB.movePiece(this, coord1, coord2, checked);
-				if(valid) {
-					kingBB[1] = kingB.piece;
-					
-					if(coord2 == coord1<<2) {
-						rooksBB[1] ^= coord2>>1|(rooksBB[1]&(rookMoved&~(coord1-1)));
-					}
-					else if(coord2 == coord1>>2) {
-						rooksBB[1] ^= coord2<<1|(rooksBB[1]&(rookMoved&(coord1-1)));
-					}
-				}
-			}
-			
-			if(valid)
-				epBB[0] = 0;
-		}
-		if(valid)
-			currentState();
-		
-		return valid;*/
 	}
 	
 	public long showMoves(String pos) {
@@ -771,70 +601,5 @@ class Board {
 		}
 		return 0L;
 	}
-	
-	/*public long showAllMoves(String type) {
-		
-		long moves = 0L;
-		
-		switch(type) {
-		case "wA":
-			moves |= pawnW.getAllPM(this, false);
-			moves |= knightW.getAllPM(this, false);
-			moves |= bishopW.getAllPM(this, false);
-			moves |= rookW.getAllPM(this, false);
-			moves |= queenW.getAllPM(this, false);
-			moves |= kingW.getAllPM(this, false);
-			break;
-		case "wp":
-			moves = pawnW.getAllPM(this, false);
-			break;
-		case "wk":
-			moves = knightW.getAllPM(this, false);
-			break;
-		case "wb":
-			moves = bishopW.getAllPM(this, false);
-			break;
-		case "wr":
-			moves = rookW.getAllPM(this, false);
-			break;
-		case "wq":
-			moves = queenW.getAllPM(this, false);
-			break;
-		case "wK":
-			moves = kingW.getAllPM(this, false);
-			break;
-			
-		case "bA":
-			moves |= pawnB.getAllPM(this, false);
-			moves |= knightB.getAllPM(this, false);
-			moves |= bishopB.getAllPM(this, false);
-			moves |= rookB.getAllPM(this, false);
-			moves |= queenB.getAllPM(this, false);
-			moves |= kingB.getAllPM(this, false);
-			break;
-		case "bp":
-			moves = pawnB.getAllPM(this, false);
-			break;
-		case "bk":
-			moves = knightB.getAllPM(this, false);
-			break;
-		case "bb":
-			moves = bishopB.getAllPM(this, false);
-			break;
-		case "br":
-			moves = rookB.getAllPM(this, false);
-			break;
-		case "bq":
-			moves = queenB.getAllPM(this, false);
-			break;
-		case "bK":
-			moves = kingB.getAllPM(this, false);
-			break;
-		default:
-			System.out.println("Invalid syntax");
-		}
-		
-		return moves;
-	}*/
 	
 }

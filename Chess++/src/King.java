@@ -24,7 +24,7 @@ public class King extends Pieces
 		
 		slideThreats = board.slideThreatsBB[team];
 		threaten = board.threatenBB[Math.abs(team-1)];
-		rooks = board.rooksBB[team];
+		rooks = board.castleableList.get(team).piece;
 		
 		if((piece&coord) != 0)
 			moves = pseudoMoves(coord);

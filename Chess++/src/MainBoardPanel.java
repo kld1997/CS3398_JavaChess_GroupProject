@@ -185,96 +185,31 @@ public class MainBoardPanel extends JPanel
         }
         
         String teamName;
+        long temp;
+        int tempx;
+        int tempy;
         
-        for(int x = 0; x < 8; x ++)
-        {
-            for(int y = 0; y < 8; y ++)
-            {
-            	search: {
-	            	for(int i = 0; i < gameBoard.teamNum; i++) {
-	            		if(i == 0)
-	            			teamName = "White";
-	            		else
-	            			teamName = "Black";
-	            		for(Pieces piece : gameBoard.pieceList.get(i)) {
-	            			if(((piece.piece>>(x*8)+y)&1) == 1) {
-	            				squares[x][y].setIcon(new ImageIcon(piece.image));
-	            				squares[x][y].setActionCommand(teamName + " " + piece.name + " " + x + " " + y);
-	            				break search;
-	            			}
-	            		}
-	            	}
-            	}
-                //white pieces
-                /*if(((gameBoard.kingBB[0]>>(x*8)+y)&1) == 1)
-                {
-                    squares[x][y].setIcon(new ImageIcon(Images.pieces[1][0]));         //"wK";
-                    squares[x][y].setActionCommand("White King " + x + " " + y);
-                }
-                else if(((gameBoard.queensBB[0]>>(x*8)+y)&1) == 1)
-                {
-                    squares[x][y].setIcon(new ImageIcon(Images.pieces[1][1]));         //"wq";
-                    squares[x][y].setActionCommand("White Queen " + x + " " + y);
-                }
-                else if(((gameBoard.rooksBB[0]>>(x*8)+y)&1) == 1)
-                {
-                    squares[x][y].setIcon(new ImageIcon(Images.pieces[1][2]));         //"wr";
-                    squares[x][y].setActionCommand("White Rook " + x + " " + y);
-                }
-                else if(((gameBoard.knightsBB[0]>>(x*8)+y)&1) == 1)
-                {
-                    squares[x][y].setIcon(new ImageIcon(Images.pieces[1][3]));         //"wk";
-                    squares[x][y].setActionCommand("White Knight " + x + " " + y);
-                }
-                else if(((gameBoard.bishopsBB[0]>>(x*8)+y)&1) == 1) {
-                    squares[x][y].setIcon(new ImageIcon(Images.pieces[1][4]));         //"wb";
-                    squares[x][y].setActionCommand("White Bishop " + x + " " + y);
-                }
-                else if(((gameBoard.pawnsBB[0]>>(x*8)+y)&1) == 1) {
-                    //squares[x][y].setIcon(new ImageIcon(Images.pieces[1][5]));         //"wp";
-                	squares[x][y].setIcon(new ImageIcon(Pawn.image));
-                    squares[x][y].setActionCommand("White Pawn " + x + " " + y);
-                }
-                else if(((gameBoard.wallsBB[0]>>(x*8)+y)&1) == 1) {
-                    squares[x][y].setIcon(new ImageIcon(Images.pieces[1][2]));         //"wp";
-                    squares[x][y].setActionCommand("White Wall " + x + " " + y);
-                }
-
-                //black pieces
-                else if(((gameBoard.kingBB[1]>>(x*8)+y)&1) == 1) {
-                    squares[x][y].setIcon(new ImageIcon(Images.pieces[0][0]));           //"bK";
-                    squares[x][y].setActionCommand("Black King " + x + " " + y);
-                }
-                else if(((gameBoard.queensBB[1]>>(x*8)+y)&1) == 1) {
-                    squares[x][y].setIcon(new ImageIcon(Images.pieces[0][1]));           //"bq";
-                    squares[x][y].setActionCommand("Black Queen " + x + " " + y);
-                }
-                else if(((gameBoard.rooksBB[1]>>(x*8)+y)&1) == 1) {
-                    squares[x][y].setIcon(new ImageIcon(Images.pieces[0][2]));           //"br";
-                    squares[x][y].setActionCommand("Black Rook " + x + " " + y);
-                }
-                else if(((gameBoard.knightsBB[1]>>(x*8)+y)&1) == 1){
-                    squares[x][y].setIcon(new ImageIcon(Images.pieces[0][3]));           //"bk";
-                    squares[x][y].setActionCommand("Black Knight " + x + " " + y);
-                }
-                else if(((gameBoard.bishopsBB[1]>>(x*8)+y)&1) == 1) {
-                    squares[x][y].setIcon(new ImageIcon(Images.pieces[0][4]));           //"bb";
-                    squares[x][y].setActionCommand("Black Bishop " + x + " " + y);
-                }
-                else if(((gameBoard.pawnsBB[1]>>(x*8)+y)&1) == 1) {
-                    squares[x][y].setIcon(new ImageIcon(Images.pieces[0][5]));           //"bp";
-                    squares[x][y].setActionCommand("Black Pawn " + x + " " + y);
-                }
-                else if(((gameBoard.wallsBB[1]>>(x*8)+y)&1) == 1) {
-                    squares[x][y].setIcon(new ImageIcon(Images.pieces[0][2]));         //"wp";
-                    squares[x][y].setActionCommand("Black Wall " + x + " " + y);
-                }
-                else
-                {
-                    squares[x][y].setActionCommand("White  " + x + " " + y);
-                }*/
-            }
+        for(int i = 0; i < gameBoard.teamNum; i++) {
+    		if(i == 0)
+    			teamName = "White";
+    		else
+    			teamName = "Black";
+    		
+    		for(Pieces piece : gameBoard.pieceList.get(i)) {
+    			temp = piece.piece;
+    			
+    			while(temp != 0) {
+    				tempx = Long.numberOfTrailingZeros(temp)/8;
+    				tempy = Long.numberOfTrailingZeros(temp)%8;
+    				
+    				squares[tempx][tempy].setIcon(new ImageIcon(piece.image));
+    				squares[tempx][tempy].setActionCommand(teamName + " " + piece.name + " " + tempx + " " + tempy);
+    				
+    				temp &= temp - 1;
+    			}
+    		}
         }
+    	
         repaint();
     }
     /*
