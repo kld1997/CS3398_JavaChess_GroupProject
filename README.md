@@ -147,7 +147,7 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
       ServerGui.java, ClientGui.java, and pawnPromote.java.
 
   -    My next goal is to fully implement the online feature, make additional pieces, allow the player to input the pieces before
-       starting, and further refactor the code.
+       starting, and add a CPU for single player.
 
 
 * Kieran Hsieh
