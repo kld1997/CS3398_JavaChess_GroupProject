@@ -136,11 +136,13 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
            - a feature that shows the odds of a player winning without music then comparing to results once music is played
            - a news feed to let competative players know when there is an in person tournament going on via zipcode 
            
-  #Srint 2 Review
+## Sprint 2
+
+* Roy Grady
+* Kieran Hsieh
+
+  -      	Implemented the builder piece and the new game modes after refactoring the basic GUI code. This is shown by the                         MainBoardPanel.java, ChessGui.java, BulletChessGui.java, ChessGuiPlus.java, GenericBoardPanel.java and it's offshoots,                   HistoryPanel.java, and InfoPanel.java.
   
-  *Roy Grady
-  *Kieran Hsieh
-    -      	Implemented the builder piece and the new game modes after refactoring the basic GUI code. This is shown by the                         MainBoardPanel.java, ChessGui.java, BulletChessGui.java, ChessGuiPlus.java, GenericBoardPanel.java and it's offshoots,                   HistoryPanel.java, and InfoPanel.java.
-  *Guillermo Gomez
-  *Kody Davis
-  *Felipe Rodriguez
+* Guillermo Gomez
+* Kody Davis
+* Felipe Rodriguez
