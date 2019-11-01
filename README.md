@@ -140,9 +140,7 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
 
 * Roy Grady
 * Kieran Hsieh
-
-  -      	Implemented the builder piece and the new game modes after refactoring the basic GUI code. This is shown by the                         MainBoardPanel.java, ChessGui.java, BulletChessGui.java, ChessGuiPlus.java, GenericBoardPanel.java and it's offshoots,                   HistoryPanel.java, and InfoPanel.java.
-  
+  -         Implemented the builder piece and the new game modes after refactoring the basic GUI code. This is shown by the                         MainBoardPanel.java, ChessGui.java, BulletChessGui.java, ChessGuiPlus.java, GenericBoardPanel.java and it's offshoots,                   HistoryPanel.java, and InfoPanel.java.
 * Guillermo Gomez
 * Kody Davis
 * Felipe Rodriguez
