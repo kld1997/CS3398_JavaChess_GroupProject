@@ -136,7 +136,7 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
            - a feature that shows the odds of a player winning without music then comparing to results once music is played
            - a news feed to let competative players know when there is an in person tournament going on via zipcode 
            
-## Sprint 2
+## Sprint 2 Review
 
 * Roy Grady
 * Kieran Hsieh
