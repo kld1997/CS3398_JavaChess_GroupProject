@@ -45,13 +45,17 @@ public abstract class GenericInfoPanel extends JPanel
     }
     public void setWinner(int t)
     {
-        if(t == 1)
+        if(t == 0)
         {
             teamText.setText("White team wins!");
         }
-        else
+        else if(t == 1)
         {
             teamText.setText("Black team wins!");
+        }
+        else if(t == -1)
+        {
+        	teamText.setText("Stalemate!");
         }
     }
 }

@@ -18,7 +18,6 @@ import Pieces.*;
 //Main Grid of
 public class MainBoardPanel extends JPanel
 {
-	public int teamNum = 0;
     public Board gameBoard = new Board();
     GenericInfoPanel top;
     HistoryPanel right;
@@ -82,15 +81,13 @@ public class MainBoardPanel extends JPanel
                                 }
                             }
                             moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
-                            teamNum = g.getInfoPanel().getCurrTeam();
                             
                             //if(g.online == -1 || teamNum == g.online) {
                                 moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
 
-                                moveMade = gameBoard.makeMove(teamNum, moveString, true);                           //Check to see if a move has been made
+                                moveMade = gameBoard.makeMove(moveString, true);                           //Check to see if a move has been made
                             //}
-                            
-                            //moveMade = gameBoard.makeMove(teamNum, moveString, true);                           //Check to see if a move has been made
+
                             if (moveMade)
                             {
                                 if(g.getInfoPanel().getType() == 1)
@@ -119,7 +116,7 @@ public class MainBoardPanel extends JPanel
                             else
                             {
                                 String teamString = "";
-                                if (teamNum == 0) {
+                                if (gameBoard.teamTurn == 0) {
                                     teamString = "White";
                                 } else {
                                     teamString = "Black";
@@ -191,8 +188,7 @@ public class MainBoardPanel extends JPanel
         {
             top.setCheck(0);
         }
-        if(gameBoard.teamWon == 0){ top.setWinner(1); }
-        else if(gameBoard.teamWon == 1){ top.setWinner(0); }
+        if(gameBoard.teamWon != 2){ top.setWinner(gameBoard.teamWon); }
         for(int x = 0; x < 8; x ++)
         {
             for(int y = 0; y < 8; y++)

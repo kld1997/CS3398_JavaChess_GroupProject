@@ -424,6 +424,39 @@ public class Board {
 		return valid;
 	}
 	
+public boolean makeMove(String pos, boolean checked) {
+		
+		long coord1 = convertToCoord(pos.substring(0,2));
+		long coord2 = convertToCoord(pos.substring(2,4));
+		
+		boolean valid = false;
+		int otherTeam = Math.abs(teamTurn-1);
+		
+		if((coord1&teamBB[teamTurn]) != 0) {
+			for(Piece piece : pieceList.get(teamTurn)) {	
+				if((coord1&piece.piece) != 0) {
+					valid = piece.movePiece(this, coord1, coord2, checked);
+					
+					if(valid) {
+						if(piece.name == "Pawn") {
+							enPassant(coord1, coord2, teamTurn);
+						}
+						else if(piece.name == "King") {
+							castle(coord1, coord2, teamTurn);
+						}
+						
+						epBB[otherTeam] = 0;
+						teamTurn = otherTeam;
+						currentState();
+						break;
+					}
+				}
+			}
+		}
+		
+		return valid;
+	}
+	
 	public long showMoves(String pos) {
 		
 		long coord = convertToCoord(pos);
