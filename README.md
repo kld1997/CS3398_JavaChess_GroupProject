@@ -139,6 +139,7 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
 ## Sprint 2 Review
 
 * Roy Grady
+
 * Kieran Hsieh
 
   -      	Implemented the builder piece and the new game modes after refactoring the basic GUI code. This is shown by the                         MainBoardPanel.java, ChessGui.java, BulletChessGui.java, ChessGuiPlus.java, GenericBoardPanel.java and it's offshoots,                   HistoryPanel.java, and InfoPanel.java.
@@ -150,4 +151,7 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
          Menu. If possible, I will also add music functionality as well as sounds effects within the Menu. 
 
 * Kody Davis
-* Felipe Rodriguez
+  * Felipe Rodriguez
+  -      I will be working on the music portion of the code as well as intergrate new elo scores for players to have different scoring systems based on the game mode they want to play 
+
+- 
