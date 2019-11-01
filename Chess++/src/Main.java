@@ -1,4 +1,11 @@
 import javax.swing.JFrame;
+import Engine.*;
+import GUI.*;
+import Menu.*;
+import Online.*;
+import Pieces.*;
+import Profiles.*;
+import Visuals.*;
 
 public class Main extends JFrame {
     public Main() {
