@@ -1,5 +1,4 @@
-
-
+//Kody Davis
 import java.awt.image.BufferedImage;
 import javax.swing.*;
 import java.awt.*;
@@ -9,602 +8,266 @@ import java.util.*;
 
 public class MenuBuilder extends JMenuBar implements ItemListener
 {
-  ChessSquare[][] arraySquares = new ChessSquare[8][8];
-  JMenu chooseColorOne = new JMenu("Board Color 1");
-  JMenu chooseColorTwo = new JMenu("Board Color 2");
+  JMenu playerOneIcons = new JMenu("Icon Set");
+  JMenu playerTwoIcons = new JMenu("Icon Set");
   ButtonGroup groupOne = new ButtonGroup();
   ButtonGroup groupTwo = new ButtonGroup();
-  JCheckBoxMenuItem[] arrayOne = new JCheckBoxMenuItem[13];
-  JCheckBoxMenuItem[] arrayTwo = new JCheckBoxMenuItem[13];
+  int currentTeam = 0;
+  MainBoardPanel p;
 
-  public MenuBuilder(BufferedImage[][] colorsImg, ChessSquare[][] a)
+  public MenuBuilder(MainBoardPanel panel)
   {
-    arraySquares = a;
+    p = panel;
+    playerTwoIcons.setVisible(false);
     JMenu menu = new JMenu("Options");
+    JMenu iconSet = new JMenu();
     add(menu);
 
-    JCheckBoxMenuItem color;
-    for(int i = 0; i < 2; i++)
+    for(int j = 0; j < 2; j++)
     {
-      color = new JCheckBoxMenuItem("Red", new ImageIcon(colorsImg[0][0]), false);
-      if(i == 0)
+      for(int i = 0; i < 5; i++)
       {
-        chooseColorOne.add(color);
-        groupOne.add(color);
-        arrayOne[0] = color;
+        if(i == 0)
+        {
+          iconSet = buildChoices("CharactersOne", j);
+        }
+        else if(i == 1)
+        {
+          iconSet = buildChoices("CharactersTwo", j);
+        }
+        else if(i == 2)
+        {
+          iconSet = buildChoices("Classic", j);
+        }
+        else if(i == 3)
+        {
+          iconSet = buildChoices("ShadedOne", j);
+        }
+        else if(i == 4)
+        {
+          iconSet = buildChoices("ShadedTwo", j);
+        }
+
+        if(j == 0)
+        {
+          playerOneIcons.add(iconSet);
+        }
+        else if(j == 1)
+        {
+          playerTwoIcons.add(iconSet);
+        }
       }
-      else
-      {
-        chooseColorTwo.add(color);
-        groupTwo.add(color);
-        arrayTwo[0] = color;
-      }
-      color.addItemListener(this);
-      color = new JCheckBoxMenuItem("Black", new ImageIcon(colorsImg[0][1]), false);
-      if(i == 0)
-      {
-        color.setState(true);
-        chooseColorOne.add(color);
-        groupOne.add(color);
-        arrayOne[1] = color;
-      }
-      else
-      {
-        chooseColorTwo.add(color);
-        groupTwo.add(color);
-        arrayTwo[1] = color;
-      }
-      color.addItemListener(this);
-      color = new JCheckBoxMenuItem("Dark Blue", new ImageIcon(colorsImg[0][2]), false);
-      if(i == 0)
-      {
-        chooseColorOne.add(color);
-        groupOne.add(color);
-        arrayOne[2] = color;
-      }
-      else
-      {
-        chooseColorTwo.add(color);
-        groupTwo.add(color);
-        arrayTwo[2] = color;
-      }
-      color.addItemListener(this);
-      color = new JCheckBoxMenuItem("Cyan", new ImageIcon(colorsImg[0][3]), false);
-      if(i == 0)
-      {
-        chooseColorOne.add(color);
-        groupOne.add(color);
-        arrayOne[3] = color;
-      }
-      else
-      {
-        chooseColorTwo.add(color);
-        groupTwo.add(color);
-        arrayTwo[3] = color;
-      }
-      color.addItemListener(this);
-      color = new JCheckBoxMenuItem("Dark Gray", new ImageIcon(colorsImg[0][4]), false);
-      if(i == 0)
-      {
-        chooseColorOne.add(color);
-        groupOne.add(color);
-        arrayOne[4] = color;
-      }
-      else
-      {
-        chooseColorTwo.add(color);
-        groupTwo.add(color);
-        arrayTwo[4] = color;
-      }
-      color.addItemListener(this);
-      color = new JCheckBoxMenuItem("Light Gray", new ImageIcon(colorsImg[0][5]), false);
-      if(i == 0)
-      {
-        chooseColorOne.add(color);
-        groupOne.add(color);
-        arrayOne[5] = color;
-      }
-      else
-      {
-        chooseColorTwo.add(color);
-        groupTwo.add(color);
-        arrayTwo[5] = color;
-      }
-      color.addItemListener(this);
-      color = new JCheckBoxMenuItem("Dark Green", new ImageIcon(colorsImg[1][0]), false);
-      if(i == 0)
-      {
-        chooseColorOne.add(color);
-        groupOne.add(color);
-        arrayOne[6] = color;
-      }
-      else
-      {
-        chooseColorTwo.add(color);
-        groupTwo.add(color);
-        arrayTwo[6] = color;
-      }
-      color.addItemListener(this);
-      color = new JCheckBoxMenuItem("Lime Green", new ImageIcon(colorsImg[1][1]), false);
-      if(i == 0)
-      {
-        chooseColorOne.add(color);
-        groupOne.add(color);
-        arrayOne[7] = color;
-      }
-      else
-      {
-        chooseColorTwo.add(color);
-        groupTwo.add(color);
-        arrayTwo[7] = color;
-      }
-      color.addItemListener(this);
-      color = new JCheckBoxMenuItem("Magenta", new ImageIcon(colorsImg[1][2]), false);
-      if(i == 0)
-      {
-        chooseColorOne.add(color);
-        groupOne.add(color);
-        arrayOne[8] = color;
-      }
-      else
-      {
-        chooseColorTwo.add(color);
-        groupTwo.add(color);
-        arrayTwo[8] = color;
-      }
-      color.addItemListener(this);
-      color = new JCheckBoxMenuItem("Orange", new ImageIcon(colorsImg[1][3]), false);
-      if(i == 0)
-      {
-        chooseColorOne.add(color);
-        groupOne.add(color);
-        arrayOne[9] = color;
-      }
-      else
-      {
-        chooseColorTwo.add(color);
-        groupTwo.add(color);
-        arrayTwo[9] = color;
-      }
-      color.addItemListener(this);
-      color = new JCheckBoxMenuItem("Pink", new ImageIcon(colorsImg[1][4]), false);
-      if(i == 0)
-      {
-        chooseColorOne.add(color);
-        groupOne.add(color);
-        arrayOne[10] = color;
-      }
-      else
-      {
-        chooseColorTwo.add(color);
-        groupTwo.add(color);
-        arrayTwo[10] = color;
-      }
-      color.addItemListener(this);
-      color = new JCheckBoxMenuItem("White", new ImageIcon(colorsImg[1][5]), false);
-      if(i == 0)
-      {
-        chooseColorOne.add(color);
-        groupOne.add(color);
-        arrayOne[11] = color;
-      }
-      else
-      {
-        color.setState(true);
-        chooseColorTwo.add(color);
-        groupTwo.add(color);
-        arrayTwo[11] = color;
-      }
-      color.addItemListener(this);
-      color = new JCheckBoxMenuItem("Yellow", new ImageIcon(colorsImg[2][0]), false);
-      if(i == 0)
-      {
-        chooseColorOne.add(color);
-        groupOne.add(color);
-        arrayOne[12] = color;
-      }
-      else
-      {
-        chooseColorTwo.add(color);
-        groupTwo.add(color);
-        arrayTwo[12] = color;
-      }
-      color.addItemListener(this);
     }
-    menu.add(chooseColorOne);
-    menu.add(chooseColorTwo);
+
+    menu.add(playerOneIcons);
+    menu.add(playerTwoIcons);
+    menu.add(new ColorMenu("Choose Board Color", p.getSquares()));
+    setListener();
   }
 
+  private JMenu buildChoices(String text, int tm)
+  {
+    JMenu iconMenu = new JMenu(text);
+    String colorOne = "Red";
+    String colorTwo = "Silver";
+    String colorThree = "Gold";
+    String colorFour = "Black";
+    boolean sel = false;
+    JCheckBoxMenuItem temp;
+    if(tm == 0)
+    {
+      if(text.equals("CharactersOne"))
+      {
+        temp = new JCheckBoxMenuItem(colorOne, new ImageIcon(Images.menuIcons[1]), sel);
+        temp.setActionCommand(text + " " + colorOne);
+        iconMenu.add(temp);
+        groupOne.add(temp);
+        temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(Images.menuIcons[0]), sel);
+        temp.setActionCommand(text + " " + colorThree);
+        iconMenu.add(temp);
+        groupOne.add(temp);
+      }
+      else if(text.equals("CharactersTwo"))
+      {
+        temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(Images.menuIcons[2]), sel);
+        temp.setActionCommand(text + " " + colorThree);
+        iconMenu.add(temp);
+        groupOne.add(temp);
+        temp = new JCheckBoxMenuItem(colorTwo, new ImageIcon(Images.menuIcons[3]), sel);
+        temp.setActionCommand(text + " " + colorTwo);
+        iconMenu.add(temp);
+        groupOne.add(temp);
+      }
+      else if(text.equals("Classic"))
+      {
+        temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(Images.menuIcons[4]), sel);
+        temp.setActionCommand(text + " " + colorThree);
+        iconMenu.add(temp);
+        groupOne.add(temp);
+        temp.setVisible(false);
+        temp = new JCheckBoxMenuItem(colorTwo, new ImageIcon(Images.menuIcons[5]), true);
+        temp.setActionCommand(text + " " + colorTwo);
+        iconMenu.add(temp);
+        groupOne.add(temp);
+      }
+      else if(text.equals("ShadedOne"))
+      {
+        temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(Images.menuIcons[6]), sel);
+        temp.setActionCommand(text + " " + colorThree);
+        iconMenu.add(temp);
+        groupOne.add(temp);
+        temp = new JCheckBoxMenuItem(colorTwo, new ImageIcon(Images.menuIcons[7]), sel);
+        temp.setActionCommand(text + " " + colorTwo);
+        iconMenu.add(temp);
+        groupOne.add(temp);
+      }
+      else if(text.equals("ShadedTwo"))
+      {
+        temp = new JCheckBoxMenuItem(colorFour, new ImageIcon(Images.menuIcons[8]), sel);
+        temp.setActionCommand(text + " " + colorFour);
+        iconMenu.add(temp);
+        groupOne.add(temp);
+        temp = new JCheckBoxMenuItem(colorOne, new ImageIcon(Images.menuIcons[9]), sel);
+        temp.setActionCommand(text + " " + colorOne);
+        iconMenu.add(temp);
+        groupOne.add(temp);
+      }
+    }
+    else
+    {
+      if(text.equals("CharactersOne"))
+      {
+        temp = new JCheckBoxMenuItem(colorOne, new ImageIcon(Images.menuIcons[1]), sel);
+        temp.setActionCommand(text + " " + colorOne);
+        iconMenu.add(temp);
+        groupTwo.add(temp);
+        temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(Images.menuIcons[0]), sel);
+        temp.setActionCommand(text + " " + colorThree);
+        iconMenu.add(temp);
+        groupTwo.add(temp);
+      }
+      else if(text.equals("CharactersTwo"))
+      {
+        temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(Images.menuIcons[2]), sel);
+        temp.setActionCommand(text + " " + colorThree);
+        iconMenu.add(temp);
+        groupTwo.add(temp);
+        temp = new JCheckBoxMenuItem(colorTwo, new ImageIcon(Images.menuIcons[3]), sel);
+        temp.setActionCommand(text + " " + colorTwo);
+        iconMenu.add(temp);
+        groupTwo.add(temp);
+      }
+      else if(text.equals("Classic"))
+      {
+        temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(Images.menuIcons[4]), true);
+        temp.setActionCommand(text + " " + colorThree);
+        iconMenu.add(temp);
+        groupTwo.add(temp);
+        temp = new JCheckBoxMenuItem(colorTwo, new ImageIcon(Images.menuIcons[5]), sel);
+        temp.setActionCommand(text + " " + colorTwo);
+        iconMenu.add(temp);
+        groupTwo.add(temp);
+        temp.setVisible(false);
+      }
+      else if(text.equals("ShadedOne"))
+      {
+        temp = new JCheckBoxMenuItem(colorThree, new ImageIcon(Images.menuIcons[6]), sel);
+        temp.setActionCommand(text + " " + colorThree);
+        iconMenu.add(temp);
+        groupTwo.add(temp);
+        temp = new JCheckBoxMenuItem(colorTwo, new ImageIcon(Images.menuIcons[7]), sel);
+        temp.setActionCommand(text + " " + colorTwo);
+        iconMenu.add(temp);
+        groupTwo.add(temp);
+      }
+      else if(text.equals("ShadedTwo"))
+      {
+        temp = new JCheckBoxMenuItem(colorFour, new ImageIcon(Images.menuIcons[8]), sel);
+        temp.setActionCommand(text + " " + colorFour);
+        iconMenu.add(temp);
+        groupTwo.add(temp);
+        temp = new JCheckBoxMenuItem(colorOne, new ImageIcon(Images.menuIcons[9]), sel);
+        temp.setActionCommand(text + " " + colorOne);
+        iconMenu.add(temp);
+        groupTwo.add(temp);
+      }
+    }
+    return iconMenu;
+  }
 
-    @Override
+  public void teamChange()
+  {
+    if(currentTeam == 0)
+    {
+      currentTeam = 1;
+      playerOneIcons.setVisible(false);
+      playerTwoIcons.setVisible(true);
+    }
+    else
+    {
+      currentTeam = 0;
+      playerOneIcons.setVisible(true);
+      playerTwoIcons.setVisible(false);
+    }
+  }
+
+  @Override
   public void itemStateChanged(ItemEvent e)
   {
     if(e.getStateChange() == ItemEvent.SELECTED)
     {
-      JCheckBoxMenuItem chosenColor = (JCheckBoxMenuItem)e.getItem();
-      boolean belongsFirst = false;
-      boolean belongsSecond = false;
-      String newColor = chosenColor.getText();
-      ChessSquare temp;
-      for(int i = 0; i < 13; i++)
+      String newIcons = ((JCheckBoxMenuItem)e.getItem()).getActionCommand();
+      if(currentTeam == 0)
       {
-        boolean selected = arrayOne[i].getState();
-        boolean selectedTwo = arrayTwo[i].getState();
-        if(selected)
-          belongsFirst = newColor.equals(arrayOne[i].getText());
-        if(selectedTwo)
-          belongsSecond = newColor.equals(arrayTwo[i].getText());
-      }
-      if(belongsFirst)
-      {
-        if(newColor.equals("Red"))
+        int i = 0;
+        for(Enumeration<AbstractButton> buttons = groupTwo.getElements(); buttons.hasMoreElements();)
         {
-          for(int i = 0; i < 8; i++)
+          AbstractButton compare = buttons.nextElement();
+          compare.setVisible(true);
+          if(newIcons.equals(compare.getActionCommand()))
           {
-            for(int j = 0; j < 8; j++)
-            {
-              if(!((i % 2 == 0) ^ (j % 2 == 0)))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.RED);
+            compare.setVisible(false);
+            Images.newImages(currentTeam, i);
+        			for(Pieces piece : p.gameBoard.pieceList.get(currentTeam)) {
+                  piece.setImage();
               }
-            }
           }
-        }
-        else if(newColor.equals("Black"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if(!((i % 2 == 0) ^ (j % 2 == 0)))
-              {
-                temp =arraySquares[i][j];
-                temp.setBackground(Color.BLACK);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Dark Blue"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if(!((i % 2 == 0) ^ (j % 2 == 0)))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.BLUE);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Cyan"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if(!((i % 2 == 0) ^ (j % 2 == 0)))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.CYAN);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Dark Gray"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if(!((i % 2 == 0) ^ (j % 2 == 0)))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.DARK_GRAY);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Lime Green"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if(!((i % 2 == 0) ^ (j % 2 == 0)))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(new Color(152, 255, 102));
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Dark Green"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if(!((i % 2 == 0) ^ (j % 2 == 0)))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.GREEN);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Light Gray"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if(!((i % 2 == 0) ^ (j % 2 == 0)))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.LIGHT_GRAY);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Magenta"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if(!((i % 2 == 0) ^ (j % 2 == 0)))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.MAGENTA);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Orange"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if(!((i % 2 == 0) ^ (j % 2 == 0)))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.ORANGE);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Pink"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if(!((i % 2 == 0) ^ (j % 2 == 0)))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.PINK);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("White"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if(!((i % 2 == 0) ^ (j % 2 == 0)))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.WHITE);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Yellow"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if(!((i % 2 == 0) ^ (j % 2 == 0)))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.YELLOW);
-              }
-            }
-          }
+          i++;
         }
       }
-      if(belongsSecond)
+      else
       {
-        if(newColor.equals("Red"))
+        int i = 0;
+        for(Enumeration<AbstractButton> buttons = groupOne.getElements(); buttons.hasMoreElements();)
         {
-          for(int i = 0; i < 8; i++)
+          AbstractButton compare = buttons.nextElement();
+          compare.setVisible(true);
+          if(newIcons.equals(compare.getActionCommand()))
           {
-            for(int j = 0; j < 8; j++)
-            {
-              if((i % 2 == 0) ^ (j % 2 == 0))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.RED);
+            compare.setVisible(false);
+            Images.newImages(currentTeam, i);
+        			for(Pieces piece : p.gameBoard.pieceList.get(currentTeam)) {
+                  piece.setImage();
               }
-            }
           }
-        }
-        else if(newColor.equals("Black"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if((i % 2 == 0) ^ (j % 2 == 0))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.BLACK);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Dark Blue"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if((i % 2 == 0) ^ (j % 2 == 0))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.BLUE);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Cyan"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if((i % 2 == 0) ^ (j % 2 == 0))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.CYAN);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Dark Gray"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if((i % 2 == 0) ^ (j % 2 == 0))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.DARK_GRAY);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Lime Green"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if((i % 2 == 0) ^ (j % 2 == 0))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(new Color(152, 255, 102));
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Dark Green"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if((i % 2 == 0) ^ (j % 2 == 0))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.GREEN);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Light Gray"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if((i % 2 == 0) ^ (j % 2 == 0))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.LIGHT_GRAY);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Magenta"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if((i % 2 == 0) ^ (j % 2 == 0))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.MAGENTA);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Orange"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if((i % 2 == 0) ^ (j % 2 == 0))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.ORANGE);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Pink"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if((i % 2 == 0) ^ (j % 2 == 0))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.PINK);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("White"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if((i % 2 == 0) ^ (j % 2 == 0))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.WHITE);
-              }
-            }
-          }
-        }
-        else if(newColor.equals("Yellow"))
-        {
-          for(int i = 0; i < 8; i++)
-          {
-            for(int j = 0; j < 8; j++)
-            {
-              if((i % 2 == 0) ^ (j % 2 == 0))
-              {
-                temp = arraySquares[i][j];
-                temp.setBackground(Color.YELLOW);
-              }
-            }
-          }
+          i++;
         }
       }
+      p.updateBoard();
+    }
+  }
+
+  public void setListener()
+  {
+    for(Enumeration<AbstractButton> buttons = groupOne.getElements(); buttons.hasMoreElements();)
+    {
+      AbstractButton compare = buttons.nextElement();
+      compare.addItemListener(this);
+    }
+    for(Enumeration<AbstractButton> buttons = groupTwo.getElements(); buttons.hasMoreElements();)
+    {
+      AbstractButton compare = buttons.nextElement();
+      compare.addItemListener(this);
     }
   }
 }
