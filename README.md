@@ -140,9 +140,14 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
 
 * Roy Grady
 * Kieran Hsieh
-  -         Implemented the builder piece and the new game modes after refactoring the basic GUI code. 
-            This is shown by the files MainBoardPanel.java, ChessGui.java, BulletChessGui.java, ChessGuiPlus.java, 
-            GenericBoardPanel.java and it's offshoots, HistoryPanel.java, and InfoPanel.java.
+
+  -      	Implemented the builder piece and the new game modes after refactoring the basic GUI code. This is shown by the                         MainBoardPanel.java, ChessGui.java, BulletChessGui.java, ChessGuiPlus.java, GenericBoardPanel.java and it's offshoots,                   HistoryPanel.java, and InfoPanel.java.
+  
 * Guillermo Gomez
+
+  -      Completed the Menu GUI as well as implement the settings of the game as well as the profile creation menu. The files that                contain these implenetations are Menu.java, ProfileMenu.java, Profile.java, SettingsMenu.java, and Button.java.
+  -      My next step will be to finish the database of the Profile creation. I will also add more settings features in the Settings
+         Menu. If possible, I will also add music functionality as well as sounds effects within the Menu. 
+
 * Kody Davis
 * Felipe Rodriguez
