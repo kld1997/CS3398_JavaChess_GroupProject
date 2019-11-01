@@ -162,7 +162,6 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
          Menu. If possible, I will also add music functionality as well as sounds effects within the Menu. 
 
 * Kody Davis
-
   -     I completely remade the Options menu, which now allows for customization of pieces as well as board colors. The 
          artwork for the pieces are credited in the Inspiration tab of this ReadMe, though I did recolor and resize the 
          originally all-white pieces. Pieces are no longer tied to a specific set, but are unique to the player who chooses
@@ -171,7 +170,6 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
          they would like. MenuBuilder.java and ColorMenu.java contain the majority of the code responsible for implementing
          these features. Images.java also assists in managing the piece models in the "img" folder. They can all be found
          in the KodyGUI and master branches of the team Github repo.
-         
   -     My next steps will be to begin working on a save function for the game so that games can be exited without having
         to completely start over. Once created, users will be able to save their game from the options menu and load a
         previously saved game from the main menu. I would also like to work on drag-and-drop functionality, time permitting.
