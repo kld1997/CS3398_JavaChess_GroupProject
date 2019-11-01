@@ -161,6 +161,22 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
          Menu. If possible, I will also add music functionality as well as sounds effects within the Menu. 
 
 * Kody Davis
+
+  -     I completely remade the Options menu, which now allows for customization of pieces as well as board colors. The 
+         artwork for the pieces are credited in the Inspiration tab of this ReadMe, though I did recolor and resize the 
+         originally all-white pieces. Pieces are no longer tied to a specific set, but are unique to the player who chooses
+         them. There is no color customization for pieces as of yet, however the board color is completely customizable
+         with the user now being able to choose from a much larger set of colors as well as specify specific RGB values if
+         they would like. MenuBuilder.java and ColorMenu.java contain the majority of the code responsible for implementing
+         these features. Images.java also assists in managing the piece models in the "img" folder. They can all be found
+         in the KodyGUI and master branches of the team Github repo.
+         
+  -     My next steps will be to begin working on a save function for the game so that games can be exited without having
+        to completely start over. Once created, users will be able to save their game from the options menu and load a
+        previously saved game from the main menu. I would also like to work on drag-and-drop functionality, time permitting.
+        If I manage to finish all of this, I will attempt to implement piece color options that are dynamically chosen 
+        during runtime as opposed to hard-coding in a plethora of piece color options.
+        
   * Felipe Rodriguez
   -      I will be working on the music portion of the code as well as intergrate new elo scores for players to have different scoring systems based on the game mode they want to play 
 
