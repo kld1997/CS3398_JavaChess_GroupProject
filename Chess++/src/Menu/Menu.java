@@ -15,6 +15,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.AudioInputStream;
 import Engine.*;
 import GUI.*;
+import Online.ChessClient;
 
 public class Menu extends JPanel {
 
@@ -147,8 +148,7 @@ public class Menu extends JPanel {
                 // int gamemode = 0
                 // bool highlight = 0;
                 //new ChessGui(0, false);
-            	new ChessGui(new Board(), -1);
-                start();
+            	new ChessGui(new Board());
             }
         });
 
@@ -164,8 +164,7 @@ public class Menu extends JPanel {
                 // int gamemode = 1
                 // bool highlight = 0;
                 // new ChessGui(1, false);
-            	new BulletChessGui(new Board(), -1);
-                start();
+            	new BulletChessGui(new Board());
             }
         });
 
@@ -181,8 +180,7 @@ public class Menu extends JPanel {
                 // int gamemode = 2;
                 // bool highlight = 0;
                 // new ChessGui(2, false);
-            	new ChessGuiPlus(new Board(), -1);
-                start();
+            	new ChessGuiPlus(new Board());
             }
         });
 
@@ -289,6 +287,8 @@ public class Menu extends JPanel {
                 Integer.parseInt(port);
                 System.out.println(ipaddress + "\n");
                 System.out.println(port);
+                
+                //ChessClient client = new ChessClient(b, getMainPanel(), port);
             }
         });
         add(submitButton);
@@ -326,6 +326,7 @@ public class Menu extends JPanel {
                 port = portField.getText();
                 Integer.parseInt(port);
                 System.out.println(port);
+                
             }
         });
         add(submitButton);

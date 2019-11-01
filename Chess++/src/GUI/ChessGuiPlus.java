@@ -6,9 +6,8 @@ import Engine.*;
 public class ChessGuiPlus extends ChessGui
 {
 
-    public ChessGuiPlus(Board b, int onlineSet)
+    public ChessGuiPlus(Board b)
     {
-    	online = onlineSet;
         topPanel = new InfoPanel(this);
         mainPanel = new ChessPanel(this, true);
         rightPanel = new HistoryPanel(this);

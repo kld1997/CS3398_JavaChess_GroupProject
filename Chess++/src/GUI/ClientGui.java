@@ -8,7 +8,7 @@ import Online.*;
 
 public class ClientGui extends ChessGui {
 	
-	public ClientGui(Board b, int onlineSet, int p)
+	/*public ClientGui(Board b, int onlineSet, int p)
     {
 		ChessGui g = this;
     	this.online = onlineSet;
@@ -35,5 +35,5 @@ public class ClientGui extends ChessGui {
           };
 
           thread.start();
-    }
+    }*/
 }

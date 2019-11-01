@@ -84,11 +84,11 @@ public class MainBoardPanel extends JPanel
                             moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
                             teamNum = g.getInfoPanel().getCurrTeam();
                             
-                            if(g.online == -1 || teamNum == g.online) {
+                            //if(g.online == -1 || teamNum == g.online) {
                                 moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
 
                                 moveMade = gameBoard.makeMove(teamNum, moveString, true);                           //Check to see if a move has been made
-                            }
+                            //}
                             
                             //moveMade = gameBoard.makeMove(teamNum, moveString, true);                           //Check to see if a move has been made
                             if (moveMade)
@@ -107,14 +107,14 @@ public class MainBoardPanel extends JPanel
                                 tempString += " " + actionCommandString.substring(6, spaceIndex);
                                 tempString += " has moved from " + moveString.substring(0, 2) + " to " + moveString.substring(2);
                                 g.getHisotryPanel().ph.addMove(tempString);
-                                if(g.online != -1) {
+                                /*if(g.online != -1) {
 	                                try {
 	                        			g.output.writeObject(moveString);
 	                        			g.output.flush();
 	                        		} catch(IOException ioException) {
 	                        			System.out.println("wut");
 	                        		}
-                                }
+                                }*/
                             }
                             else
                             {

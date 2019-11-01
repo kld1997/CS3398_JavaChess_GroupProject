@@ -10,7 +10,7 @@ import GUI.*;
 
 public class ChessServer {
 
-	public ServerSocket server;
+	/*public ServerSocket server;
 	public Socket connection;
 	public int port;
 	public String message = null;
@@ -36,16 +36,14 @@ public class ChessServer {
  							e.printStackTrace();
  						}
  			            try {
- 			            	g.output = new ObjectOutputStream(connection.getOutputStream());
- 			            	g.output.flush();
- 							g.input = new ObjectInputStream(connection.getInputStream());
+ 			            	output = new ObjectOutputStream(connection.getOutputStream());
+ 			            	output.flush();
+ 							input = new ObjectInputStream(connection.getInputStream());
  			            } catch (IOException e) {
  							// TODO Auto-generated catch block
  							e.printStackTrace();
  						}
  			            readin(g, board, mbp);
- 				/*} catch(EOFException eofException) {
- 					System.out.println("FDFDDF");*/
  				}
  				finally {
  					System.out.println(connection.getInputStream());
@@ -60,7 +58,7 @@ public class ChessServer {
      	while(true) {
 	    		try {
 					try {
-						message = (String) g.input.readObject();
+						message = (String) input.readObject();
 					} catch (ClassNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -76,5 +74,5 @@ public class ChessServer {
 	    			}
 	    		}
      	}
- 	}
+ 	}*/
 }

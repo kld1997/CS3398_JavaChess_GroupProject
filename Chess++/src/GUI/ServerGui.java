@@ -8,7 +8,7 @@ import Online.*;
 
 public class ServerGui extends ChessGui {
 	
-	public ServerGui(Board b, int onlineSet, String add, int p)
+	/*public ServerGui(Board b, int onlineSet, String add, int p)
     {
 		ChessGui g = this;
     	this.online = onlineSet;
@@ -27,15 +27,5 @@ public class ServerGui extends ChessGui {
         setLayout(new BorderLayout());
         addPanels();
         setVisible(true);
-        ChessClient client = new ChessClient(b, getMainPanel(), address, port);
-        Thread thread = new Thread(){
-            public void run(){
-              System.out.println("Thread Running");
-              client.startRunning(g, b, getMainPanel());
-            }
-          };
-
-          thread.start();
-    	
-    }
+ */       
 }

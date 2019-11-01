@@ -15,6 +15,7 @@ import Pieces.PieceTypes.*;
 public class Board {
 	
 	public static int teamNum = 2;
+	public int teamTurn = 0;
 	
 	// pieces
 	public long[] kingBB = new long[teamNum];

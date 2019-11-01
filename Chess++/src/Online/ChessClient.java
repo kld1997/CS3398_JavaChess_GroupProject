@@ -10,7 +10,8 @@ import GUI.*;
 
 public class ChessClient {
 	
-	
+	public ObjectInputStream input;
+	public ObjectOutputStream output;
 	public Socket connection;
 	public String message = null;
 	private String serverIP;
@@ -20,21 +21,30 @@ public class ChessClient {
 		
 		serverIP = address;
     	port = p;
+    	
+    	Thread thread = new Thread(){
+            public void run(){
+              System.out.println("Client Running");
+              startRunning();
+            }
+          };
+
+          thread.start();
 	}
 	
-	public void startRunning(ChessGui g, Board board, MainBoardPanel mbp) {
+	public void startRunning() {
 		try {
 				try {
 					connection = new Socket(InetAddress.getByName(serverIP), port);
 			            try {
-			            	g.output = new ObjectOutputStream(connection.getOutputStream());
-			            	g.output.flush();
-							g.input = new ObjectInputStream(connection.getInputStream());
+			            	output = new ObjectOutputStream(connection.getOutputStream());
+			            	output.flush();
+							input = new ObjectInputStream(connection.getInputStream());
 			            } catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-			            readin(g, board, mbp);
+			            readin();
 				/*} catch(EOFException eofException) {
 					System.out.println("FDFDDF");*/
 				}
@@ -47,11 +57,11 @@ public class ChessClient {
 		}
 	}
     
-    private void readin(ChessGui g, Board gameBoard, MainBoardPanel mbp) {
+    private void readin() {
     	while(true) {
     		try {
 				try {
-					message = (String) g.input.readObject();
+					message = (String) input.readObject();
 					System.out.println(message);
 				} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
@@ -61,13 +71,13 @@ public class ChessClient {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    		if(mbp.teamNum == 0 && Board.convertToCoord(message) != -1L) {
-    			if(gameBoard.makeMove(mbp.teamNum, message, false)) {
+    		/*if(teamNum == 0 && Board.convertToCoord(message) != -1L) {
+    			if(makeMove(teamNum, message, false)) {
     				System.out.println(message);
-    				mbp.teamNum = Math.abs(mbp.teamNum - 1);
-    				mbp.updateBoard();
+    				teamNum = Math.abs(teamNum - 1);
+    				updateBoard();
     			}
-    		}
+    		}*/
     	}
 	}
 }

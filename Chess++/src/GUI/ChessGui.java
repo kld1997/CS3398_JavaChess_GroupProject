@@ -9,11 +9,6 @@ import Visuals.*;
 
 public class ChessGui extends JFrame
 {
-	public ObjectOutputStream output;
-	public ObjectInputStream input;
-	public int online;
-	public int port = 0;
-	public String address = "";
     public GenericInfoPanel topPanel;
     public HistoryPanel rightPanel;
     public ChessPanel mainPanel;
@@ -21,9 +16,8 @@ public class ChessGui extends JFrame
     public MenuBuilder menu;
     public ChessGui(){}
     
-    public ChessGui(Board b, int onlineSet)
+    public ChessGui(Board b)
     {
-    	this.online = onlineSet;
         topPanel = new InfoPanel(this);
         mainPanel = new ChessPanel(this, false);
         rightPanel = new HistoryPanel(this);

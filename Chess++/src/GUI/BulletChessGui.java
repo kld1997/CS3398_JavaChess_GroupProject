@@ -6,9 +6,8 @@ import Engine.*;
 
 public class BulletChessGui extends ChessGui
 {
-    public BulletChessGui(Board b, int onlineSet)
+    public BulletChessGui(Board b)
     {
-    	online = onlineSet;
         topPanel = new BulletInfoPanel(this);
         mainPanel = new ChessPanel(this, false);
         rightPanel = new HistoryPanel(this);
