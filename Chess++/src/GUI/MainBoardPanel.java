@@ -14,11 +14,12 @@ import java.util.Vector;
 import Engine.*;
 import Visuals.*;
 import Pieces.*;
+import Options.Options;
 
 //Main Grid of
 public class MainBoardPanel extends JPanel
 {
-    public Board gameBoard = new Board();
+    public Board gameBoard = new Board(new Options());
     GenericInfoPanel top;
     HistoryPanel right;
     boolean locked = false;

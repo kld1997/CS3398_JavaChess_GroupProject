@@ -16,6 +16,7 @@ import javax.sound.sampled.AudioInputStream;
 import Engine.*;
 import GUI.*;
 import Online.ChessClient;
+import Options.Options;
 
 public class Menu extends JPanel {
 
@@ -148,7 +149,7 @@ public class Menu extends JPanel {
                 // int gamemode = 0
                 // bool highlight = 0;
                 //new ChessGui(0, false);
-            	new ChessGui(new Board());
+            	new ChessGui(new Board(new Options()));
             }
         });
 
@@ -164,7 +165,7 @@ public class Menu extends JPanel {
                 // int gamemode = 1
                 // bool highlight = 0;
                 // new ChessGui(1, false);
-            	new BulletChessGui(new Board());
+            	new BulletChessGui(new Board(new Options()));
             }
         });
 
@@ -180,7 +181,7 @@ public class Menu extends JPanel {
                 // int gamemode = 2;
                 // bool highlight = 0;
                 // new ChessGui(2, false);
-            	new ChessGuiPlus(new Board());
+            	new ChessGuiPlus(new Board(new Options()));
             }
         });
 

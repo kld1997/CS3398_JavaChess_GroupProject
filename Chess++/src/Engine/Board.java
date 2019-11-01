@@ -11,6 +11,7 @@ import GUI.*;
 import Online.*;
 import Pieces.*;
 import Pieces.PieceTypes.*;
+import Options.*;
 
 public class Board {
 	
@@ -91,7 +92,9 @@ public class Board {
 	public List<List<Piece>> promoteableList;
 	public List<Piece> kingList;
 	
-	public Board() {                                                   //initializes all of the bitboards
+	public Options options;
+	
+	public Board(Options o) {                                                   //initializes all of the bitboards
 
 		pieceList = new ArrayList<List<Piece>>();
 		cardinalList = new ArrayList<List<Piece>>();
@@ -126,6 +129,9 @@ public class Board {
 		
 		teamWon = 2;
 		
+		options = o;
+		setPieces(options.getBoard());
+		
 	}
 	
 	public void standardChess() {                                           //sets up the positions of a standard chess game
@@ -140,7 +146,7 @@ public class Board {
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
 				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
 		
-		setStuff(standardChessBoard);
+		setPieces(standardChessBoard);
 	}
 	
 	public void chessPlusPlus() {
@@ -154,12 +160,12 @@ public class Board {
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
 				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
 
-		setStuff(standardChessBoard);
+		setPieces(standardChessBoard);
 	}
 	
-	public void setStuff(String[][] chessBoard) {
+	public void setPieces(String[][] chessBoard) {
 		
-		pieceList = PieceInit.pieceInit(chessBoard);
+		pieceList = ParseBoard.pieceInit(chessBoard);
 		
 		List<Piece> cardinal;
 		List<Piece> ordinal;
