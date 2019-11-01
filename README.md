@@ -139,6 +139,15 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
 ## Sprint 2 Review
 
 * Roy Grady
+-  I added the code for stalemates, en passants, and castling. I also significantly refactored the board and pieces code so that
+it follows more principles and is more compatible with additional features. I implemented preliminary code for server/client 
+connections that will be able to fully work by the next sprint. These artifacts can be found in the source folder as all of the 
+individual piece files, Board.java, Pieces.java, PieceTypes.java, PieceInit.java, ChessServer.java, ChessClient.java, 
+ServerGui.java, ClientGui.java, and pawnPromote.java.
+
+- My next goal is to fully implement the online feature, make additional pieces, allow the player to input the pieces before starting, 
+and further refactor the code.
+
 
 * Kieran Hsieh
 
