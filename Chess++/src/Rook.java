@@ -6,7 +6,9 @@ public class Rook extends Pieces implements Cardinal, Castleable
 		super(t);
 		value = 5;
 		name = "Rook";
-		image = Images.pieces[Math.abs(team-1)][2];
+		ID = 'r';
+		iconNum = 2;
+		image = Images.pieces[Math.abs(team-1)][iconNum];
 	}
 	
 	public long pieceType(Board board) {

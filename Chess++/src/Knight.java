@@ -6,7 +6,9 @@ public class Knight extends Pieces
 		super(t);
 		value = 3;
 		name = "Knight";
-		image = Images.pieces[Math.abs(team-1)][3];
+		ID = 'k';
+		iconNum = 3;
+		image = Images.pieces[Math.abs(team-1)][iconNum];
 	}
 	
 	public long pieceType(Board board) {

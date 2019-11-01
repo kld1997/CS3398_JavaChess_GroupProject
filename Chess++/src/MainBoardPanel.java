@@ -1,3 +1,4 @@
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -5,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.Vector;
@@ -12,6 +14,7 @@ import java.util.Vector;
 //Main Grid of
 public class MainBoardPanel extends JPanel
 {
+	int teamNum = 0;
     Board gameBoard = new Board();
     GenericInfoPanel top;
     HistoryPanel right;
@@ -29,8 +32,16 @@ public class MainBoardPanel extends JPanel
         if(plusPlus){ gameBoard.chessPlusPlus(); }
         else { gameBoard.standardChess(); }
         //Images.setUpImages();
+        thisGui.menu = new MenuBuilder(this);
         setLayout(new GridLayout(8,8));
-        int counter = 0;
+        boardSet(g);
+        updateBoard();
+        //System.out.println("TRY");
+        
+    }
+    public void boardSet(ChessGui g) {
+    	//System.out.println("MEE");
+    	int counter = 0;
         for(int i = 0; i < 8; i ++)
         {
             counter = Math.abs(counter-1);
@@ -67,8 +78,15 @@ public class MainBoardPanel extends JPanel
                                 }
                             }
                             moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
-                            int teamNum = g.getInfoPanel().getCurrTeam();
-                            moveMade = gameBoard.makeMove(teamNum, moveString, true);                           //Check to see if a move has been made
+                            teamNum = g.getInfoPanel().getCurrTeam();
+                            
+                            if(g.online == -1 || teamNum == g.online) {
+                                moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
+
+                                moveMade = gameBoard.makeMove(teamNum, moveString, true);                           //Check to see if a move has been made
+                            }
+                            
+                            //moveMade = gameBoard.makeMove(teamNum, moveString, true);                           //Check to see if a move has been made
                             if (moveMade)
                             {
                                 if(g.getInfoPanel().getType() == 1)
@@ -76,6 +94,7 @@ public class MainBoardPanel extends JPanel
                                     ((BulletInfoPanel)g.getInfoPanel()).pauseAndSwitch();
                                 }
                                 g.getInfoPanel().switchTeam();
+                                g.menu.teamChange();
 
                                 String tempString = "";
                                 String actionCommandString = squares[pieceMovedPos[0]][pieceMovedPos[1]].getActionCommand();
@@ -84,6 +103,14 @@ public class MainBoardPanel extends JPanel
                                 tempString += " " + actionCommandString.substring(6, spaceIndex);
                                 tempString += " has moved from " + moveString.substring(0, 2) + " to " + moveString.substring(2);
                                 g.getHisotryPanel().ph.addMove(tempString);
+                                if(g.online != -1) {
+	                                try {
+	                        			g.output.writeObject(moveString);
+	                        			g.output.flush();
+	                        		} catch(IOException ioException) {
+	                        			System.out.println("wut");
+	                        		}
+                                }
                             }
                             else
                             {
@@ -136,23 +163,10 @@ public class MainBoardPanel extends JPanel
         ret+= 8-x;
         return ret;
     }
-    public void setUpImages()                                                                                      //Separates consolidated image file into different images
-    {
-        try
-        {
-            BufferedImage biPieces = ImageIO.read(new File("img/Pieces.png"));
-            for(int i = 0; i < 2; i ++)
-            {
-                for(int j = 0; j < 6; j++)
-                {
-                    Images.pieces[i][j] = biPieces.getSubimage(j*64, i*64, 64, 64);
-                }
-            }
-        }
-        catch(Exception e){}
-    }
+
     public void updateBoard()
     {
+    	//System.out.println("MEE2");
         top = thisGui.getInfoPanel();
         right = thisGui.getHisotryPanel();
         if(PawnPromote.promotion == true) {
@@ -189,7 +203,7 @@ public class MainBoardPanel extends JPanel
         int tempx;
         int tempy;
         
-        for(int i = 0; i < gameBoard.teamNum; i++) {
+        for(int i = 0; i < Board.teamNum; i++) {
     		if(i == 0)
     			teamName = "White";
     		else
@@ -209,7 +223,6 @@ public class MainBoardPanel extends JPanel
     			}
     		}
         }
-    	
         repaint();
     }
     /*

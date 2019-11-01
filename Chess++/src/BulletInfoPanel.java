@@ -25,9 +25,9 @@ public class BulletInfoPanel extends GenericInfoPanel
     }
     public void setUpTimers()
     {
-        whiteTime.setFont(new Font("Serif", Font.BOLD, 15));
+        whiteTime.setFont(new Font("Serif", Font.BOLD, 25));
         whiteTime.setHorizontalAlignment(JLabel.LEFT);
-        blackTime.setFont(new Font("Serif", Font.BOLD, 15));
+        blackTime.setFont(new Font("Serif", Font.BOLD, 25));
         blackTime.setHorizontalAlignment(JLabel.RIGHT);
         wt = new Timer();
         wt.scheduleAtFixedRate(new ChessTimer(thisGui, whiteTime, 120), 0, 1000);

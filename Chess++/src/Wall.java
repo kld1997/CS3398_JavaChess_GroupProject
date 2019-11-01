@@ -5,7 +5,9 @@ public class Wall extends Pieces
         super(t);
         value = 0;
         name = "Wall";
-        image = Images.pieces[Math.abs(team-1)][2];
+        ID = 'W';
+        iconNum = 2;
+        image = Images.pieces[Math.abs(team-1)][iconNum];
     }
     /*
     public long pieceType(NewBoard board)

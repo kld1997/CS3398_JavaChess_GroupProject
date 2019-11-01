@@ -5,7 +5,9 @@ public class King extends Pieces
 	public King(int t) {
 		super(t);
 		name = "King";
-		image = Images.pieces[Math.abs(team-1)][0];
+		ID = 'K';
+		iconNum = 0;
+		image = Images.pieces[Math.abs(team-1)][iconNum];
 	}
 	
 	public long pieceType(Board board) {

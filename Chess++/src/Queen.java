@@ -6,7 +6,9 @@ public class Queen extends Pieces implements Cardinal, Ordinal
 		super(t);
 		value = 9;
 		name = "Queen";
-		image = Images.pieces[Math.abs(team-1)][1];
+		ID = 'q';
+		iconNum = 1;
+		image = Images.pieces[Math.abs(team-1)][iconNum];
 	}
 	
 	public long pieceType(Board board) {

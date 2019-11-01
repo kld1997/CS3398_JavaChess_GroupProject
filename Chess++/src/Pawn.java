@@ -6,7 +6,9 @@ public class Pawn extends Pieces implements Promoteable
 		super(t);
 		value = 1;
 		name = "Pawn";
-		image = Images.pieces[Math.abs(team-1)][5];
+		ID = 'p';
+		iconNum = 5;
+		image = Images.pieces[Math.abs(team-1)][iconNum];
 	}
 	
 	public long pieceType(Board board) {

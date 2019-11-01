@@ -1,3 +1,4 @@
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -12,14 +13,11 @@ public class ChessPanel extends JPanel
 
     public ChessPanel(ChessGui g, boolean plusPlus)
     {
-        setUpImages();
         mbp = new MainBoardPanel(g, plusPlus);
         leftPanel = new JPanel();
         botPanel = new JPanel();
         setLayout(new BorderLayout());
         setupSides();
-        JMenuBar menu = new MenuBuilder(colors, mbp.getSquares());
-        g.setJMenuBar(menu);
         add(mbp, BorderLayout.CENTER);
     }
     public void setupSides()
@@ -48,20 +46,5 @@ public class ChessPanel extends JPanel
     public MainBoardPanel getMainPanel()
     {
         return mbp;
-    }
-    public void setUpImages()
-    {
-        try {
-            BufferedImage biColors = ImageIO.read(new File("img/colors-1.jpg"));
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 6; j++) {
-                    colors[i][j] = biColors.getSubimage((j * 212) + 30, (i * 204) + 23, 20, 20);
-                    if (i == 2 && j == 0) {
-                        break;
-                    }
-                }
-            }
-        }
-        catch(Exception e){}
     }
 }

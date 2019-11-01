@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
+
 public class PieceInit {
 	
 	static public Pieces identify(String id) {
@@ -23,6 +25,47 @@ public class PieceInit {
 		default: return new Wall(-1);
 		}
 		
+	}
+	
+	static public String[][] bitboardToArray(List<List<Pieces>> pieceList) {
+		String chessBoard[][] = {
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"  ","  ","  ","  ","  ","  ","  ","  "}};
+		
+		char teamID;
+        long temp;
+        int tempx;
+        int tempy;
+        String fullID;
+		
+		for(int i = 0; i < Board.teamNum; i++) {
+    		if(i == 0)
+    			teamID = 'w';
+    		else
+    			teamID = 'b';
+    		
+    		for(Pieces piece : pieceList.get(i)) {
+    			temp = piece.piece;
+    			fullID = "" + teamID + piece.ID;
+    			
+    			while(temp != 0) {
+    				tempx = Long.numberOfTrailingZeros(temp)/8;
+    				tempy = Long.numberOfTrailingZeros(temp)%8;
+
+    				chessBoard[tempx][tempy] = fullID;
+    				
+    				temp &= temp - 1;
+    			}
+    		}
+        }
+		
+		return chessBoard;
 	}
 	
 	static public List<List<Pieces>> pieceInit(String[][] pieceArr) {

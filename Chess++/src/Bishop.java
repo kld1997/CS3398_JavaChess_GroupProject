@@ -6,7 +6,9 @@ public class Bishop extends Pieces implements Ordinal
 		super(t);
 		value = 3;
 		name = "Bishop";
-		image = Images.pieces[Math.abs(team-1)][4];
+		ID = 'b';
+		iconNum = 4;
+		image = Images.pieces[Math.abs(team-1)][iconNum];
 	}
 	
 	public long pieceType(Board board) {

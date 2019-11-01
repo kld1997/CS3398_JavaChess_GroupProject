@@ -56,9 +56,6 @@ public class ChessGui2 extends JFrame
             setLocation((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()*.15), (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight()*.15));
             setLayout(new BorderLayout());
 
-            JMenuBar menu = new MenuBuilder(colors,squares);
-            setJMenuBar(menu);
-
             topLabel.setText("White Turn");
             topLabel.setFont(new Font("Serif", Font.BOLD, 20));
             topLabel.setHorizontalAlignment(JLabel.CENTER);

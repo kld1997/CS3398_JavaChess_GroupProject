@@ -1,9 +1,23 @@
-//Roy Grady
-import java.util.Scanner;
+import javax.swing.JFrame;
 
-class Main {
+public class Main extends JFrame {
+    public Main() {
+        setTitle("Chess++");
+
+        setSize(640, 480);
+        setResizable(false);
+        Menu menu = new Menu();
+        add(menu);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+
     public static void main(String[] args) {
     	Images.setUpImages();
-    	new ChessGuiPlus(new Board());
+    	Images.readMenuIcons();
+        new Main();
     }
 }

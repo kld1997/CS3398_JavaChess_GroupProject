@@ -9,8 +9,9 @@ import java.util.stream.Collectors;
 
 class Board {
 	
-	int teamNum = 2;
+	static int teamNum = 2;
 	int pieceNum = 7;
+	String[][] thing = new String[8][8];
 	
 	// pieces
 	long[] kingBB = new long[teamNum];
@@ -302,6 +303,15 @@ class Board {
 		if(((pawnsBB[0]&row8)|(pawnsBB[1]&row1)) != 0) {
 			PawnPromote.pawnPromotion(this);
 		} 
+		
+		thing = PieceInit.bitboardToArray(pieceList);
+		
+		for(int i = 0; i < 8; i++ ) {
+			for(int j = 0; j < 8; j++) {
+				System.out.print(thing[i][j] + ",  ");
+			}
+			System.out.println();
+		}
 
 	}
 	
