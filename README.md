@@ -142,15 +142,15 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
 
 * Roy Grady
 
-  -   I added the code for stalemates, en passants, and castling. I also significantly refactored the board and pieces code so that
-      it follows more principles and is more compatible with additional features. I implemented preliminary code for server/client 
-      connections that will be able to fully work by the next sprint. These artifacts can be found in the source folder as all of the 
-      individual piece files, Board.java, Pieces.java, PieceTypes.java, PieceInit.java, ChessServer.java, ChessClient.java, 
-      ServerGui.java, ClientGui.java, and pawnPromote.java.
-
-  -    My next goal is to fully implement the online feature, make additional pieces, allow the player to input the pieces before
-       starting, and add a CPU for single player.
-
+  -      I added the code for stalemates, en passants, and castling. I also significantly refactored 
+         the board and pieces code so that it follows more principles and is more compatible with 
+         additional features. I implemented preliminary code for server/client connections that 
+         will be able to fully work by the next sprint. These artifacts can be found in the source 
+         folder as all of the individual piece files, Board.java, Pieces.java, PieceTypes.java, 
+         PieceInit.java, ChessServer.java, ChessClient.java, ServerGui.java, and ClientGui.java.
+  
+  -      My next step is to implement online functionality and allow for multiple board sizes,
+         as well as finish the remaining classic chess functions like stalemates, castling, and en passant.
 
 * Kieran Hsieh
 
