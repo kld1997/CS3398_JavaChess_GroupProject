@@ -14,10 +14,12 @@ public class ChessClient {
 	public ObjectOutputStream output;
 	public Socket connection;
 	public String message = null;
-	private String serverIP;
-    private int port;
+	public int turn = 1;
+	public String serverIP;
+    public int port;
+    ChessGui gui;
 	
-	public ChessClient(Board board, MainBoardPanel mbp, String address, int p) {
+	public ChessClient(String address, int p) {
 		
 		serverIP = address;
     	port = p;
@@ -29,7 +31,7 @@ public class ChessClient {
             }
           };
 
-          thread.start();
+        thread.start();
 	}
 	
 	public void startRunning() {
@@ -44,7 +46,8 @@ public class ChessClient {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-			            readin();
+			            if(gui != null)
+			            	readin();
 				/*} catch(EOFException eofException) {
 					System.out.println("FDFDDF");*/
 				}
@@ -71,13 +74,23 @@ public class ChessClient {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    		/*if(teamNum == 0 && Board.convertToCoord(message) != -1L) {
-    			if(makeMove(teamNum, message, false)) {
+    		if(gui.gameBoard.teamTurn == turn && Board.convertToCoord(message) != -1L) {
+    			if(gui.gameBoard.makeMove(message, false)) {
     				System.out.println(message);
-    				teamNum = Math.abs(teamNum - 1);
-    				updateBoard();
+    				gui.getMainPanel().updateBoard();
     			}
-    		}*/
+    		}
     	}
 	}
+    
+    public void setGui(ChessGui g) {
+    	gui = g;
+    }
+    
+    public boolean connected() {
+    	if(connection != null)
+    		return true;
+    	else
+    		return false;
+    }
 }

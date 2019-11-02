@@ -25,22 +25,22 @@ public class PawnPromote {
 		  case 3: //knight
 			board.removePiece(coord);
 			board.pawnsBB[team] &= ~coord;
-			board.pieceList.get(team).stream().filter(p -> p instanceof Knight).findFirst().get().piece |= coord;
+			board.pieceList.get(team).stream().filter(p -> p.ID == board.options.getPromote().charAt(0)).findFirst().get().piece |= coord;
 		    break;
 		  case 4: //bishop
 			board.removePiece(coord);
 			board.pawnsBB[team] &= ~coord;
-			board.pieceList.get(team).stream().filter(p -> p instanceof Bishop).findFirst().get().piece |= coord;
+			board.pieceList.get(team).stream().filter(p -> p.ID == board.options.getPromote().charAt(1)).findFirst().get().piece |= coord;
 		    break;
 		  case 2: //rook
 			board.removePiece(coord);
 			board.pawnsBB[team] &= ~coord;
-			board.pieceList.get(team).stream().filter(p -> p instanceof Rook).findFirst().get().piece |= coord;
+			board.pieceList.get(team).stream().filter(p -> p.ID == board.options.getPromote().charAt(2)).findFirst().get().piece |= coord;
 		    break;
 		  case 1: //queen
 			board.removePiece(coord);
 			board.pawnsBB[team] &= ~coord;
-			board.pieceList.get(team).stream().filter(p -> p instanceof Queen).findFirst().get().piece |= coord;
+			board.pieceList.get(team).stream().filter(p -> p.ID == board.options.getPromote().charAt(3)).findFirst().get().piece |= coord;
 		    break;
 		  default:
 		    System.out.println("error");

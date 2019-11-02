@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ImageIcon;
 import Pieces.*;
+import Pieces.PieceTypes.*;
 
 public class ParseBoard {
 	
@@ -70,7 +71,7 @@ public class ParseBoard {
 		return chessBoard;
 	}
 	
-	static public List<List<Piece>> pieceInit(String[][] pieceArr) {
+	static public List<List<Piece>> pieceInit(String[][] pieceArr, String p) {
 		
 		ArrayList<String> types1 = new ArrayList<String>();
 		ArrayList<String> types2 = new ArrayList<String>();
@@ -80,6 +81,7 @@ public class ParseBoard {
 		Piece newPiece;
 		String Binary;
 		int pos;
+		String promote = p;
 		
 		for(int i = 0; i < pieceArr.length; i++) {
 			for(int j = 0; j < pieceArr[i].length; j++) {
@@ -116,6 +118,13 @@ public class ParseBoard {
 		pieceList.add(list1);
 		pieceList.add(list2);
 		
+		for(int i = 0; i < Board.teamNum; i++) {
+			
+			if(hasPromoteable(pieceList.get(i))) {
+				pieceList.get(i).addAll(addMissingPromote(pieceList.get(i), promote, i));
+			}
+		}
+		
 		return pieceList;
 	}
 	
@@ -126,5 +135,37 @@ public class ParseBoard {
         } else {
             return Long.parseLong("1"+Binary.substring(2), 2)*2;
         }
+	}
+	
+    static public boolean hasPromoteable(List<Piece> pieces) {
+        	
+        	for(Piece piece : pieces) {
+        		if(piece instanceof Promoteable)
+        			return true;
+        	}
+        	return false;
+    }
+    
+    static public List<Piece> addMissingPromote(List<Piece> pieces, String promote, int team) {
+    	
+    	List<Piece> newPieces = new ArrayList<Piece>();
+    	String promoteList = promote;
+    	
+    	for(Piece piece : pieces) {
+    		if(promoteList.contains(piece.ID + ""))
+    			promoteList.replace(piece.ID + "", "");
+    	}
+    	
+    	char t;
+    	if(team == 0)
+    		t = 'w';
+    	else
+    		t = 'b';
+    	
+    	for(int i = 0; i < promoteList.length(); i++) {
+    		newPieces.add(identify("" + t + promoteList.charAt(i)));
+    	}
+    	
+    	return newPieces;
     }
 }

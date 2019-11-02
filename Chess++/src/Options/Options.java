@@ -1,5 +1,8 @@
 package Options;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import Engine.Board;
 
 public class Options {
@@ -9,8 +12,12 @@ public class Options {
 	int[] timeInc = new int[Board.teamNum];
 	boolean highlight;
 	boolean online;
+	ObjectOutputStream output;
+	ObjectInputStream input;
+	int turn;
 	String mode;
 	String[][] board = new String[8][8];
+	String promote;
 	
 	public Options() {
 		
@@ -47,6 +54,18 @@ public class Options {
 	public String[][] getBoard() { return board; }
 	public void setBoard(String[][] b) { board = b; }
 	
+	public String getPromote() { return promote; }
+	public void setPromote(String p) { promote = p; }
+	
+	public ObjectOutputStream getOutput() { return output; }
+	public void setOutput(ObjectOutputStream o) { output = o; }
+	
+	public ObjectInputStream getInput() { return input; }
+	public void setInput(ObjectInputStream i) { input = i; }
+	
+	public int getTurn() { return turn; }
+	public void setTurn(int t) { turn = t; }
+	
 	public void defaultSet() {
 		
 		timer = false;
@@ -54,15 +73,14 @@ public class Options {
 		online = false;
 		mode = "STANDARD";
 		board = BoardTypes.standardChessBoard();
+		promote = "kbrq";
 	}
 	
 	public void bulletSet() {
 		
+		defaultSet();
+		
 		timer = true;
-		highlight = true;
-		online = false;
-		mode = "STANDARD";
-		board = BoardTypes.standardChessBoard();
 		
 		for(int i = 0; i < Board.teamNum; i++) {
 			time[i] = 120;
@@ -71,6 +89,8 @@ public class Options {
 	}
 	
 	public void wallSet() {
+		
+		defaultSet();
 		
 		String wallChessBoard[][] = {
 				{"br","bk","bb","bq","bK","bb","bk","br"},
@@ -82,10 +102,6 @@ public class Options {
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
 				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
 		
-		timer = false;
-		highlight = true;
-		online = false;
-		mode = "STANDARD";
 		board = wallChessBoard;
 	}
 }

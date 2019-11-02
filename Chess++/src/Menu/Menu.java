@@ -15,7 +15,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.AudioInputStream;
 import Engine.*;
 import GUI.*;
-import Online.ChessClient;
+import Online.*;
 import Options.Options;
 
 public class Menu extends JPanel {
@@ -282,11 +282,20 @@ public class Menu extends JPanel {
                 String port;
                 ipaddress = ipField.getText();
                 port = portField.getText();
-                Integer.parseInt(port);
                 System.out.println(ipaddress + "\n");
                 System.out.println(port);
+                int p = Integer.parseInt(port);
                 
-                //ChessClient client = new ChessClient(b, getMainPanel(), port);
+                ChessClient client = new ChessClient(ipaddress, p);
+                
+                if(client.connected()) {
+                	Options options = new Options();
+                	options.setOnline(true);
+                	options.setOutput(client.output);
+                	options.setInput(client.input);
+                	
+                	client.setGui(new ChessGui(new Board(options)));
+                }
             }
         });
         add(submitButton);
@@ -322,8 +331,19 @@ public class Menu extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 String port;
                 port = portField.getText();
-                Integer.parseInt(port);
                 System.out.println(port);
+                int p = Integer.parseInt(port);
+                
+                ChessServer server = new ChessServer(p);
+                
+                if(server.connected()) {
+                	Options options = new Options();
+                	options.setOnline(true);
+                	options.setOutput(server.output);
+                	options.setInput(server.input);
+                	
+                	server.setGui(new ChessGui(new Board(options)));
+                }
                 
             }
         });

@@ -18,6 +18,8 @@ public class Board {
 	public static int teamNum = 2;
 	public int teamTurn = 0;
 	
+	ObjectOutputStream output;
+	
 	// pieces
 	public long[] kingBB = new long[teamNum];
 	public long[] pawnsBB = new long[teamNum];	
@@ -96,6 +98,8 @@ public class Board {
 	
 	public Board(Options o) {                                                   //initializes all of the bitboards
 
+		options = o;
+		
 		pieceList = new ArrayList<List<Piece>>();
 		cardinalList = new ArrayList<List<Piece>>();
 		ordinalList = new ArrayList<List<Piece>>();
@@ -129,43 +133,16 @@ public class Board {
 		
 		teamWon = 2;
 		
-		options = o;
-		setPieces(options.getBoard());
+		if(options.getOnline())
+			output = options.getOutput();
+		
+		setPieces();
 		
 	}
 	
-	public void standardChess() {                                           //sets up the positions of a standard chess game
+	public void setPieces() {
 		
-		String standardChessBoard[][] = {
-				{"br","bk","bb","bq","bK","bb","bk","br"},
-				{"bp","bp","bp","bp","bp","bp","bp","bp"},
-				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"wp","wp","wp","wp","wp","wp","wp","wp"},
-				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
-		
-		setPieces(standardChessBoard);
-	}
-	
-	public void chessPlusPlus() {
-		String standardChessBoard[][] = {
-				{"br","bk","bb","bq","bK","bb","bk","br"},
-				{"bp","bp","bp","bp","bp","bp","bp","bp"},
-				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"wW","  ","wW","  ","wW","  ","wW","  "},
-				{"  ","bW","  ","bW","  ","bW","  ","bW"},
-				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"wp","wp","wp","wp","wp","wp","wp","wp"},
-				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
-
-		setPieces(standardChessBoard);
-	}
-	
-	public void setPieces(String[][] chessBoard) {
-		
-		pieceList = ParseBoard.pieceInit(chessBoard);
+		pieceList = ParseBoard.pieceInit(options.getBoard(), options.getPromote());
 		
 		List<Piece> cardinal;
 		List<Piece> ordinal;
@@ -264,6 +241,8 @@ public class Board {
 		if(((pawnsBB[0]&row8)|(pawnsBB[1]&row1)) != 0) {
 			PawnPromote.pawnPromotion(this);
 		} 
+		
+		displayBitboard(epBB[1]);
 
 	}
 	
@@ -336,7 +315,7 @@ public class Board {
 		}
 	}
 	
-	public void displayBitboard(long bitBoard) {
+	static public void displayBitboard(long bitBoard) {
 		
 		String display = Long.toBinaryString(bitBoard);
 		
@@ -430,35 +409,12 @@ public class Board {
 		return valid;
 	}
 	
-public boolean makeMove(String pos, boolean checked) {
+	public boolean makeMove(String pos, boolean checked) {
 		
-		long coord1 = convertToCoord(pos.substring(0,2));
-		long coord2 = convertToCoord(pos.substring(2,4));
+		boolean valid = makeMove(teamTurn, pos, checked);
 		
-		boolean valid = false;
-		int otherTeam = Math.abs(teamTurn-1);
-		
-		if((coord1&teamBB[teamTurn]) != 0) {
-			for(Piece piece : pieceList.get(teamTurn)) {	
-				if((coord1&piece.piece) != 0) {
-					valid = piece.movePiece(this, coord1, coord2, checked);
-					
-					if(valid) {
-						if(piece.name == "Pawn") {
-							enPassant(coord1, coord2, teamTurn);
-						}
-						else if(piece.name == "King") {
-							castle(coord1, coord2, teamTurn);
-						}
-						
-						epBB[otherTeam] = 0;
-						teamTurn = otherTeam;
-						currentState();
-						break;
-					}
-				}
-			}
-		}
+		if(valid)
+			teamTurn = Math.abs(teamTurn-1);
 		
 		return valid;
 	}

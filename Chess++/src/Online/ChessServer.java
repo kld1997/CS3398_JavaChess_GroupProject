@@ -10,27 +10,36 @@ import GUI.*;
 
 public class ChessServer {
 
-	/*public ServerSocket server;
+	public ObjectInputStream input;
+	public ObjectOutputStream output;
+	public ServerSocket server;
 	public Socket connection;
-	public int port;
 	public String message = null;
+	public int turn = 0;
+	public int port;
+	ChessGui gui;
 	
-	public ChessServer(Board board, MainBoardPanel mbp, int p) {
+	public ChessServer(int p) {
 		
 		port = p;
 		
+		Thread thread = new Thread(){
+            public void run(){
+              System.out.println("Client Running");
+              startRunning();
+            }
+          };
+
+        thread.start();
 	}
 	
-	 public void startRunning(ChessGui g, Board board, MainBoardPanel mbp) {
+	 public void startRunning() {
  		try {
- 			System.out.println("TRY2");
  			server = new ServerSocket(port, 100);
  			while(true) {
  				try {
  			            try {
- 			            	System.out.println("TRY3");
  							connection = server.accept();
- 							System.out.println("TRY4");
  						} catch (IOException e) {
  							// TODO Auto-generated catch block
  							e.printStackTrace();
@@ -43,7 +52,8 @@ public class ChessServer {
  							// TODO Auto-generated catch block
  							e.printStackTrace();
  						}
- 			            readin(g, board, mbp);
+ 			            if(gui != null)
+ 			            	readin();
  				}
  				finally {
  					System.out.println(connection.getInputStream());
@@ -54,25 +64,36 @@ public class ChessServer {
  		}
  	}
      
-     private void readin(ChessGui g, Board gameBoard, MainBoardPanel mbp) {
+     private void readin() {
      	while(true) {
-	    		try {
-					try {
-						message = (String) input.readObject();
-					} catch (ClassNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				} catch (IOException e) {
+    		try {
+				try {
+					message = (String) input.readObject();
+				} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-	    		if(mbp.teamNum == 1 && Board.convertToCoord(message) != -1L) {
-	    			if(gameBoard.makeMove(mbp.teamNum, message, false)) {
-	    				mbp.teamNum = Math.abs(mbp.teamNum - 1);
-	    				mbp.updateBoard();
-	    			}
-	    		}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		if(gui.gameBoard.teamTurn == turn && Board.convertToCoord(message) != -1L) {
+    			if(gui.gameBoard.makeMove(message, false)) {
+    				System.out.println(message);
+    				gui.getMainPanel().updateBoard();
+    			}
+    		}
      	}
- 	}*/
+ 	}
+     
+     public void setGui(ChessGui g) {
+     	gui = g;
+     }
+     
+     public boolean connected() {
+     	if(connection != null)
+     		return true;
+     	else
+     		return false;
+     }
 }

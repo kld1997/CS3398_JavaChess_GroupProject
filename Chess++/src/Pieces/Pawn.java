@@ -24,12 +24,7 @@ public class Pawn extends Piece implements Promoteable
 		
 		moves = 0L;
 		long occ = ~board.empty;
-		long EP = 0L;
-		
-		if(team == 0)
-			EP = board.epBB[1];
-		else
-			EP = board.epBB[0];
+		long EP = board.epBB[Math.abs(team-1)];
 		
 		if((piece&coord) != 0 && check < 2) {	
 			moves = pseudoMoves(occ, coord, EP);
@@ -114,9 +109,11 @@ public class Pawn extends Piece implements Promoteable
 					allMoves |= (piece<<7)&(enemyPieces|EP)&~Board.colH;
 					allMoves |= (piece<<9)&(enemyPieces|EP)&~Board.colA;
 				}
-			}	
-			if(!EPpass(board, allMoves, EP))
-				allMoves &= ~EP;
+			}
+			if((allMoves&EP) != 0) {
+				if(!EPpass(board, allMoves, EP))
+					allMoves &= ~EP;
+			}
 			if(check == 1)
 				allMoves &= kThreats|board.interfereBB[team];
 		}
@@ -146,7 +143,7 @@ public class Pawn extends Piece implements Promoteable
 			EPpawn = (moves&EP)>>8;
 		
 		king = board.kingBB[team];
-		for(Piece piece : board.cardinalList.get(team)) {
+		for(Piece piece : board.cardinalList.get(Math.abs(team-1))) {
 			cardinal |= piece.piece;
 		}
 

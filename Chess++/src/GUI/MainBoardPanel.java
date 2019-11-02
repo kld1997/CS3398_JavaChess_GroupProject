@@ -27,23 +27,23 @@ public class MainBoardPanel extends JPanel
     public ChessSquare[][] squares = new ChessSquare[8][8];
     public int[] lastClicked = new int[2];
     public ArrayList<ChessSquare> highlightedSquares = new ArrayList<ChessSquare>();
-    //public static BufferedImage Images.pieces[][] = new BufferedImage[2][6];
+    int yourTurn;
 
     ChessGui thisGui;
     public MainBoardPanel(ChessGui g)
     {
         thisGui = g;
         gameBoard = g.gameBoard;
-        //Images.setUpImages();
+        if(gameBoard.options.getOnline()) {
+        	yourTurn = gameBoard.options.getTurn();
+        }
         thisGui.menu = new MenuBuilder(this);
         setLayout(new GridLayout(8,8));
         boardSet(g);
         updateBoard();
-        //System.out.println("TRY");
-        
     }
     public void boardSet(ChessGui g) {
-    	//System.out.println("MEE");
+
     	int counter = 0;
         for(int i = 0; i < 8; i ++)
         {
@@ -82,11 +82,11 @@ public class MainBoardPanel extends JPanel
                             }
                             moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
                             
-                            //if(g.online == -1 || teamNum == g.online) {
+                            if(!gameBoard.options.getOnline() || gameBoard.teamTurn == yourTurn) {
                                 moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
 
                                 moveMade = gameBoard.makeMove(moveString, true);                           //Check to see if a move has been made
-                            //}
+                            }
 
                             if (moveMade)
                             {
@@ -104,14 +104,6 @@ public class MainBoardPanel extends JPanel
                                 tempString += " " + actionCommandString.substring(6, spaceIndex);
                                 tempString += " moved from " + moveString.substring(0, 2) + " to " + moveString.substring(2);
                                 g.getHisotryPanel().ph.addMove(tempString);
-                                /*if(g.online != -1) {
-	                                try {
-	                        			g.output.writeObject(moveString);
-	                        			g.output.flush();
-	                        		} catch(IOException ioException) {
-	                        			System.out.println("wut");
-	                        		}
-                                }*/
                             }
                             else
                             {
@@ -167,7 +159,6 @@ public class MainBoardPanel extends JPanel
 
     public void updateBoard()
     {
-    	//System.out.println("MEE2");
         top = thisGui.getInfoPanel();
         right = thisGui.getHisotryPanel();
         if(PawnPromote.promotion == true) {
