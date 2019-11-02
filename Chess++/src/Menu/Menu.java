@@ -146,9 +146,7 @@ public class Menu extends JPanel {
         regularbutton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // int gamemode = 0
-                // bool highlight = 0;
-                //new ChessGui(0, false);
+
             	new ChessGui(new Board(new Options()));
             }
         });
@@ -162,10 +160,11 @@ public class Menu extends JPanel {
         bulletbutton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // int gamemode = 1
-                // bool highlight = 0;
-                // new ChessGui(1, false);
-            	new BulletChessGui(new Board(new Options()));
+
+            	Options options = new Options("bullet");
+            	int[] timey = {120, 60};
+            	options.setTime(timey);
+            	new ChessGui(new Board(options));
             }
         });
 
@@ -178,10 +177,8 @@ public class Menu extends JPanel {
         plusbutton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // int gamemode = 2;
-                // bool highlight = 0;
-                // new ChessGui(2, false);
-            	new ChessGuiPlus(new Board(new Options()));
+
+            	new ChessGui(new Board(new Options("wall")));
             }
         });
 

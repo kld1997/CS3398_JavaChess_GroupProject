@@ -8,8 +8,8 @@ public class BulletInfoPanel extends GenericInfoPanel
 {
     Timer wt, bt;
     JLabel whiteTime, blackTime;
-    BulletChessGui thisGui;
-    public BulletInfoPanel(BulletChessGui g)
+    ChessGui thisGui;
+    public BulletInfoPanel(ChessGui g, int[] st)
     {
         thisGui = g;
         setLayout(new GridLayout(1, 3));
@@ -20,21 +20,31 @@ public class BulletInfoPanel extends GenericInfoPanel
 
         whiteTime = new JLabel();
         blackTime = new JLabel();
-        setUpTimers();
+        setUpTimers(st);
         add(whiteTime);
         add(teamText, BorderLayout.CENTER);
         add(blackTime);
     }
-    public void setUpTimers()
+    public void setUpTimers(int[] st)
     {
         whiteTime.setFont(new Font("Serif", Font.BOLD, 25));
         whiteTime.setHorizontalAlignment(JLabel.LEFT);
         blackTime.setFont(new Font("Serif", Font.BOLD, 25));
         blackTime.setHorizontalAlignment(JLabel.RIGHT);
         wt = new Timer();
-        wt.scheduleAtFixedRate(new ChessTimer(thisGui, whiteTime, 120), 0, 1000);
+        wt.scheduleAtFixedRate(new ChessTimer(thisGui, whiteTime, st[0]), 0, 1000);
         bt = new Timer();
-        blackTime.setText("2:00");
+        int secs = st[1]%60;
+        String ss;
+        if(secs == 0)
+        	ss = "00";
+        else if(secs < 10)
+        	ss = "0" + secs;
+        else
+        	ss = "" + secs;
+        
+        String bst = "" + st[1]/60 + ":" + ss;
+        blackTime.setText(bst);
     }
     public void pauseAndSwitch()
     {

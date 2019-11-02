@@ -6,10 +6,10 @@ import javax.swing.*;
 public class ChessTimer extends TimerTask
 {
     JLabel timerLabel;
-    BulletChessGui cg;
+    ChessGui cg;
     int startingTime;
     int secondsPassed = 0;
-    public ChessTimer(BulletChessGui g, JLabel timer, int st)
+    public ChessTimer(ChessGui g, JLabel timer, int st)
     {
         cg = g;
         startingTime = st;
@@ -18,7 +18,7 @@ public class ChessTimer extends TimerTask
     @Override
     public void run()
     {
-        int min, sec;
+        int min, secs;
         int currTime = startingTime - secondsPassed;
         if(currTime == 0)
         {
@@ -29,8 +29,16 @@ public class ChessTimer extends TimerTask
             cancel();
         }
         min = currTime/60;
-        sec = currTime - min*60;
-        timerLabel.setText(min + ":" + sec);
+        secs = currTime%60;
+        String ss;
+        if(secs == 0)
+        	ss = "00";
+        else if(secs < 10)
+        	ss = "0" + secs;
+        else
+        	ss = "" + secs;
+        
+        timerLabel.setText(min + ":" + ss);
         secondsPassed++;
     }
 }

@@ -14,12 +14,16 @@ public class ChessGui extends JFrame
     public ChessPanel mainPanel;
     JPanel centerPanel = new JPanel(new BorderLayout());
     public MenuBuilder menu;
-    public ChessGui(){}
+    public Board gameBoard;
     
     public ChessGui(Board b)
     {
-        topPanel = new InfoPanel(this);
-        mainPanel = new ChessPanel(this, false);
+    	gameBoard = b;
+    	if(b.options.getTimer())
+    		topPanel = new BulletInfoPanel(this, b.options.getTime());
+    	else
+    		topPanel = new InfoPanel(this);
+        mainPanel = new ChessPanel(this);
         rightPanel = new HistoryPanel(this);
         setJMenuBar(menu);
         mainPanel.getMainPanel().updateBoard();

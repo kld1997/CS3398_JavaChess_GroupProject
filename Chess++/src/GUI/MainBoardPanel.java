@@ -19,7 +19,7 @@ import Options.Options;
 //Main Grid of
 public class MainBoardPanel extends JPanel
 {
-    public Board gameBoard = new Board(new Options());
+    public Board gameBoard;
     GenericInfoPanel top;
     HistoryPanel right;
     boolean locked = false;
@@ -30,11 +30,10 @@ public class MainBoardPanel extends JPanel
     //public static BufferedImage Images.pieces[][] = new BufferedImage[2][6];
 
     ChessGui thisGui;
-    public MainBoardPanel(ChessGui g, boolean plusPlus)
+    public MainBoardPanel(ChessGui g)
     {
         thisGui = g;
-        if(plusPlus){ gameBoard.chessPlusPlus(); }
-        else { gameBoard.standardChess(); }
+        gameBoard = g.gameBoard;
         //Images.setUpImages();
         thisGui.menu = new MenuBuilder(this);
         setLayout(new GridLayout(8,8));
@@ -103,7 +102,7 @@ public class MainBoardPanel extends JPanel
                                 tempString += actionCommandString.substring(0, 5);
                                 int spaceIndex = actionCommandString.substring(6).indexOf(' ') + 6;
                                 tempString += " " + actionCommandString.substring(6, spaceIndex);
-                                tempString += " has moved from " + moveString.substring(0, 2) + " to " + moveString.substring(2);
+                                tempString += " moved from " + moveString.substring(0, 2) + " to " + moveString.substring(2);
                                 g.getHisotryPanel().ph.addMove(tempString);
                                 /*if(g.online != -1) {
 	                                try {

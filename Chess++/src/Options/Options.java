@@ -16,6 +16,15 @@ public class Options {
 		
 		defaultSet();
 	}
+	public Options(String preset) {
+		
+		if(preset.equals("bullet"))
+			bulletSet();
+		else if(preset.equals("wall"))
+			wallSet();
+		else
+			defaultSet();
+	}
 	
 	public boolean getTimer() { return timer; }
 	public void setTimer(boolean t) { timer = t; }
@@ -49,15 +58,34 @@ public class Options {
 	
 	public void bulletSet() {
 		
-		timer = true;		
+		timer = true;
 		highlight = true;
 		online = false;
 		mode = "STANDARD";
 		board = BoardTypes.standardChessBoard();
 		
 		for(int i = 0; i < Board.teamNum; i++) {
-			time[i] = 60;
+			time[i] = 120;
 			timeInc[i] = 1;
 		}
+	}
+	
+	public void wallSet() {
+		
+		String wallChessBoard[][] = {
+				{"br","bk","bb","bq","bK","bb","bk","br"},
+				{"bp","bp","bp","bp","bp","bp","bp","bp"},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"wW","  ","wW","  ","wW","  ","wW","  "},
+				{"  ","bW","  ","bW","  ","bW","  ","bW"},
+				{"  ","  ","  ","  ","  ","  ","  ","  "},
+				{"wp","wp","wp","wp","wp","wp","wp","wp"},
+				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
+		
+		timer = false;
+		highlight = true;
+		online = false;
+		mode = "STANDARD";
+		board = wallChessBoard;
 	}
 }
