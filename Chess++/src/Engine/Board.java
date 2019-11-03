@@ -251,7 +251,7 @@ public class Board {
 		for(int i = 0; i < teamNum; i++) {
 			rooks |= castleableList.get(i).piece;
 		}
-		
+
 		if(kingMoved != 0 && kingMoved != ((kingBB[0]|kingBB[1])&kingMoved)) {  	//if king moves
 			kingMoved &= (kingBB[0]|kingBB[1]);
 		}

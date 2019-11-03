@@ -153,7 +153,7 @@ public class ParseBoard {
     	
     	for(Piece piece : pieces) {
     		if(promoteList.contains(piece.ID + ""))
-    			promoteList.replace(piece.ID + "", "");
+    			promoteList = promoteList.replace(piece.ID + "", "");
     	}
     	
     	char t;
