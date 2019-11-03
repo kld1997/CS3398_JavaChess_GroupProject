@@ -17,6 +17,7 @@ public class ChessServer {
 	public String message = null;
 	public int turn = 0;
 	public int port;
+	boolean connected = false;
 	ChessGui gui;
 	
 	public ChessServer(int p) {
@@ -40,6 +41,7 @@ public class ChessServer {
  				try {
  			            try {
  							connection = server.accept();
+ 							connected = true;
  						} catch (IOException e) {
  							// TODO Auto-generated catch block
  							e.printStackTrace();
@@ -52,7 +54,6 @@ public class ChessServer {
  							// TODO Auto-generated catch block
  							e.printStackTrace();
  						}
- 			            if(gui != null)
  			            	readin();
  				}
  				finally {
@@ -77,7 +78,7 @@ public class ChessServer {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    		if(gui.gameBoard.teamTurn == turn && Board.convertToCoord(message) != -1L) {
+    		if(gui != null && gui.gameBoard.teamTurn == turn && Board.convertToCoord(message) != -1L) {
     			if(gui.gameBoard.makeMove(message, false)) {
     				System.out.println(message);
     				gui.getMainPanel().updateBoard();
@@ -91,9 +92,6 @@ public class ChessServer {
      }
      
      public boolean connected() {
-     	if(connection != null)
-     		return true;
-     	else
-     		return false;
+     	return connected;
      }
 }

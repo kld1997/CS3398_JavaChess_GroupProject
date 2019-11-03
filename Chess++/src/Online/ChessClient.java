@@ -17,6 +17,7 @@ public class ChessClient {
 	public int turn = 1;
 	public String serverIP;
     public int port;
+    boolean connected = false;
     ChessGui gui;
 	
 	public ChessClient(String address, int p) {
@@ -38,6 +39,7 @@ public class ChessClient {
 		try {
 				try {
 					connection = new Socket(InetAddress.getByName(serverIP), port);
+					connected = true;
 			            try {
 			            	output = new ObjectOutputStream(connection.getOutputStream());
 			            	output.flush();
@@ -46,13 +48,12 @@ public class ChessClient {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-			            if(gui != null)
-			            	readin();
+			            readin();
 				/*} catch(EOFException eofException) {
 					System.out.println("FDFDDF");*/
 				}
 				finally {
-					System.out.println(connection.getInputStream());
+					//System.out.println(connection.getInputStream());
 				}
 			
 		} catch(IOException ioException) {
@@ -74,7 +75,7 @@ public class ChessClient {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    		if(gui.gameBoard.teamTurn == turn && Board.convertToCoord(message) != -1L) {
+    		if(gui != null && gui.gameBoard.teamTurn == turn && Board.convertToCoord(message) != -1L) {
     			if(gui.gameBoard.makeMove(message, false)) {
     				System.out.println(message);
     				gui.getMainPanel().updateBoard();
@@ -88,9 +89,6 @@ public class ChessClient {
     }
     
     public boolean connected() {
-    	if(connection != null)
-    		return true;
-    	else
-    		return false;
+    	return connected;
     }
 }

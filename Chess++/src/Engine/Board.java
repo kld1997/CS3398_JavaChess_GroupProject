@@ -400,6 +400,14 @@ public class Board {
 						
 						epBB[Math.abs(team-1)] = 0;
 						currentState();
+						if(options.getOnline()) {
+	                        try {
+	                			output.writeObject(pos);
+	                			output.flush();
+	                		} catch(IOException ioException) {
+	                			System.out.println("issue");
+	                		}
+			}
 						break;
 					}
 				}

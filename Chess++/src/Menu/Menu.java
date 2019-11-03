@@ -288,7 +288,15 @@ public class Menu extends JPanel {
                 
                 ChessClient client = new ChessClient(ipaddress, p);
                 
-                if(client.connected()) {
+                while(!client.connected()) {
+                	try {
+						Thread.sleep(250);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+                }
+                if(client.connection.isConnected()) {
                 	Options options = new Options();
                 	options.setOnline(true);
                 	options.setOutput(client.output);
@@ -336,7 +344,15 @@ public class Menu extends JPanel {
                 
                 ChessServer server = new ChessServer(p);
                 
-                if(server.connected()) {
+                while(!server.connected()) {
+                	try {
+						Thread.sleep(250);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+                }
+                if(server.connection.isConnected()) {
                 	Options options = new Options();
                 	options.setOnline(true);
                 	options.setOutput(server.output);
