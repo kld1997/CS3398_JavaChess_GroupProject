@@ -241,8 +241,6 @@ public class Board {
 		if(((pawnsBB[0]&row8)|(pawnsBB[1]&row1)) != 0) {
 			PawnPromote.pawnPromotion(this);
 		} 
-		
-		displayBitboard(epBB[1]);
 
 	}
 	
@@ -400,7 +398,7 @@ public class Board {
 						
 						epBB[Math.abs(team-1)] = 0;
 						currentState();
-						if(options.getOnline()) {
+						if(options.getOnline() && teamTurn == options.getTurn()) {
 	                        try {
 	                			output.writeObject(pos);
 	                			output.flush();

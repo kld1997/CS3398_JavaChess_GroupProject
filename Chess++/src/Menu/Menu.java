@@ -301,6 +301,7 @@ public class Menu extends JPanel {
                 	options.setOnline(true);
                 	options.setOutput(client.output);
                 	options.setInput(client.input);
+                	options.setTurn(client.turn);
                 	
                 	client.setGui(new ChessGui(new Board(options)));
                 }
@@ -357,6 +358,7 @@ public class Menu extends JPanel {
                 	options.setOnline(true);
                 	options.setOutput(server.output);
                 	options.setInput(server.input);
+                	options.setTurn(server.turn);
                 	
                 	server.setGui(new ChessGui(new Board(options)));
                 }

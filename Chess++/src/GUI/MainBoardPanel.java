@@ -85,17 +85,13 @@ public class MainBoardPanel extends JPanel
                             if(!gameBoard.options.getOnline() || gameBoard.teamTurn == yourTurn) {
                                 moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
 
-                                moveMade = gameBoard.makeMove(moveString, true);                           //Check to see if a move has been made
+                                moveMade = gameBoard.makeMove(moveString, false);                           //Check to see if a move has been made
                             }
 
                             if (moveMade)
                             {
-                                if(g.getInfoPanel().getType() == 1)
-                                {
-                                    ((BulletInfoPanel)g.getInfoPanel()).pauseAndSwitch();
-                                }
-                                g.getInfoPanel().switchTeam();
-                                g.menu.teamChange();
+                                moveMade(g);
+                                System.out.println(moveString);
 
                                 String tempString = "";
                                 String actionCommandString = squares[pieceMovedPos[0]][pieceMovedPos[1]].getActionCommand();
@@ -128,6 +124,14 @@ public class MainBoardPanel extends JPanel
                 counter = Math.abs(counter-1);
             }
         }
+    }
+    public void moveMade(ChessGui g) {
+    	if(g.getInfoPanel().getType() == 1)
+        {
+            ((BulletInfoPanel)g.getInfoPanel()).pauseAndSwitch();
+        }
+        g.getInfoPanel().switchTeam();
+        g.menu.teamChange();
     }
     public void setLocked(boolean val)
     {

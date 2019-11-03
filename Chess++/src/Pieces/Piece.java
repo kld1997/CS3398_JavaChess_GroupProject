@@ -72,7 +72,7 @@ public abstract class Piece
 
 		update(board);
 
-		if(checked == false)
+		if(!checked)
 			moves = possibleMoves(board, coord1, false);
 
 		long change = coord1|coord2;

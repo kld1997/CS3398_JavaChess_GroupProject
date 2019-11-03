@@ -75,9 +75,10 @@ public class ChessClient {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    		if(gui != null && gui.gameBoard.teamTurn == turn && Board.convertToCoord(message) != -1L) {
+    		if(gui != null && gui.gameBoard.teamTurn != turn && Board.convertToCoord(message) != -1L) {
     			if(gui.gameBoard.makeMove(message, false)) {
-    				System.out.println(message);
+    				//System.out.println(message);
+    				gui.getMainPanel().moveMade(gui);
     				gui.getMainPanel().updateBoard();
     			}
     		}
