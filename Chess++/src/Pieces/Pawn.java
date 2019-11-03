@@ -25,7 +25,6 @@ public class Pawn extends Piece implements Promoteable
 		moves = 0L;
 		long occ = ~board.empty;
 		long EP = board.epBB[Math.abs(team-1)];
-		Board.displayBitboard(coord);
 		if((piece&coord) != 0 && check < 2) {	
 			moves = pseudoMoves(occ, coord, EP);
 		}	

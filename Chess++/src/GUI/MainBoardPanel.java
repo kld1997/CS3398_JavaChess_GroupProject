@@ -91,7 +91,6 @@ public class MainBoardPanel extends JPanel
                             if (moveMade)
                             {
                                 moveMade(g);
-                                System.out.println(moveString);
 
                                 String tempString = "";
                                 String actionCommandString = squares[pieceMovedPos[0]][pieceMovedPos[1]].getActionCommand();
