@@ -2,6 +2,8 @@ package Pieces;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.List;
+
 import Engine.*;
 import Visuals.*;
 
@@ -10,12 +12,14 @@ public abstract class Piece
 {
 
 	public int team;
+	public int enemyTeam;
 	public int iconNum;
 	public String name;
 	public char ID;
 	public int value;
 	public long piece;
 	public long moves;
+	public List<Move> moveList;
 	public long enemyPieces;
 	public long notAlly;
 	public int check;
@@ -25,19 +29,21 @@ public abstract class Piece
 
 	public Piece(int t) {
 		this.team = t;
+		this.enemyTeam = Math.abs(t-1);
 		this.moves = 0;
+		this.moveList = new ArrayList<Move>();
 	}
 
 	public void update(Board board) {
 
 		check = board.check[team];
-		enemyPieces = board.teamBB[Math.abs(team-1)];
+		enemyPieces = board.teamBB[enemyTeam];
 		notAlly = board.notTeamBB[team];
 		pinned = board.pinnedBB[team];
 	}
 
 	public void setImage() {
-		image = Images.pieces[Math.abs(team)][iconNum];
+		image = Images.pieces[team][iconNum];
 	}
 
 	public long possibleMoves(Board board, long coord, boolean update) {
@@ -70,43 +76,72 @@ public abstract class Piece
 
 	public boolean movePiece(Board board, long coord1, long coord2, boolean checked) {
 
-		update(board);
-
 		if(!checked)
 			moves = possibleMoves(board, coord1, false);
 
 		long change = coord1|coord2;
 
-		if((coord2&moves) != 0) {
-			if((enemyPieces&coord2) != 0) {
-				board.removePiece(coord2);
-			}
-			piece^= change;
-			return true;
-		}
-		return false;
+			board.removePiece(coord2, team, enemyTeam);
+			
+		piece^= change;
+		return true;
 	}
 
-	public long getAllPM(Board board, boolean threaten) {
+	public void getAllPM(Board board) {
 
+		moveList.clear();
+		
 		update(board);
 
-		long allMoves = 0L;
+		long allMoves;
+		long captures;
 		long temp = piece;
 		long coord = 0L;
 		int p = 0;
+		int t = 0;
 
-		threat = threaten;
 		while(temp != 0) {
 			p = Long.numberOfTrailingZeros(temp);
 			coord = 1L<<p;
 			temp &= ~coord;
 
-			allMoves |= possibleMoves(board, coord, false);
+			allMoves = possibleMoves(board, coord, false);
+			captures = allMoves&enemyPieces;
+			allMoves &= ~captures;
+			
+			while(allMoves != 0) {
+				t = Long.numberOfTrailingZeros(allMoves);
+				moveList.add(new Move(p, t, 0, ID));
+				allMoves &= allMoves - 1;
+			}
+			while(captures != 0) {
+				t = Long.numberOfTrailingZeros(captures);
+				moveList.add(new Move(p, t, 1, ID));
+				captures &= captures - 1;
+			}
+		}
+	}
+	
+	public long threaten(Board board) {
+		
+		update(board);
+		
+		long threats = 0L;
+		long temp = piece;
+		long coord = 0L;
+		int p = 0;
+		
+		threat = true;
+		while(temp != 0) {
+			p = Long.numberOfTrailingZeros(temp);
+			coord = 1L<<p;
+			temp &= ~coord;
+
+			threats |= possibleMoves(board, coord, false);
 		}
 		threat = false;
-
-		return allMoves;
+		
+		return threats;
 	}
 
 	public long threatPos(Board board, long pCoord) {
@@ -125,10 +160,33 @@ public abstract class Piece
 
 			if((possibleMoves(board, coord, false)&pCoord) != 0) {
 				tPos |= coord;
-				Check.addCheck(board, Math.abs(team-1));
+				Check.addCheck(board, enemyTeam);
 			}
 		}
 
 		return tPos;
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ID;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Piece other = (Piece) obj;
+		if (ID != other.ID)
+			return false;
+		return true;
+	}
+	
 }

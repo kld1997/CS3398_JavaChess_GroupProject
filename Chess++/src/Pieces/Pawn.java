@@ -24,7 +24,7 @@ public class Pawn extends Piece implements Promoteable
 		
 		moves = 0L;
 		long occ = ~board.empty;
-		long EP = board.epBB[Math.abs(team-1)];
+		long EP = board.epBB[enemyTeam];
 		if((piece&coord) != 0 && check < 2) {	
 			moves = pseudoMoves(occ, coord, EP);
 		}	
@@ -33,12 +33,11 @@ public class Pawn extends Piece implements Promoteable
 			moves &= Check.checkRestrict(board, team, coord, pinned)|EP;
 		else if((coord & pinned) != 0)
 			moves &= Check.pinRestrict(board, coord, team);
-		
 		if((moves&EP) != 0) {
 			if(!EPpass(board, coord, EP))
 				moves &= ~EP;
 		}
-	
+		
 		return moves;
 	}
 	
@@ -80,54 +79,109 @@ public class Pawn extends Piece implements Promoteable
 		return pm;
 	}
 	
-	public long getAllPM(Board board, boolean threaten) {
+	public void getAllPM(Board board) {
+		
+		moveList.clear();
 		
 		update(board);
 		
-		long allMoves = 0L;
-		long kThreats= 0L;
-		long EP = 0L;
+		long allMoves;
+		long EP;
+		long cr;
+		long caps;
+		long temp = piece&pinned;
+		piece &= ~temp;
+		int p ,t = 0;
 		
-		if(!threaten) {
-			if(team == 0) {
-				EP = board.epBB[1];
-				kThreats = board.kThreatsBB[1];
-				if(check < 2) {
-					allMoves |= (piece>>8)&board.empty;
-					allMoves |= (piece>>16)&board.empty&(board.empty>>8)&Board.row4;
-					allMoves |= (piece>>7)&(enemyPieces|EP)&~Board.colA;
-					allMoves |= (piece>>9)&(enemyPieces|EP)&~Board.colH;
-				}
-			}
-			else {
-				EP = board.epBB[0];
-				kThreats = board.kThreatsBB[0];
-				if(check < 2) {
-					allMoves |= (piece<<8)&board.empty;
-					allMoves |= (piece<<16)&board.empty&(board.empty<<8)&Board.row5;
-					allMoves |= (piece<<7)&(enemyPieces|EP)&~Board.colH;
-					allMoves |= (piece<<9)&(enemyPieces|EP)&~Board.colA;
-				}
-			}
-			if((allMoves&EP) != 0) {
-				if(!EPpass(board, allMoves, EP))
-					allMoves &= ~EP;
-			}
-			if(check == 1)
-				allMoves &= kThreats|board.interfereBB[team];
+		if(check == 1) {
+			cr = board.kThreatsBB[team]|board.interfereBB[team];
 		}
 		else {
-			if(team == 0) {
-				allMoves |= (piece>>7)&~Board.colA;
-				allMoves |= (piece>>9)&~Board.colH;
-			}
-			else {
-				allMoves |= (piece<<7)&~Board.colH;
-				allMoves |= (piece<<9)&~Board.colA;
+			cr = 0xFFFFFFFFFFFFFFFFL;
+			if(temp != 0) {
+				long temp2 = temp;
+				long coord, captures;
+				while(temp2 != 0) {
+					p = Long.numberOfTrailingZeros(temp2);
+					coord = 1L<<p;
+					temp2 &= ~coord;
+	
+					allMoves = possibleMoves(board, coord, false);
+					captures = allMoves&enemyPieces;
+					allMoves &= ~captures;
+					
+					while(allMoves != 0) {
+						t = Long.numberOfTrailingZeros(allMoves);
+						moveList.add(new Move(p, t, 0, ID));
+						allMoves &= allMoves - 1;
+					}
+					
+					while(captures != 0) {
+						t = Long.numberOfTrailingZeros(captures);
+						moveList.add(new Move(p, t, 1, ID));
+						captures &= captures - 1;
+					}
+				}
 			}
 		}
 		
-		return allMoves;
+		EP = board.epBB[enemyTeam];
+		if(check < 2) {
+			if(team == 0) {
+				allMoves = (piece>>8)&board.empty&cr;
+				addMoves(allMoves&Board.row8, 8, 3);
+				addMoves(allMoves&~Board.row8, 8, 0);
+				allMoves = (piece>>16)&board.empty&(board.empty>>8)&Board.row4&cr;
+				addMoves(allMoves, 16, 0);
+				allMoves = (piece>>7)&~Board.colA&cr;
+				caps = allMoves&enemyPieces;
+				addMoves(caps&Board.row8, 7, 4);
+				addMoves(caps&~Board.row8, 7, 1);
+				if((allMoves&EP) != 0) addEPs(board, allMoves&EP, 7, EP);
+				allMoves = (piece>>9)&~Board.colH&cr;
+				caps = allMoves&enemyPieces;
+				addMoves(caps&Board.row8, 9, 4);
+				addMoves(caps&~Board.row8, 9, 1);
+				if((allMoves&EP) != 0) addEPs(board, allMoves&EP, 9, EP);
+			}
+			else {
+				allMoves = (piece<<8)&board.empty&cr;
+				addMoves(allMoves&Board.row1, -8, 3);
+				addMoves(allMoves&~Board.row1, -8, 0);
+				allMoves = (piece<<16)&board.empty&(board.empty<<8)&Board.row5&cr;
+				addMoves(allMoves, -16, 0);
+				allMoves = (piece<<7)&~Board.colH&cr;
+				caps = allMoves&enemyPieces;
+				addMoves(caps&Board.row1, -7, 4);
+				addMoves(caps&~Board.row1, -7, 1);
+				if((allMoves&EP) != 0) addEPs(board, allMoves&EP, -7, EP);
+				allMoves = (piece<<9)&~Board.colA&cr;
+				caps = allMoves&enemyPieces;
+				addMoves(caps&Board.row1, -9, 4);
+				addMoves(caps&~Board.row1, -9, 1);
+				if((allMoves&EP) != 0) addEPs(board, allMoves&EP, -9, EP);
+			}
+		}
+		piece |= temp;
+	}
+	
+	public long threaten(Board board) {
+		
+		update(board);
+		
+		long threats = 0L;
+		
+		if(team == 0) {
+			threats |= (piece>>7)&~Board.colA;
+			threats |= (piece>>9)&~Board.colH;
+		}
+		else {
+			threats |= (piece<<7)&~Board.colH;
+			threats |= (piece<<9)&~Board.colA;
+		}
+		
+		return threats;
+		
 	}
 	
 	public boolean EPpass(Board board, long coord, long EP) {				//checks if en passant leaves king open
@@ -142,15 +196,42 @@ public class Pawn extends Piece implements Promoteable
 			EPpawn = (moves&EP)>>8;
 		
 		king = board.kingBB[team];
-		for(Piece piece : board.cardinalList.get(Math.abs(team-1))) {
+		for(Piece piece : board.cardinalList.get(enemyTeam)) {
 			cardinal |= piece.piece;
 		}
-
-		long temp = coord|EPpawn;
 		
+		long temp = coord|EPpawn;
+
 		if((Moves.horizontal(~board.empty^temp, king)&cardinal) != 0)
 			return false;
 		else
 			return true;
+	}
+	
+	public void addMoves(long all, int pos, int type) {
+		
+		long allMoves = all;
+		int p;
+		int t;
+		while(allMoves != 0) {
+			t = Long.numberOfTrailingZeros(allMoves);
+			p = t + pos;
+			moveList.add(new Move(p, t, type, ID));
+			allMoves &= allMoves - 1;
+		}
+	}
+	
+	public void addEPs(Board board, long all, int pos, long EP) {
+		
+		long allMoves = all;
+		int p;
+		int t;
+		while(allMoves != 0) {
+			t = Long.numberOfTrailingZeros(allMoves);
+			p = t + pos;
+			if(EPpass(board, 1L<<t, EP))
+				moveList.add(new Move(p, t, 2, ID));
+			allMoves &= allMoves - 1;
+		}
 	}
 }

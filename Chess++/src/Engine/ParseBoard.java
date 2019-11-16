@@ -1,23 +1,19 @@
 package Engine;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-import javax.swing.ImageIcon;
+import java.util.Map;
+
 import Pieces.*;
 import Pieces.PieceTypes.*;
 
 public class ParseBoard {
 	
-	static public Piece identify(String id) {
+	static public Piece identify(char id, int team) {
 		
-		int team = 0;
-
-		if(id.charAt(0) == 'w')
-			team = 0;
-		if(id.charAt(0) == 'b')
-			team = 1;
-		
-		switch(id.charAt(1)) {
+		switch(id) {
 		case 'p': return new Pawn(team);
 		case 'k': return new Knight(team);
 		case 'b': return new Bishop(team);
@@ -25,12 +21,12 @@ public class ParseBoard {
 		case 'q': return new Queen(team);
 		case 'K': return new King(team);
 		case 'W': return new Wall(team);
-		default: return new Wall(-1);
-		}
+		default: return null;
+		}	
 		
 	}
 	
-	static public String[][] bitboardToArray(List<List<Piece>> pieceList) {
+	static public String[][] bitboardToArray(List<Map<Character, Piece>> pieceList) {
 		String chessBoard[][] = {
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
@@ -53,7 +49,7 @@ public class ParseBoard {
     		else
     			teamID = 'b';
     		
-    		for(Piece piece : pieceList.get(i)) {
+    		for(Piece piece : pieceList.get(i).values()) {
     			temp = piece.piece;
     			fullID = "" + teamID + piece.ID;
     			
@@ -71,61 +67,54 @@ public class ParseBoard {
 		return chessBoard;
 	}
 	
-	static public List<List<Piece>> pieceInit(String[][] pieceArr, String p) {
+	static public List<Map<Character, Piece>> pieceInit(String[][] pieceArr, String promoteTo) {
 		
-		ArrayList<String> types1 = new ArrayList<String>();
-		ArrayList<String> types2 = new ArrayList<String>();
-		List<List<Piece>> pieceList = new ArrayList<List<Piece>>();
-		List<Piece> list1 = new ArrayList<Piece>();
-		List<Piece> list2 = new ArrayList<Piece>();
+		Map<Character, Piece> pieceMap1 = new HashMap<Character, Piece>();
+		Map<Character, Piece> pieceMap2 = new HashMap<Character, Piece>();
+		List<Map<Character, Piece>> pieceList = new ArrayList<Map<Character, Piece>>();
 		Piece newPiece;
-		String Binary;
-		int pos;
-		String promote = p;
+		String binary;
 		
 		for(int i = 0; i < pieceArr.length; i++) {
 			for(int j = 0; j < pieceArr[i].length; j++) {
-				Binary="0000000000000000000000000000000000000000000000000000000000000000";
-	            Binary=Binary.substring((i*8)+(j%8)+1)+"1"+Binary.substring(0, (i*8)+(j%8));
+				binary = "0000000000000000000000000000000000000000000000000000000000000000";
+	            binary = binary.substring((i*8)+(j%8)+1) + "1" + binary.substring(0, (i*8)+(j%8));
 	            
-				if(!types1.contains(pieceArr[i][j]) && !types2.contains(pieceArr[i][j]) && pieceArr[i][j] != "  ") {
-					newPiece = identify(pieceArr[i][j]);
-					if(newPiece.team != -1) {
-						newPiece.piece = convertStringToBitboard(Binary);
-						if(newPiece.team == 0) {
-							list1.add(newPiece);
-							types1.add(pieceArr[i][j]);
-						}
-						else {
-							list2.add(newPiece);
-							types2.add(pieceArr[i][j]);
-						}
-					}				
-				}
-				else {
-					if(pieceArr[i][j].charAt(0) == 'w') {
-						pos = types1.indexOf(pieceArr[i][j]);
-						list1.get(pos).piece += convertStringToBitboard(Binary);
+				if(pieceArr[i][j].charAt(0) == 'w') {
+					newPiece = identify(pieceArr[i][j].charAt(1), 0);
+					if(pieceMap1.containsKey(newPiece.ID)) {
+						pieceMap1.get(newPiece.ID).piece |= convertStringToBitboard(binary);
 					}
-					else if(pieceArr[i][j].charAt(0) == 'b') {
-						pos = types2.indexOf(pieceArr[i][j]);
-						list2.get(pos).piece += convertStringToBitboard(Binary);
+					else {
+						newPiece.piece = convertStringToBitboard(binary);
+						pieceMap1.put(newPiece.ID, newPiece);
+					}
+				}
+				else if(pieceArr[i][j].charAt(0) == 'b') {
+					newPiece = identify(pieceArr[i][j].charAt(1), 1);
+					if(pieceMap2.containsKey(newPiece.ID)) {
+						pieceMap2.get(newPiece.ID).piece |= convertStringToBitboard(binary);
+					}
+					else {
+						newPiece.piece = convertStringToBitboard(binary);
+						pieceMap2.put(newPiece.ID, newPiece);
 					}
 				}
 			}
 		}
 		
-		pieceList.add(list1);
-		pieceList.add(list2);
+		pieceList.add(pieceMap1);
+		pieceList.add(pieceMap2);
 		
 		for(int i = 0; i < Board.teamNum; i++) {
 			
-			if(hasPromoteable(pieceList.get(i))) {
-				pieceList.get(i).addAll(addMissingPromote(pieceList.get(i), promote, i));
+			if(hasPromoteable(pieceList.get(i).values())) {
+				pieceList.get(i).putAll(addMissingPromote(pieceList.get(i), promoteTo, i));
 			}
 		}
 		
 		return pieceList;
+		
 	}
 	
 	static public long convertStringToBitboard(String Binary) {                    //converts the string of binary numbers into actual binary fit for bitboards
@@ -137,7 +126,7 @@ public class ParseBoard {
         }
 	}
 	
-    static public boolean hasPromoteable(List<Piece> pieces) {
+    static public boolean hasPromoteable(Collection<Piece> pieces) {
         	
         	for(Piece piece : pieces) {
         		if(piece instanceof Promoteable)
@@ -146,24 +135,18 @@ public class ParseBoard {
         	return false;
     }
     
-    static public List<Piece> addMissingPromote(List<Piece> pieces, String promote, int team) {
+    static public Map<Character, Piece> addMissingPromote(Map<Character, Piece> pieces, String promote, int team) {
     	
-    	List<Piece> newPieces = new ArrayList<Piece>();
+    	Map<Character, Piece> newPieces = new HashMap<Character, Piece>();
     	String promoteList = promote;
     	
-    	for(Piece piece : pieces) {
+    	for(Piece piece : pieces.values()) {
     		if(promoteList.contains(piece.ID + ""))
     			promoteList = promoteList.replace(piece.ID + "", "");
     	}
     	
-    	char t;
-    	if(team == 0)
-    		t = 'w';
-    	else
-    		t = 'b';
-    	
     	for(int i = 0; i < promoteList.length(); i++) {
-    		newPieces.add(identify("" + t + promoteList.charAt(i)));
+    		newPieces.put(promoteList.charAt(i), identify(promoteList.charAt(i), team));
     	}
     	
     	return newPieces;

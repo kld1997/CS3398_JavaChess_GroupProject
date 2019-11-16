@@ -7,7 +7,6 @@ public class Moves {														//class containing directional sliding movemen
 		
 		int trail = Long.numberOfTrailingZeros(coord);
 		long horizontal = (occ - coord * 2) ^ Long.reverse(Long.reverse(occ) - Long.reverse(coord) * 2);
-		
 		return horizontal & Board.rowMasks[trail / 8];
 	}
 	

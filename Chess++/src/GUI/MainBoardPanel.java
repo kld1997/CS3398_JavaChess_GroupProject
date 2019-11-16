@@ -80,12 +80,11 @@ public class MainBoardPanel extends JPanel
                                     break;
                                 }
                             }
-                            moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
-                            
+
                             if(!gameBoard.options.getOnline() || gameBoard.teamTurn == yourTurn) {
                                 moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
 
-                                moveMade = gameBoard.makeMove(moveString, false);                           //Check to see if a move has been made
+                                moveMade = gameBoard.makeMove(moveString);                           //Check to see if a move has been made
                             }
 
                             if (moveMade)
@@ -203,7 +202,7 @@ public class MainBoardPanel extends JPanel
     		else
     			teamName = "Black";
     		
-    		for(Piece piece : gameBoard.pieceList.get(i)) {
+    		for(Piece piece : gameBoard.pieceList.get(i).values()) {
     			temp = piece.piece;
     			
     			while(temp != 0) {

@@ -5,7 +5,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 import java.util.stream.Collectors;
 import GUI.*;
 import Online.*;
@@ -17,6 +21,8 @@ public class Board {
 	
 	public static int teamNum = 2;
 	public int teamTurn = 0;
+	public int[] teamScore = new int[teamNum];
+	public boolean cpuTurn = false;
 	
 	ObjectOutputStream output;
 	
@@ -41,7 +47,6 @@ public class Board {
 	//aggregate moves and threats
 	public long[] threatenBB = new long[teamNum];
 	public long[] kThreatsBB = new long[teamNum];
-	public long[] allPMBB = new long[teamNum];
 	
 	//special position conditions
 	public long kingMoved;
@@ -87,12 +92,35 @@ public class Board {
 		0x804020100000000L, 0x402010000000000L, 0x201000000000000L, 0x100000000000000L
 	};
 	
-	public List<List<Piece>> pieceList;
-	public List<List<Piece>> cardinalList;
-	public List<List<Piece>> ordinalList;
+	public List<Map<Character, Piece>> pieceList;
+	public List<Set<Piece>> cardinalList;
+	public List<Set<Piece>> ordinalList;
 	public List<Piece> castleableList;
-	public List<List<Piece>> promoteableList;
-	public List<Piece> kingList;
+	public List<Set<Piece>> promoteableList;
+	public List<Move> teamMoveList;
+	
+	public Stack<Integer> teamWonStack;
+	public Stack<Long> rookMovedStack;
+	public Stack<Long> kingMovedStack;
+	public Stack<Long> epwStack;
+	public Stack<Long> epbStack;
+	public Stack<Restore> restoreStack;
+	public Stack<Integer> scoreW;
+	public Stack<Integer> scoreB;
+	public Stack<Integer> checkW;
+	public Stack<Integer> checkB;
+	public Stack<Long> pinnersW;
+	public Stack<Long> pinnersB;
+	public Stack<Long> pinnedW;
+	public Stack<Long> pinnedB;
+	public Stack<Long> slideTW;
+	public Stack<Long> slideTB;
+	public Stack<Long> interfereW;
+	public Stack<Long> interfereB;
+	public Stack<Long> threatenW;
+	public Stack<Long> threatenB;
+	public Stack<Long> kTW;
+	public Stack<Long> kTB;
 	
 	public Options options;
 	
@@ -100,12 +128,35 @@ public class Board {
 
 		options = o;
 		
-		pieceList = new ArrayList<List<Piece>>();
-		cardinalList = new ArrayList<List<Piece>>();
-		ordinalList = new ArrayList<List<Piece>>();
+		pieceList = new ArrayList<Map<Character, Piece>>();
+		cardinalList = new ArrayList<Set<Piece>>();
+		ordinalList = new ArrayList<Set<Piece>>();
 		castleableList = new ArrayList<Piece>();
-		promoteableList = new ArrayList<List<Piece>>();
-		kingList = new ArrayList<Piece>();
+		promoteableList = new ArrayList<Set<Piece>>();
+		teamMoveList = new ArrayList<Move>();
+		
+		teamWonStack = new Stack<Integer>();
+		rookMovedStack = new Stack<Long>();
+		kingMovedStack = new Stack<Long>();
+		epwStack = new Stack<Long>();
+		epbStack = new Stack<Long>();
+		restoreStack = new Stack<Restore>();
+		scoreW = new Stack<Integer>();
+		scoreB = new Stack<Integer>();
+		checkW = new Stack<Integer>();
+		checkB = new Stack<Integer>();
+		pinnersW = new Stack<Long>();
+		pinnersB = new Stack<Long>();
+		pinnedW = new Stack<Long>();
+		pinnedB = new Stack<Long>();
+		slideTW = new Stack<Long>();
+		slideTB = new Stack<Long>();
+		interfereW = new Stack<Long>();
+		interfereB = new Stack<Long>();
+		threatenW = new Stack<Long>();
+		threatenB = new Stack<Long>();
+		kTW = new Stack<Long>();
+		kTB = new Stack<Long>();
 		
 		for(int i = 0; i < teamNum; i++) {
 			kingBB[i] = 0L;
@@ -117,13 +168,14 @@ public class Board {
 			slideThreatsBB[i] = 0;
 			
 			threatenBB[i] = 0;
-			allPMBB[i] = 0;
 			kThreatsBB[i] = 0;
 			check[i] = 0;
 			epBB[i] = 0;
 			
 			cardinalsBB[i] = 0L;
 			ordinalsBB[i] = 0L;
+			
+			teamScore[i] = 0;
 		}
 		
 		empty = 0;
@@ -144,43 +196,34 @@ public class Board {
 		
 		pieceList = ParseBoard.pieceInit(options.getBoard(), options.getPromote());
 		
-		List<Piece> cardinal;
-		List<Piece> ordinal;
-		List<Piece> castleable;
-		List<Piece> promoteable;
-		List<Piece> kings;
+		Set<Piece> cardinal = new HashSet<Piece>();
+		Set<Piece> ordinal = new HashSet<Piece>();
+		List<Piece> castleable = new ArrayList<Piece>();
+		Set<Piece> promoteable = new HashSet<Piece>();
 		
 		for(int i = 0; i < teamNum; i++) {	
-			cardinal = pieceList.get(i)
-					.stream()
-					.filter(p -> p instanceof Cardinal)
-					.collect(Collectors.toList());
 			
-			ordinal = pieceList.get(i)
-					.stream()
-					.filter(p -> p instanceof Ordinal)
-					.collect(Collectors.toList());
+			cardinal = new HashSet<Piece>();
+			ordinal = new HashSet<Piece>();
+			castleable = new ArrayList<Piece>();
+			promoteable = new HashSet<Piece>();
 			
-			castleable = pieceList.get(i)
-					.stream()
-					.filter(p -> p instanceof Castleable)
-					.collect(Collectors.toList());
-			
-			promoteable = pieceList.get(i)
-					.stream()
-					.filter(p -> p instanceof Promoteable)
-					.collect(Collectors.toList());
-			
-			kings = pieceList.get(i)
-					.stream()
-					.filter(p -> p instanceof King)
-					.collect(Collectors.toList());
+			for(Piece piece : pieceList.get(i).values()) {
+				if(piece instanceof Cardinal)
+					cardinal.add(piece);
+				if(piece instanceof Ordinal)
+					ordinal.add(piece);
+				if(piece instanceof Castleable)
+					castleable.add(piece);
+				if(piece instanceof Promoteable)
+					promoteable.add(piece);
+					
+			}
 			
 			cardinalList.add(cardinal);
 			ordinalList.add(ordinal);
 			castleableList.addAll(castleable);
 			promoteableList.add(promoteable);
-			kingList.addAll(kings);
 		}
 
 		currentState();
@@ -198,14 +241,16 @@ public class Board {
 	
 	public void currentState() {
 		
+		teamMoveList.clear();
+		
 		for(int i = 0; i < teamNum; i++) {
-			kingBB[i] = kingList.get(i).piece;
+			kingBB[i] = pieceList.get(i).get('K').piece;
 			check[i] = 0;
 			teamBB[i] = 0L;
 			cardinalsBB[i] = 0L;
 			ordinalsBB[i] = 0L;
 			
-			for(Piece piece : pieceList.get(i)) {
+			for(Piece piece : pieceList.get(i).values()) {
 				teamBB[i] |= piece.piece;
 			}
 			
@@ -215,10 +260,6 @@ public class Board {
 
 			for(Piece piece : ordinalList.get(i)) {
 				ordinalsBB[i] |= piece.piece;
-			}
-			
-			for(Piece piece : promoteableList.get(i)) {
-				pawnsBB[i] |= piece.piece;
 			}
 		}
 		
@@ -238,9 +279,20 @@ public class Board {
 
 		checkmate();
 		
-		if(((pawnsBB[0]&row8)|(pawnsBB[1]&row1)) != 0) {
+		if(((pawnsBB[0]&row8)|(pawnsBB[1]&row1)) != 0 && !cpuTurn) {
 			PawnPromote.pawnPromotion(this);
-		} 
+		}
+		
+		/*long meme = 0L;
+		long meme2 = 0L;
+		for(Move move : teamMoveList.get(0)) {
+			meme |= 1L<<move.from;
+			meme2 |= 1L<<move.to;
+		}
+		displayBitboard(meme);
+		displayBitboard(meme2);*/
+		
+		//System.out.println("team turn: " + teamTurn + " cpu on: " + cpuTurn);
 
 	}
 	
@@ -262,20 +314,23 @@ public class Board {
 
 	public void checkmate() {
 		
-		for(int i = 0; i < teamNum; i++) {
-			allPMBB[i] = 0;
-			
-			for(Piece piece : pieceList.get(i)) {
-				allPMBB[i] |= piece.getAllPM(this, false);
+		for(Piece piece : pieceList.get(teamTurn).values()) {
+			piece.getAllPM(this);
+			teamMoveList.addAll(piece.moveList);
+		}
+		
+		if(teamMoveList.isEmpty() && teamWon == 2) {
+			if(check[teamTurn] == 1) {
+				teamWon = 1 - teamTurn;
+				teamScore[Math.abs(teamTurn-1)] = Integer.MAX_VALUE;
 			}
-			
-			if(allPMBB[i] == 0) {
-				if(check[i] == 1)
-					teamWon = 1 - i;
-				else
-					teamWon = -1;
+			else {
+				teamWon = -1;
+				teamScore[0] = 0;
+				teamScore[1] = 0;
 			}
 		}
+		
 	}
 	
 	public void getThreaten() {
@@ -289,8 +344,8 @@ public class Board {
 			currentThreat = 0;
 			noti = Math.abs(i-1);
 			
-			for(Piece piece : pieceList.get(i)) {
-				currentThreat = piece.getAllPM(this, true);
+			for(Piece piece : pieceList.get(i).values()) {
+				currentThreat = piece.threaten(this);
 				threatenBB[i] |= currentThreat;
 				if((currentThreat&kingBB[noti]) != 0) {
 					kThreatsBB[noti] |= piece.threatPos(this, kingBB[noti]);
@@ -303,14 +358,38 @@ public class Board {
 		
 		for(int i = 0; i < teamNum; i++) {
 			if((teamBB[i]&coord) != 0) {
-				for(Piece piece : pieceList.get(i)) {
+				for(Piece piece : pieceList.get(i).values()) {
 					if((piece.piece&coord) != 0) {
-						piece.piece &= ~coord;
+						piece.piece ^= coord;
+						teamScore[Math.abs(i-1)] += piece.value;
 						return;
 					}
 				}
 			}
 		}
+	}
+	
+	public void removePiece(long coord, int team, int enemyTeam) {
+		
+		for(Piece piece : pieceList.get(enemyTeam).values()) {
+			if((piece.piece&coord) != 0) {
+				if(cpuTurn) {
+					restoreStack.add(new Restore(enemyTeam, piece.ID, coord));
+				}
+				piece.piece ^= coord;
+				teamScore[team] += piece.value;
+				return;
+			}
+		}
+	}
+	
+	public void removePromote(long coord, int team, int value) {
+		
+		if(cpuTurn) {
+			restoreStack.add(new Restore(team, 'p', coord));
+		}
+		pieceList.get(team).get('p').piece ^= coord;
+		teamScore[team] += value - 1;
 	}
 	
 	static public void displayBitboard(long bitBoard) {
@@ -356,13 +435,13 @@ public class Board {
 			if(coord2 == coord1>>16)
 				epBB[0] |= coord1>>8;
 			else if((coord2&epBB[1]) != 0)
-				removePiece(coord2<<8);
+				removePiece(coord2<<8, team, Math.abs(team-1));
 		}
 		else {
 			if(coord2 == coord1<<16)
 				epBB[1] |= coord1<<8;
 			else if((coord2&epBB[0]) != 0)
-				removePiece(coord2>>8);
+				removePiece(coord2>>8, team, Math.abs(team-1));
 		}
 	}
 	
@@ -376,69 +455,277 @@ public class Board {
 		}
 	}
 	
-	public boolean makeMove(int team, String pos, boolean checked) {
+	public boolean makeMove(int team, Move move) {
+		
+		boolean valid = false;
+		
+		if(cpuTurn)
+			currentState();
+		
+		if(teamMoveList.contains(move)) {
+			move = teamMoveList.get(teamMoveList.indexOf(move));
+			valid = true;
+			long coord1 = 1L<<move.from;
+			long coord2 = 1L<<move.to;
+			pieceList.get(team).get(move.pid).movePiece(this, coord1, coord2, true);
+			
+			if(move.pid == 'p')
+				enPassant(coord1, coord2, team);
+			else if(move.pid == 'K')
+				castle(coord1, coord2, team);
+			
+			epBB[Math.abs(team-1)] = 0;
+
+			teamTurn = Math.abs(teamTurn-1);
+			
+			currentState();
+			
+			/*if(options.getOnline() && teamTurn == options.getTurn()) {
+                try {
+        			output.writeObject(pos);
+        			output.flush();
+        		} catch(IOException ioException) {
+        			System.out.println("issue");
+        		}
+			}*/
+		}
+		
+		return valid;
+	}
+	
+	public boolean makeMove(String pos) {
 		
 		long coord1 = convertToCoord(pos.substring(0,2));
 		long coord2 = convertToCoord(pos.substring(2,4));
 		
-		boolean valid = false;
+		Move move = new Move(Long.numberOfTrailingZeros(coord1), Long.numberOfTrailingZeros(coord2));
 		
-		if((coord1&teamBB[team]) != 0) {
-			for(Piece piece : pieceList.get(team)) {	
-				if((coord1&piece.piece) != 0) {
-					valid = piece.movePiece(this, coord1, coord2, checked);
-					
-					if(valid) {
-						if(piece.name == "Pawn") {
-							enPassant(coord1, coord2, team);
-						}
-						else if(piece.name == "King") {
-							castle(coord1, coord2, team);
-						}
-						
-						epBB[Math.abs(team-1)] = 0;
-						currentState();
-						if(options.getOnline() && teamTurn == options.getTurn()) {
-	                        try {
-	                			output.writeObject(pos);
-	                			output.flush();
-	                		} catch(IOException ioException) {
-	                			System.out.println("issue");
-	                		}
-			}
-						break;
-					}
-				}
+		boolean valid = makeMove(teamTurn, move);
+		
+		if(valid) {
+			if(options.getCPU()) {
+				cpuTurn = true;
+				System.out.println(makeMove(1, alphaBeta(3, Integer.MIN_VALUE, Integer.MAX_VALUE).move));
+				cpuTurn = false;
 			}
 		}
 		
 		return valid;
 	}
 	
-	public boolean makeMove(String pos, boolean checked) {
+	public void cpuMove(Move move) {
 		
-		boolean valid = makeMove(teamTurn, pos, checked);
+		long coord1 = 1L<<move.from;
+		long coord2 = 1L<<move.to;
 		
-		if(valid)
-			teamTurn = Math.abs(teamTurn-1);
+		/*System.out.println(move.pid);
+		displayBitboard(coord1);
+		displayBitboard(coord2);*/
+		if((coord2&(kingBB[0]|kingBB[1])) != 0) {
+			System.out.println(check[0] + " " + check[1]);
+			System.out.println("wtf");
+			displayBitboard(kThreatsBB[0]);
+		}
+
+		teamWonStack.add(teamWon);
+		rookMovedStack.add(rookMoved);
+		kingMovedStack.add(kingMoved);
+		epwStack.add(epBB[0]);
+		epbStack.add(epBB[1]);
+		scoreW.add(teamScore[0]);
+		scoreB.add(teamScore[1]);
+		checkW.add(check[0]);
+		checkB.add(check[1]);
+		pinnersW.add(pinnersBB[0]);
+		pinnersB.add(pinnersBB[1]);
+		pinnedW.add(pinnedBB[0]);
+		pinnedB.add(pinnedBB[1]);
+		slideTW.add(slideThreatsBB[0]);
+		slideTB.add(slideThreatsBB[1]);
+		interfereW.add(interfereBB[0]);
+		interfereB.add(interfereBB[1]);
+		threatenW.add(threatenBB[0]);
+		threatenB.add(threatenBB[1]);
+		kTW.add(kThreatsBB[0]);
+		kTB.add(kThreatsBB[1]);
 		
-		return valid;
+		pieceList.get(teamTurn).get(move.pid).movePiece(this, coord1, coord2, true);
+		
+		if(move.type == 3 || move.type == 4) {
+			
+			PawnPromote.promotePawn(teamTurn, coord2, this, 1);
+		}
+		
+		if(move.type == 2)
+			enPassant(coord1, coord2, teamTurn);
+		else if(move.type == 5)
+			castle(coord1, coord2, teamTurn);
+		
+		epBB[Math.abs(teamTurn-1)] = 0;
+
+		teamTurn = Math.abs(teamTurn-1);
+		
+		currentState();
+		
+		System.out.println("move");
+		String[][] cb = ParseBoard.bitboardToArray(pieceList);
+		
+		for(String[] rows : cb) {
+			for(String p : rows) {
+				System.out.print(p + ", ");
+			}
+			System.out.println();
+		}
+	}
+	
+	public void undoMove(Move move) {
+		
+		teamTurn = Math.abs(teamTurn-1);
+		
+		long coord1 = 1L<<move.from;
+		long coord2 = 1L<<move.to;
+		
+		if(move.type < 3) {
+			long redo = coord1|coord2;
+			pieceList.get(teamTurn).get(move.pid).piece ^= redo;
+			if(move.type > 0) {
+				Restore rst = restoreStack.pop();
+				pieceList.get(rst.team).get(rst.pid).piece |= rst.coord;
+			}
+		}
+		else if(move.type == 3) {
+			Restore rst = restoreStack.pop();
+			removePiece(rst.coord);
+			pieceList.get(rst.team).get('p').piece |= coord1;
+		}
+		else if(move.type == 4) {
+			Restore promoteR = restoreStack.pop();
+			removePiece(promoteR.coord);
+			Restore enemyR = restoreStack.pop();
+			pieceList.get(enemyR.team).get(enemyR.pid).piece |= enemyR.coord;
+			pieceList.get(enemyR.team).get('p').piece |= coord1;
+		}
+		else if(move.type == 5) {
+			long redo = coord1|coord2;
+			pieceList.get(teamTurn).get(move.pid).piece ^= redo;
+			
+			if(coord1<<2 == coord2)
+				castleableList.get(teamTurn).piece ^= coord2<<1|coord2>>1;
+			else
+				castleableList.get(teamTurn).piece ^= coord2>>1|coord2<<2;
+		}
+		
+		teamWon = teamWonStack.pop();
+		rookMoved = rookMovedStack.pop();
+		kingMoved = kingMovedStack.pop();
+		epBB[0] = epwStack.pop();
+		epBB[1] = epbStack.pop();
+		teamScore[0] = scoreW.pop();
+		teamScore[1] = scoreB.pop();
+		check[0] = checkW.pop();
+		check[1] = checkB.pop();
+		pinnersBB[0] = pinnersW.pop();
+		pinnersBB[1] = pinnersB.pop();
+		pinnedBB[0] = pinnedW.pop();
+		pinnedBB[1] = pinnedB.pop();
+		slideThreatsBB[0] = slideTW.pop();
+		slideThreatsBB[1] = slideTB.pop();
+		interfereBB[0] = interfereW.pop();
+		interfereBB[1] = interfereB.pop();
+		threatenBB[0] = threatenW.pop();
+		threatenBB[1] = threatenB.pop();
+		kThreatsBB[0] = kTW.pop();
+		kThreatsBB[1] = kTB.pop();
+		
+		for(int i = 0; i < teamNum; i++) {
+			kingBB[i] = pieceList.get(i).get('K').piece;
+			teamBB[i] = 0L;
+			cardinalsBB[i] = 0L;
+			ordinalsBB[i] = 0L;
+			
+			for(Piece piece : pieceList.get(i).values()) {
+				teamBB[i] |= piece.piece;
+			}
+			
+			for(Piece piece : cardinalList.get(i)) {
+				cardinalsBB[i] |= piece.piece;
+			}
+
+			for(Piece piece : ordinalList.get(i)) {
+				ordinalsBB[i] |= piece.piece;
+			}
+			
+		}
+		
+		notTeamBB[0] = ~(teamBB[0]);
+		notTeamBB[1] = ~(teamBB[1]);
+		
+		empty = ~(teamBB[0]|teamBB[1]);
+		
+		System.out.println("undo");
+		String[][] cb = ParseBoard.bitboardToArray(pieceList);
+		
+		for(String[] rows : cb) {
+			for(String p : rows) {
+				System.out.print(p + ", ");
+			}
+			System.out.println();
+		}
 	}
 	
 	public long showMoves(String pos) {
 		
 		long coord = convertToCoord(pos);
-		long moves = 0L;
 		
 		for(int i = 0; i < teamNum; i++) {
 			if((coord&teamBB[i]) != 0) {
-				for(Piece piece : pieceList.get(i)) {
+				for(Piece piece : pieceList.get(i).values()) {
 					if((coord&piece.piece) != 0)
 						return piece.possibleMoves(this, coord, true);
 				}
 			}
 		}
 		return 0L;
+	}
+	
+	private MoveScore alphaBeta(int depth, int alpha, int beta) {
+
+		Move best = null;
+		MoveScore ms;
+		
+	    if(depth == 0 || teamWon != 2)
+	        return new MoveScore(teamScore[1] - teamScore[0], best);
+	    else {
+	    	List<Move> tmp = new ArrayList<Move>(teamMoveList);
+	        if(teamTurn == 1) {
+	            for(Move move : tmp) {
+	                cpuMove(move);
+	                ms = alphaBeta(depth - 1, alpha, beta);
+	                undoMove(move);
+	                if(ms.score > alpha) {
+	                    alpha = ms.score;
+	                    best = move;
+	                    if(alpha >= beta)
+	                        break;
+	                }
+	            }
+	            return new MoveScore(alpha, best);
+	        }
+	        else {
+	            for(Move move : tmp) {
+	                cpuMove(move);
+	                ms = alphaBeta(depth - 1, alpha, beta);
+	                undoMove(move);
+	                if(ms.score < beta) {
+	                    beta = ms.score;
+	                    best = move;
+	                    if(alpha >= beta)
+	                        break;
+	                }
+	            }
+	            return new MoveScore(beta, best);
+	        }
+	    }
 	}
 	
 }

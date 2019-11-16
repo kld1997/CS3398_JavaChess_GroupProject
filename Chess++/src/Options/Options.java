@@ -12,6 +12,7 @@ public class Options {
 	int[] timeInc = new int[Board.teamNum];
 	boolean highlight;
 	boolean online;
+	boolean cpu;
 	ObjectOutputStream output;
 	ObjectInputStream input;
 	int turn;
@@ -66,11 +67,15 @@ public class Options {
 	public int getTurn() { return turn; }
 	public void setTurn(int t) { turn = t; }
 	
+	public boolean getCPU() { return cpu; }
+	public void setCPU(boolean c) { cpu = c; }
+	
 	public void defaultSet() {
 		
 		timer = false;
 		highlight = true;
 		online = false;
+		cpu = true;
 		mode = "STANDARD";
 		board = BoardTypes.standardChessBoard();
 		promote = "kbrq";
