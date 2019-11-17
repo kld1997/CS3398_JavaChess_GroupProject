@@ -279,7 +279,7 @@ public class Board {
 
 		checkmate();
 		
-		if(((pawnsBB[0]&row8)|(pawnsBB[1]&row1)) != 0 && !cpuTurn) {
+		if(((pieceList.get(0).get('p').piece&row8)|(pieceList.get(1).get('p').piece&row1)) != 0 && !cpuTurn) {
 			PawnPromote.pawnPromotion(this);
 		}
 		
@@ -475,6 +475,10 @@ public class Board {
 				castle(coord1, coord2, team);
 			
 			epBB[Math.abs(team-1)] = 0;
+			
+			if((move.type == 3 || move.type == 4) && cpuTurn) {
+				PawnPromote.promotePawn(teamTurn, coord2, this, 1);
+			}
 
 			teamTurn = Math.abs(teamTurn-1);
 			
@@ -501,11 +505,12 @@ public class Board {
 		Move move = new Move(Long.numberOfTrailingZeros(coord1), Long.numberOfTrailingZeros(coord2));
 		
 		boolean valid = makeMove(teamTurn, move);
-		
+		if((pieceList.get(0).get('p').piece&row8) != 0)
+			return valid;
 		if(valid) {
 			if(options.getCPU()) {
 				cpuTurn = true;
-				System.out.println(makeMove(1, alphaBeta(3, Integer.MIN_VALUE, Integer.MAX_VALUE).move));
+				System.out.println(makeMove(1, alphaBeta(4, Integer.MIN_VALUE, Integer.MAX_VALUE).move));
 				cpuTurn = false;
 			}
 		}
@@ -552,7 +557,6 @@ public class Board {
 		pieceList.get(teamTurn).get(move.pid).movePiece(this, coord1, coord2, true);
 		
 		if(move.type == 3 || move.type == 4) {
-			
 			PawnPromote.promotePawn(teamTurn, coord2, this, 1);
 		}
 		
@@ -567,7 +571,7 @@ public class Board {
 		
 		currentState();
 		
-		System.out.println("move");
+		/*System.out.println("move");
 		String[][] cb = ParseBoard.bitboardToArray(pieceList);
 		
 		for(String[] rows : cb) {
@@ -575,7 +579,7 @@ public class Board {
 				System.out.print(p + ", ");
 			}
 			System.out.println();
-		}
+		}*/
 	}
 	
 	public void undoMove(Move move) {
@@ -603,16 +607,17 @@ public class Board {
 			removePiece(promoteR.coord);
 			Restore enemyR = restoreStack.pop();
 			pieceList.get(enemyR.team).get(enemyR.pid).piece |= enemyR.coord;
-			pieceList.get(enemyR.team).get('p').piece |= coord1;
+			pieceList.get(promoteR.team).get('p').piece |= coord1;
 		}
 		else if(move.type == 5) {
+			//displayBitboard(coord1|coord2);
+			if(coord1<<2 == coord2) { //displayBitboard(coord2>>1|coord2<<1);
+				castleableList.get(teamTurn).piece ^= coord2>>1|coord2<<1; }
+			else { //displayBitboard(coord2<<1|coord2>>2);
+				castleableList.get(teamTurn).piece ^= coord2<<1|coord2>>2; }
+			
 			long redo = coord1|coord2;
 			pieceList.get(teamTurn).get(move.pid).piece ^= redo;
-			
-			if(coord1<<2 == coord2)
-				castleableList.get(teamTurn).piece ^= coord2<<1|coord2>>1;
-			else
-				castleableList.get(teamTurn).piece ^= coord2>>1|coord2<<2;
 		}
 		
 		teamWon = teamWonStack.pop();
@@ -662,7 +667,7 @@ public class Board {
 		
 		empty = ~(teamBB[0]|teamBB[1]);
 		
-		System.out.println("undo");
+		/*System.out.println("undo");
 		String[][] cb = ParseBoard.bitboardToArray(pieceList);
 		
 		for(String[] rows : cb) {
@@ -670,7 +675,7 @@ public class Board {
 				System.out.print(p + ", ");
 			}
 			System.out.println();
-		}
+		}*/
 	}
 	
 	public long showMoves(String pos) {

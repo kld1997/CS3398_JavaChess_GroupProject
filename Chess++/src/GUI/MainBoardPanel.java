@@ -164,11 +164,11 @@ public class MainBoardPanel extends JPanel
         top = thisGui.getInfoPanel();
         right = thisGui.getHisotryPanel();
         if(PawnPromote.promotion == true) {
-            if((gameBoard.pawnsBB[0]&Board.row8) != 0) {
+            if((gameBoard.pieceList.get(0).get('p').piece&Board.row8) != 0) {
                 right.pp.showPanel(0, PawnPromote.coord);
                 locked = true;
             }
-            if((gameBoard.pawnsBB[1]&Board.row1) != 0) {
+            if((gameBoard.pieceList.get(1).get('p').piece&Board.row1) != 0) {
                 right.pp.showPanel(1, PawnPromote.coord);
                 locked = true;
             }
