@@ -72,6 +72,8 @@ public class Board {
 	
 	public static long kingMoves = 460039L;
 	public static long knightMoves = 43234889994L;
+	public static long archerMoves = 0x40E1B0E04L;
+	public static long archerCaptures = 0x40A110A04L;
 	
 	public static long rowMasks[] = {
 			255L, 65280L, 16711680L, 4278190080L, 1095216660480L, 280375465082880L, 71776119061217280L, -72057594037927936L
@@ -274,7 +276,7 @@ public class Board {
 		
 		getThreaten();
 		
-		//code for making a bitboard of all of the pinnedB and pinning pieces
+		//code for making a bitboard of all of the pinned and pinning pieces
 		Check.getPinned(this);
 		
 		Check.slideThreats(this);
@@ -284,17 +286,6 @@ public class Board {
 		if(((pieceList.get(0).get('p').piece&row8)|(pieceList.get(1).get('p').piece&row1)) != 0 && !cpuTurn) {
 			PawnPromote.pawnPromotion(this);
 		}
-		
-		/*long meme = 0L;
-		long meme2 = 0L;
-		for(Move move : teamMoveList.get(0)) {
-			meme |= 1L<<move.from;
-			meme2 |= 1L<<move.to;
-		}
-		displayBitboard(meme);
-		displayBitboard(meme2);*/
-		
-		//System.out.println("team turn: " + teamTurn + " cpu on: " + cpuTurn);
 
 	}
 	
@@ -470,7 +461,11 @@ public class Board {
 			valid = true;
 			long coord1 = 1L<<move.from;
 			long coord2 = 1L<<move.to;
-			pieceList.get(team).get(move.pid).movePiece(this, coord1, coord2, true);
+			if(move.type == 6) {
+				removePiece(coord2, team, Math.abs(team-1));
+			}
+			else
+				pieceList.get(team).get(move.pid).movePiece(this, coord1, coord2, true);
 			
 			if(move.pid == 'p')
 				enPassant(coord1, coord2, team);
@@ -487,15 +482,6 @@ public class Board {
 				switchTeamTurn();
 			
 			currentState();
-			
-			/*if(options.getOnline() && teamTurn == options.getTurn()) {
-                try {
-        			output.writeObject(pos);
-        			output.flush();
-        		} catch(IOException ioException) {
-        			System.out.println("issue");
-        		}
-			}*/
 		}
 		
 		return valid;
@@ -525,11 +511,6 @@ public class Board {
 			cpuTurn = true;
 			makeMove(1, alphaBeta(3, Integer.MIN_VALUE, Integer.MAX_VALUE).move);
 			cpuTurn = false;
-			/*long pm = 0L;
-			for(Move m : pieceList.get(1).get('p').moveList) {
-				pm |= 1L<<m.to;
-			}
-			displayBitboard(pm);*/
 			return true;
 		}
 		else
@@ -540,15 +521,6 @@ public class Board {
 		
 		long coord1 = 1L<<move.from;
 		long coord2 = 1L<<move.to;
-		
-		/*System.out.println(move.pid);
-		displayBitboard(coord1);
-		displayBitboard(coord2);*/
-		if((coord2&(kingBB[0]|kingBB[1])) != 0) {
-			System.out.println(check[0] + " " + check[1]);
-			System.out.println("wtf");
-			displayBitboard(kThreatsBB[0]);
-		}
 
 		teamWonStack.add(teamWon);
 		rookMovedStack.add(rookMoved);
@@ -589,15 +561,6 @@ public class Board {
 		
 		currentState();
 		
-		/*System.out.println("move");
-		String[][] cb = ParseBoard.bitboardToArray(pieceList);
-		
-		for(String[] rows : cb) {
-			for(String p : rows) {
-				System.out.print(p + ", ");
-			}
-			System.out.println();
-		}*/
 	}
 	
 	public void undoMove(Move move) {
@@ -628,11 +591,10 @@ public class Board {
 			pieceList.get(promoteR.team).get('p').piece |= coord1;
 		}
 		else if(move.type == 5) {
-			//displayBitboard(coord1|coord2);
-			if(coord1<<2 == coord2) { //displayBitboard(coord2>>1|coord2<<1);
-				castleableList.get(teamTurn).piece ^= coord2>>1|coord2<<1; }
-			else { //displayBitboard(coord2<<1|coord2>>2);
-				castleableList.get(teamTurn).piece ^= coord2<<1|coord2>>2; }
+			if(coord1<<2 == coord2)
+				castleableList.get(teamTurn).piece ^= coord2>>1|coord2<<1;
+			else
+				castleableList.get(teamTurn).piece ^= coord2<<1|coord2>>2;
 			
 			long redo = coord1|coord2;
 			pieceList.get(teamTurn).get(move.pid).piece ^= redo;
@@ -684,16 +646,6 @@ public class Board {
 		notTeamBB[1] = ~(teamBB[1]);
 		
 		empty = ~(teamBB[0]|teamBB[1]);
-		
-		/*System.out.println("undo");
-		String[][] cb = ParseBoard.bitboardToArray(pieceList);
-		
-		for(String[] rows : cb) {
-			for(String p : rows) {
-				System.out.print(p + ", ");
-			}
-			System.out.println();
-		}*/
 	}
 	
 	public long showMoves(String pos) {

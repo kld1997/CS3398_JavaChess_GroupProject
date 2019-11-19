@@ -75,7 +75,7 @@ public class Options {
 		timer = false;
 		highlight = true;
 		online = false;
-		cpu = true;
+		cpu = false;
 		mode = "STANDARD";
 		board = BoardTypes.standardChessBoard();
 		promote = "kbrq";

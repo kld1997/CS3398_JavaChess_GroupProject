@@ -34,7 +34,7 @@ public class King extends Piece
 		rooks = board.castleableList.get(team).piece;
 		
 		if((piece&coord) != 0)
-			moves = pseudoMoves(coord);
+			moves = pseudoMoves(0L, coord);
 		
 		if((board.kingMoved&piece) != 0 && check == 0) {	//castling
 			rooks &= board.rookMoved&board.castleableList.get(team).piece;
@@ -107,31 +107,7 @@ public class King extends Piece
 		}
 	}
 	
-	public long pseudoMoves(long coord) {
-		
-		int trail = Long.numberOfTrailingZeros(coord);
-		long pm = 0L;
-		
-		if(trail == 9) {
-			pm = Board.kingMoves;
-		}
-		else {
-			if(trail > 9) {
-				pm = Board.kingMoves<<(trail - 9);
-			}
-			else if(trail < 9) {
-				pm = Board.kingMoves>>(9 - trail);
-			}
-			
-			if((coord&Board.colA) != 0) {
-				pm &= ~Board.colH;
-			}
-			if((coord&Board.colH) != 0) {
-				pm &= ~Board.colA;
-			}
-		}
-		
-		return pm;
+	public long pseudoMoves(long occ, long coord) {
+		return Moves.kingPseudoMoves(coord);
 	}
-	
 }

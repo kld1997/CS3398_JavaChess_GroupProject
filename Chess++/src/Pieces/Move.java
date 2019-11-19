@@ -4,7 +4,7 @@ public class Move {
 
 	public int from;
 	public int to;
-	public int type; //0: normal, 1: capture, 2: EP, 3: promote, 4: capture+promote, 5: castle
+	public int type; //0: normal, 1: capture, 2: EP, 3: promote, 4: capture+promote, 5: castle, 6: distant capture
 	public char pid;
 	
 	public Move(int f, int t) {

@@ -51,8 +51,6 @@ public class Moves {														//class containing directional sliding movemen
 	
 	static public long xrayHV(long occ, long coord, long blockers) {
 		
-		int trail = Long.numberOfTrailingZeros(coord);
-		
 		long attacks = HV(occ, coord);
 		
 		blockers &= attacks;
@@ -66,9 +64,7 @@ public class Moves {														//class containing directional sliding movemen
 		return attacks;	
 	}
 	
-static public long xrayDX(long occ, long coord, long blockers) {
-		
-		int trail = Long.numberOfTrailingZeros(coord);
+	static public long xrayDX(long occ, long coord, long blockers) {
 		
 		long attacks = DX(occ, coord);
 		
@@ -81,5 +77,113 @@ static public long xrayDX(long occ, long coord, long blockers) {
 		attacks ^= DX(occ, coord);
 		
 		return attacks;
+	}
+
+	public static long kingPseudoMoves(long coord) {
+		
+		int trail = Long.numberOfTrailingZeros(coord);
+		long pm = 0L;
+		
+		if(trail == 9) {
+			pm = Board.kingMoves;
+		}
+		else {
+			if(trail > 9) {
+				pm = Board.kingMoves<<(trail - 9);
+			}
+			else if(trail < 9) {
+				pm = Board.kingMoves>>(9 - trail);
+			}
+			
+			if((coord&Board.colA) != 0) {
+				pm &= ~Board.colH;
+			}
+			if((coord&Board.colH) != 0) {
+				pm &= ~Board.colA;
+			}
+		}
+		
+		return pm;
+	}
+	
+	public static long knightPseudoMoves(long coord) {
+		
+		int trail = Long.numberOfTrailingZeros(coord);	
+		long pm = 0L;
+		
+		if(trail == 18) {
+			pm = Board.knightMoves;
+		}
+		else {
+			if(trail > 18) {
+				pm = Board.knightMoves<<(trail - 18);
+			}
+			else if(trail < 18) {
+				pm = Board.knightMoves>>(18 - trail);
+			}
+			
+			if((coord&(Board.colA|Board.colB)) != 0) {
+				pm &= ~(Board.colG|Board.colH);
+			}
+			if((coord&(Board.colG|Board.colH)) != 0) {
+				pm &= ~(Board.colA|Board.colB);
+			}
+		}
+		
+		return pm;
+	}
+	
+	public static long archerPseudoMoves(long coord) {
+		
+		int trail = Long.numberOfTrailingZeros(coord);	
+		long pm = 0L;
+		
+		if(trail == 18) {
+			pm = Board.archerMoves;
+		}
+		else {
+			if(trail > 18) {
+				pm = Board.archerMoves<<(trail - 18);
+			}
+			else if(trail < 18) {
+				pm = Board.archerMoves>>(18 - trail);
+			}
+			
+			if((coord&(Board.colA|Board.colB)) != 0) {
+				pm &= ~(Board.colG|Board.colH);
+			}
+			if((coord&(Board.colG|Board.colH)) != 0) {
+				pm &= ~(Board.colA|Board.colB);
+			}
+		}
+		
+		return pm;
+	}
+	
+	public static long archerPseudoCaptures(long coord) {
+		
+		int trail = Long.numberOfTrailingZeros(coord);	
+		long pm = 0L;
+		
+		if(trail == 18) {
+			pm = Board.archerCaptures;
+		}
+		else {
+			if(trail > 18) {
+				pm = Board.archerCaptures<<(trail - 18);
+			}
+			else if(trail < 18) {
+				pm = Board.archerCaptures>>(18 - trail);
+			}
+			
+			if((coord&(Board.colA|Board.colB)) != 0) {
+				pm &= ~(Board.colG|Board.colH);
+			}
+			if((coord&(Board.colG|Board.colH)) != 0) {
+				pm &= ~(Board.colA|Board.colB);
+			}
+		}
+		
+		return pm;
 	}
 }
