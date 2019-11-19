@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -318,7 +320,8 @@ public class Board {
 			piece.getAllPM(this);
 			teamMoveList.addAll(piece.moveList);
 		}
-		
+		Collections.shuffle(teamMoveList);
+		teamMoveList.sort(Comparator.comparing(Move -> Move.type, Comparator.reverseOrder()));
 		if(teamMoveList.isEmpty() && teamWon == 2) {
 			if(check[teamTurn] == 1) {
 				teamWon = 1 - teamTurn;
@@ -480,7 +483,8 @@ public class Board {
 				PawnPromote.promotePawn(teamTurn, coord2, this, 1);
 			}
 
-			teamTurn = Math.abs(teamTurn-1);
+			if(cpuTurn || (move.type != 3 && move.type != 4))
+				switchTeamTurn();
 			
 			currentState();
 			
@@ -497,6 +501,11 @@ public class Board {
 		return valid;
 	}
 	
+	public void switchTeamTurn() {
+		
+		teamTurn = Math.abs(teamTurn-1);
+	}
+	
 	public boolean makeMove(String pos) {
 		
 		long coord1 = convertToCoord(pos.substring(0,2));
@@ -505,17 +514,26 @@ public class Board {
 		Move move = new Move(Long.numberOfTrailingZeros(coord1), Long.numberOfTrailingZeros(coord2));
 		
 		boolean valid = makeMove(teamTurn, move);
-		if((pieceList.get(0).get('p').piece&row8) != 0)
-			return valid;
-		if(valid) {
-			if(options.getCPU()) {
-				cpuTurn = true;
-				System.out.println(makeMove(1, alphaBeta(4, Integer.MIN_VALUE, Integer.MAX_VALUE).move));
-				cpuTurn = false;
-			}
-		}
-		
+
 		return valid;
+	}
+	
+	public boolean cpuStart() {
+		
+		if(options.getCPU()) {
+			currentState();
+			cpuTurn = true;
+			makeMove(1, alphaBeta(3, Integer.MIN_VALUE, Integer.MAX_VALUE).move);
+			cpuTurn = false;
+			/*long pm = 0L;
+			for(Move m : pieceList.get(1).get('p').moveList) {
+				pm |= 1L<<m.to;
+			}
+			displayBitboard(pm);*/
+			return true;
+		}
+		else
+			return false;
 	}
 	
 	public void cpuMove(Move move) {

@@ -20,6 +20,7 @@ public class PawnPromote {
 	public static void promotePawn(int team, long coord, Board board, int pawnID) {
 		
 		int newP = pawnID;
+		System.out.println(team);
 
 		switch(newP) {
 		  case 3: //knight
@@ -47,7 +48,9 @@ public class PawnPromote {
 		}
 
 		promotion = false;
-		if(!board.cpuTurn)
+		if(!board.cpuTurn) {
 			board.currentState();
+			board.switchTeamTurn();
+		}
 	}	
 }

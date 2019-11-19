@@ -115,6 +115,11 @@ public class MainBoardPanel extends JPanel
                                 }
                             }
                             updateBoard();                             //Action Command is set to coordinates on board of where you clicked.
+                            
+                            if(moveMade && !PawnPromote.promotion) {
+                            	cpuMakeMove(g);
+                            }
+                            
                         }
                     }
                 });
@@ -123,6 +128,14 @@ public class MainBoardPanel extends JPanel
             }
         }
     }
+    
+    public void cpuMakeMove(ChessGui g) {
+    	if(gameBoard.cpuStart()) {
+    		moveMade(g);
+    		updateBoard();
+    	}
+    }
+    
     public void moveMade(ChessGui g) {
     	if(g.getInfoPanel().getType() == 1)
         {
@@ -131,6 +144,7 @@ public class MainBoardPanel extends JPanel
         g.getInfoPanel().switchTeam();
         g.menu.teamChange();
     }
+    
     public void setLocked(boolean val)
     {
         locked = val;
@@ -163,15 +177,10 @@ public class MainBoardPanel extends JPanel
     {
         top = thisGui.getInfoPanel();
         right = thisGui.getHisotryPanel();
+        
         if(PawnPromote.promotion == true) {
-            if((gameBoard.pieceList.get(0).get('p').piece&Board.row8) != 0) {
-                right.pp.showPanel(0, PawnPromote.coord);
-                locked = true;
-            }
-            if((gameBoard.pieceList.get(1).get('p').piece&Board.row1) != 0) {
-                right.pp.showPanel(1, PawnPromote.coord);
-                locked = true;
-            }
+            right.pp.showPanel(gameBoard.teamTurn, PawnPromote.coord);
+            locked = true;
         }
         if(gameBoard.check[0] == 1)
         {
