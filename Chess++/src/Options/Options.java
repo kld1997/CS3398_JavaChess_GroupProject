@@ -13,6 +13,7 @@ public class Options {
 	boolean highlight;
 	boolean online;
 	boolean cpu;
+	boolean captureKing;
 	ObjectOutputStream output;
 	ObjectInputStream input;
 	int turn;
@@ -70,12 +71,16 @@ public class Options {
 	public boolean getCPU() { return cpu; }
 	public void setCPU(boolean c) { cpu = c; }
 	
+	public boolean getCaptureKing() { return captureKing; }
+	public void setCaptureKing(boolean c) { captureKing = c; }
+	
 	public void defaultSet() {
 		
 		timer = false;
 		highlight = true;
 		online = false;
-		cpu = false;
+		cpu = true;
+		captureKing = false;
 		mode = "STANDARD";
 		board = BoardTypes.standardChessBoard();
 		promote = "kbrq";

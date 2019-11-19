@@ -274,19 +274,20 @@ public class Board {
 		
 		pieceMoved();
 		
-		getThreaten();
-		
-		//code for making a bitboard of all of the pinned and pinning pieces
-		Check.getPinned(this);
-		
-		Check.slideThreats(this);
+		if(!options.getCaptureKing()) {
+			
+			getThreaten();
+			
+			Check.getPinned(this);
+			
+			Check.slideThreats(this);
+		}
 
 		checkmate();
 		
 		if(((pieceList.get(0).get('p').piece&row8)|(pieceList.get(1).get('p').piece&row1)) != 0 && !cpuTurn) {
 			PawnPromote.pawnPromotion(this);
 		}
-
 	}
 	
 	public void pieceMoved() {
@@ -333,10 +334,10 @@ public class Board {
 		int noti = 0;
 		
 		for(int i = 0; i < teamNum; i++) {
-			threatenBB[i] = 0;
-			kThreatsBB[i] = 0;
-			currentThreat = 0;
 			noti = Math.abs(i-1);
+			threatenBB[i] = 0;
+			kThreatsBB[noti] = 0;
+			currentThreat = 0;
 			
 			for(Piece piece : pieceList.get(i).values()) {
 				currentThreat = piece.threaten(this);
@@ -509,7 +510,7 @@ public class Board {
 		if(options.getCPU()) {
 			currentState();
 			cpuTurn = true;
-			makeMove(1, alphaBeta(3, Integer.MIN_VALUE, Integer.MAX_VALUE).move);
+			makeMove(1, alphaBeta(4, Integer.MIN_VALUE, Integer.MAX_VALUE).move);
 			cpuTurn = false;
 			return true;
 		}

@@ -28,7 +28,6 @@ public class Pawn extends Piece implements Promoteable
 		if((piece&coord) != 0 && check < 2) {	
 			moves = pseudoMoves(occ, coord, EP);
 		}	
-		
 		if(check == 1)
 			moves &= Check.checkRestrict(board, team, coord, pinned)|EP;
 		else if((coord & pinned) != 0)
@@ -90,7 +89,6 @@ public class Pawn extends Piece implements Promoteable
 		long cr;
 		long caps;
 		long temp = piece&pinned;
-		piece &= ~temp;
 		int p ,t = 0;
 		
 		if(check == 1) {
@@ -124,6 +122,8 @@ public class Pawn extends Piece implements Promoteable
 				}
 			}
 		}
+		
+		piece &= ~temp;
 		
 		EP = board.epBB[enemyTeam];
 		if(check < 2) {

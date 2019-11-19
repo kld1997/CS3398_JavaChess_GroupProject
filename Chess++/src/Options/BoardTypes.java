@@ -5,14 +5,14 @@ public class BoardTypes {
 	static public String[][] standardChessBoard() {
 		
 		String standardChessBoard[][] = {
-				{"br","bk","bb","bq","bK","bb","ba","br"},
+				{"br","bk","bb","bq","bK","bb","bk","br"},
 				{"bp","bp","bp","bp","bp","bp","bp","bp"},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
-				{"wr","wa","wb","wq","wK","wb","wk","wr"}};
+				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
 		
 		return standardChessBoard;
 	}
