@@ -1,13 +1,26 @@
+//THIS CODE WAS BROUGHT TO YOU BY MAGGIA GANG
+import javax.swing.JFrame;
+import Menu.*;
+import Visuals.*;
 
-//Roy Grady
-import java.util.Scanner;
+public class Main extends JFrame {
+    public Main() {
+        setTitle("Chess++");
+
+        setSize(640, 480);
+        setResizable(false);
+        Menu menu = new Menu();
+        add(menu);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
 
 
-class Main {
     public static void main(String[] args) {
-
-      Images.setUpImages();
-      Images.readMenuIcons();
-    	new ChessGui(new Board());
+    	Images.setUpImages();
+    	Images.readMenuIcons();
+        new Main();
     }
 }
