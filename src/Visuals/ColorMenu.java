@@ -169,10 +169,16 @@ public class ColorMenu extends JMenuItem
           {
             for(int j = 0; j < 8; j++)
             {
-              if(!((i % 2 == 0) ^ (j % 2 == 0)))
+              if(!((i % 2 == 0) ^ (j % 2 == 0))) {
                 boardTiles[i][j].setBackground(one);
-              else
+                if(boardTiles[i][j].getBorder() != null)
+                  boardTiles[i][j].Highlight();
+              }
+              else {
                 boardTiles[i][j].setBackground(two);
+                if(boardTiles[i][j].getBorder() != null)
+                  boardTiles[i][j].Highlight();
+              }
             }
           }
       }

@@ -31,7 +31,7 @@ public class PawnPromotePanel extends JPanel
                     promoButtonClicked = Integer.parseInt(temp.getActionCommand());
                     mp.pawnID = promoButtonClicked;
                     PawnPromote.promotePawn(team, coord, mp.gameBoard, mp.pawnID);
-
+                    mp.cpuMakeMove(thisGui);
                     temp.getParent().removeAll();
                     repaint();
                     mp.updateBoard();

@@ -17,29 +17,6 @@ public class Knight extends Piece
 	}
 	
 	public long pseudoMoves(long occ, long coord) {
-		
-		int trail = Long.numberOfTrailingZeros(coord);	
-		long pm = 0L;
-		
-		if(trail == 18) {
-			pm = Board.knightMoves;
-		}
-		else {
-			if(trail > 18) {
-				pm = Board.knightMoves<<(trail - 18);
-			}
-			else if(trail < 18) {
-				pm = Board.knightMoves>>(18 - trail);
-			}
-			
-			if((coord&(Board.colA|Board.colB)) != 0) {
-				pm &= ~(Board.colG|Board.colH);
-			}
-			if((coord&(Board.colG|Board.colH)) != 0) {
-				pm &= ~(Board.colA|Board.colB);
-			}
-		}
-		
-		return pm;
+		return Moves.knightPseudoMoves(coord);
 	}
 }

@@ -1,4 +1,4 @@
-package GUI;
+/*package GUI;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -7,7 +7,7 @@ import Engine.*;
 import Online.*;
 
 public class ClientGui extends ChessGui {
-	
+
 	/*public ClientGui(Board b, int onlineSet, int p)
     {
 		ChessGui g = this;
@@ -36,4 +36,4 @@ public class ClientGui extends ChessGui {
 
           thread.start();
     }*/
-}
+//}

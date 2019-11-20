@@ -15,10 +15,11 @@ public class ChessGui extends JFrame
     JPanel centerPanel = new JPanel(new BorderLayout());
     public MenuBuilder menu;
     public Board gameBoard;
-    
+
     public ChessGui(Board b)
     {
     	gameBoard = b;
+      int[] temp = b.options.getTime();
     	if(b.options.getTimer())
     		topPanel = new BulletInfoPanel(this, b.options.getTime());
     	else

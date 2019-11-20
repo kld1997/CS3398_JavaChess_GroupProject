@@ -162,8 +162,6 @@ public class Menu extends JPanel {
             public void actionPerformed(ActionEvent e) {
 
             	Options options = new Options("bullet");
-            	int[] timey = {120, 60};
-            	options.setTime(timey);
             	new ChessGui(new Board(options));
             }
         });
@@ -285,9 +283,9 @@ public class Menu extends JPanel {
                 System.out.println(ipaddress + "\n");
                 System.out.println(port);
                 int p = Integer.parseInt(port);
-                
+
                 ChessClient client = new ChessClient(ipaddress, p);
-                
+
                 while(!client.connected()) {
                 	try {
 						Thread.sleep(250);
@@ -302,7 +300,7 @@ public class Menu extends JPanel {
                 	options.setOutput(client.output);
                 	options.setInput(client.input);
                 	options.setTurn(client.turn);
-                	
+
                 	client.setGui(new ChessGui(new Board(options)));
                 }
             }
@@ -342,9 +340,9 @@ public class Menu extends JPanel {
                 port = portField.getText();
                 System.out.println(port);
                 int p = Integer.parseInt(port);
-                
+
                 ChessServer server = new ChessServer(p);
-                
+
                 while(!server.connected()) {
                 	try {
 						Thread.sleep(250);
@@ -359,10 +357,10 @@ public class Menu extends JPanel {
                 	options.setOutput(server.output);
                 	options.setInput(server.input);
                 	options.setTurn(server.turn);
-                	
+
                 	server.setGui(new ChessGui(new Board(options)));
                 }
-                
+
             }
         });
         add(submitButton);

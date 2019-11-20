@@ -42,7 +42,6 @@ public class BulletInfoPanel extends GenericInfoPanel
         	ss = "0" + secs;
         else
         	ss = "" + secs;
-        
         String bst = "" + st[1]/60 + ":" + ss;
         blackTime.setText(bst);
     }

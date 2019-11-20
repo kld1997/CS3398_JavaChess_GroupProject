@@ -80,12 +80,11 @@ public class MainBoardPanel extends JPanel
                                     break;
                                 }
                             }
-                            moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
-                            
+
                             if(!gameBoard.options.getOnline() || gameBoard.teamTurn == yourTurn) {
                                 moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
 
-                                moveMade = gameBoard.makeMove(moveString, false);                           //Check to see if a move has been made
+                                moveMade = gameBoard.makeMove(moveString);                           //Check to see if a move has been made
                             }
 
                             if (moveMade)
@@ -116,6 +115,11 @@ public class MainBoardPanel extends JPanel
                                 }
                             }
                             updateBoard();                             //Action Command is set to coordinates on board of where you clicked.
+
+                            if(moveMade && !PawnPromote.promotion) {
+                            	cpuMakeMove(g);
+                            }
+
                         }
                     }
                 });
@@ -124,6 +128,14 @@ public class MainBoardPanel extends JPanel
             }
         }
     }
+
+    public void cpuMakeMove(ChessGui g) {
+    	if(gameBoard.cpuStart()) {
+    		moveMade(g);
+    		updateBoard();
+    	}
+    }
+
     public void moveMade(ChessGui g) {
     	if(g.getInfoPanel().getType() == 1)
         {
@@ -132,6 +144,7 @@ public class MainBoardPanel extends JPanel
         g.getInfoPanel().switchTeam();
         g.menu.teamChange();
     }
+
     public void setLocked(boolean val)
     {
         locked = val;
@@ -164,15 +177,10 @@ public class MainBoardPanel extends JPanel
     {
         top = thisGui.getInfoPanel();
         right = thisGui.getHisotryPanel();
+
         if(PawnPromote.promotion == true) {
-            if((gameBoard.pawnsBB[0]&Board.row8) != 0) {
-                right.pp.showPanel(0, PawnPromote.coord);
-                locked = true;
-            }
-            if((gameBoard.pawnsBB[1]&Board.row1) != 0) {
-                right.pp.showPanel(1, PawnPromote.coord);
-                locked = true;
-            }
+            right.pp.showPanel(gameBoard.teamTurn, PawnPromote.coord);
+            locked = true;
         }
         if(gameBoard.check[0] == 1)
         {
@@ -187,32 +195,34 @@ public class MainBoardPanel extends JPanel
         {
             for(int y = 0; y < 8; y++)
             {
+              if(!highlightedSquares.contains(squares[x][y])) {
                 squares[x][y].setIcon(null);
                 squares[x][y].setActionCommand("White  " + x + " " + y);
+              }
             }
         }
-        
+
         String teamName;
         long temp;
         int tempx;
         int tempy;
-        
+
         for(int i = 0; i < Board.teamNum; i++) {
     		if(i == 0)
     			teamName = "White";
     		else
     			teamName = "Black";
-    		
-    		for(Piece piece : gameBoard.pieceList.get(i)) {
+
+    		for(Piece piece : gameBoard.pieceList.get(i).values()) {
     			temp = piece.piece;
-    			
+
     			while(temp != 0) {
     				tempx = Long.numberOfTrailingZeros(temp)/8;
     				tempy = Long.numberOfTrailingZeros(temp)%8;
-    				
+
     				squares[tempx][tempy].setIcon(new ImageIcon(piece.image));
     				squares[tempx][tempy].setActionCommand(teamName + " " + piece.name + " " + tempx + " " + tempy);
-    				
+
     				temp &= temp - 1;
     			}
     		}

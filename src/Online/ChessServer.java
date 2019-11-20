@@ -79,7 +79,7 @@ public class ChessServer {
 				e.printStackTrace();
 			}
     		if(gui != null && gui.gameBoard.teamTurn != turn && Board.convertToCoord(message) != -1L) {
-    			if(gui.gameBoard.makeMove(message, false)) {
+    			if(gui.gameBoard.makeMove(message)) {
     				//System.out.println(message);
     				gui.getMainPanel().moveMade(gui);
     				gui.getMainPanel().updateBoard();
