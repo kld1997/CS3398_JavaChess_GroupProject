@@ -12,7 +12,7 @@ public class Options {
 	int[] timeInc = new int[Board.teamNum];
 	boolean highlight;
 	boolean online;
-	boolean cpu;
+	int cpu;
 	boolean captureKing;
 	ObjectOutputStream output;
 	ObjectInputStream input;
@@ -68,8 +68,8 @@ public class Options {
 	public int getTurn() { return turn; }
 	public void setTurn(int t) { turn = t; }
 	
-	public boolean getCPU() { return cpu; }
-	public void setCPU(boolean c) { cpu = c; }
+	public int getCPU() { return cpu; }
+	public void setCPU(int c) { cpu = c; }
 	
 	public boolean getCaptureKing() { return captureKing; }
 	public void setCaptureKing(boolean c) { captureKing = c; }
@@ -79,7 +79,7 @@ public class Options {
 		timer = false;
 		highlight = true;
 		online = false;
-		cpu = true;
+		cpu = 1;
 		captureKing = false;
 		mode = "STANDARD";
 		board = BoardTypes.standardChessBoard();
@@ -113,5 +113,15 @@ public class Options {
 				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
 		
 		board = wallChessBoard;
+	}
+	
+	public int getCPUMissChance() {
+		switch(cpu) {
+		case 1: return 50;
+		case 2: return 75;
+		case 3: return 90;
+		case 4: return 95;
+		default: return 100;
+		}
 	}
 }

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import GUI.*;
 import Online.*;
@@ -507,7 +508,7 @@ public class Board {
 	
 	public boolean cpuStart() {
 		
-		if(options.getCPU()) {
+		if(options.getCPU() > 0) {
 			currentState();
 			cpuTurn = true;
 			makeMove(1, alphaBeta(4, Integer.MIN_VALUE, Integer.MAX_VALUE).move);
@@ -679,8 +680,10 @@ public class Board {
 	                ms = alphaBeta(depth - 1, alpha, beta);
 	                undoMove(move);
 	                if(ms.score > alpha) {
-	                    alpha = ms.score;
-	                    best = move;
+	                	if(alpha == Integer.MIN_VALUE || ThreadLocalRandom.current().nextInt(0, 100) <= options.getCPUMissChance()) {
+	                		alpha = ms.score;
+		                    best = move;
+	                	}
 	                    if(alpha >= beta)
 	                        break;
 	                }
@@ -693,8 +696,10 @@ public class Board {
 	                ms = alphaBeta(depth - 1, alpha, beta);
 	                undoMove(move);
 	                if(ms.score < beta) {
-	                    beta = ms.score;
-	                    best = move;
+	                	if(beta == Integer.MAX_VALUE || ThreadLocalRandom.current().nextInt(0, 100) <= options.getCPUMissChance()) {
+	                		beta = ms.score;
+	                		best = move;
+	                	}
 	                    if(alpha >= beta)
 	                        break;
 	                }
