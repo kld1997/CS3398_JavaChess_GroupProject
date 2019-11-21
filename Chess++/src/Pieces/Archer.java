@@ -18,7 +18,7 @@ public class Archer extends Piece
 	}
 	
 	public long pseudoMoves(long occ, long coord) {
-		return Moves.HVDX(occ, coord)&Moves.archerPseudoMoves(coord);
+		return Moves.HVDX(occ, coord) & Moves.archerPseudoMoves(coord);
 	}
 	
 	public void getAllPM(Board board) {

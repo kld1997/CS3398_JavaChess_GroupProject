@@ -546,7 +546,11 @@ public class Board {
 		kTW.add(kThreatsBB[0]);
 		kTB.add(kThreatsBB[1]);
 		
-		pieceList.get(teamTurn).get(move.pid).movePiece(this, coord1, coord2, true);
+		if(move.type == 6) {
+			removePiece(coord2, teamTurn, Math.abs(teamTurn-1));
+		}
+		else
+			pieceList.get(teamTurn).get(move.pid).movePiece(this, coord1, coord2, true);
 		
 		if(move.type == 3 || move.type == 4) {
 			PawnPromote.promotePawn(teamTurn, coord2, this, 1);
@@ -600,6 +604,10 @@ public class Board {
 			
 			long redo = coord1|coord2;
 			pieceList.get(teamTurn).get(move.pid).piece ^= redo;
+		}
+		else if(move.type == 6) {
+			Restore rst = restoreStack.pop();
+			pieceList.get(rst.team).get(rst.pid).piece |= rst.coord;
 		}
 		
 		teamWon = teamWonStack.pop();

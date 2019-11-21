@@ -32,14 +32,14 @@ public class Button extends JButton implements MouseListener {
             g.fillRect(0,0,150,75);
         }
 
-        g.setColor(new Color(50,0, hover ? 255 : 180));
+        g.setColor(new Color(100,0, hover ? 255 : 180));
 
         g.fillRect(0,0,150,7);
         g.fillRect(0,68,150,7);
         g.fillRect(0,0,7,75);
         g.fillRect(143,0,7,75);
 
-        g.setColor(new Color (230, 0, 230));
+        g.setColor(new Color (100, 10, 30));
 
         g.fillRect(14, 14, 122,47);
 
@@ -100,7 +100,7 @@ public class Button extends JButton implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        click = true;
+        click = false;
     }
 
 }

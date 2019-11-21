@@ -1,4 +1,5 @@
 //THIS CODE WAS BROUGHT TO YOU BY MAGGIA GANG
+package Main;
 import javax.swing.JFrame;
 import Menu.*;
 import Visuals.*;
