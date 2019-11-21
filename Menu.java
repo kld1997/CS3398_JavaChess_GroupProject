@@ -3,9 +3,6 @@
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferStrategy;
@@ -20,10 +17,7 @@ public class Menu extends JPanel {
     public boolean started = false;
 
     public Menu() {
-
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        //add(Box.createVerticalStrut(280));
 
         JLabel jlabel = new JLabel("Chess++");
         jlabel.setFont(new Font("Algerian", Font.BOLD, 50));
@@ -33,7 +27,7 @@ public class Menu extends JPanel {
 
         add(jlabel);
 
-        add(Box.createVerticalStrut(100));
+        add(Box.createVerticalStrut(35));
 
         Button playbutton = new Button("Play");
         playbutton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
@@ -67,9 +61,22 @@ public class Menu extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new SettingsMain();
+                settingsButton.click = false;
             }
         });
         add(settingsButton);
+
+        add(Box.createVerticalStrut(10));
+
+        Button exitButton = new Button("Exit");
+        exitButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        exitButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+        add(exitButton);
 
         /***
          try {
@@ -83,7 +90,6 @@ public class Menu extends JPanel {
     }
 
     public void selectNumPlayers() {
-
         removeAll();
         updateUI();
 
@@ -99,27 +105,42 @@ public class Menu extends JPanel {
 
         add(Box.createVerticalStrut(100));
 
-        Button oneplayerbutton = new Button("Single Player");
-        oneplayerbutton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
-        oneplayerbutton.addActionListener(new AbstractAction() {
+        Button onePlayerButton = new Button("Single Player");
+        onePlayerButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        onePlayerButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectGameMode();
             }
         });
-        add(oneplayerbutton);
+        add(onePlayerButton);
 
         add(Box.createVerticalStrut(10));
 
-        Button twoplayerbutton = new Button("Two Player (Online)");
-        twoplayerbutton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
-        twoplayerbutton.addActionListener(new AbstractAction() {
+        Button twoPlayerButton = new Button("Two Player (Online)");
+        twoPlayerButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        twoPlayerButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectOnlineMode();
             }
         });
-        add(twoplayerbutton);
+        add(twoPlayerButton);
+
+        add(Box.createVerticalStrut(10));
+
+        Button backButton = new Button("Back");
+        backButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        backButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JComponent comp = (JComponent) e.getSource();
+                Window win = SwingUtilities.getWindowAncestor(comp);
+                win.dispose();
+                new Main();
+            }
+        });
+        add(backButton);
     }
 
     public void selectGameMode() {
@@ -136,11 +157,11 @@ public class Menu extends JPanel {
 
         add(jlabel);
 
-        add(Box.createVerticalStrut(100));
+        add(Box.createVerticalStrut(35));
 
-        Button regularbutton = new Button("Regular Chess");
-        regularbutton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
-        regularbutton.addActionListener(new AbstractAction() {
+        Button regularButton = new Button("Regular Chess");
+        regularButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        regularButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // int gamemode = 0
@@ -150,39 +171,46 @@ public class Menu extends JPanel {
             }
         });
 
-        add(regularbutton);
+        add(regularButton);
 
         add(Box.createVerticalStrut(10));
 
-        Button bulletbutton = new Button("Bullet Chess");
-        bulletbutton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
-        bulletbutton.addActionListener(new AbstractAction() {
+        Button bulletButton = new Button("Bullet Chess");
+        bulletButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        bulletButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // int gamemode = 1
-                // bool highlight = 0;
                 // new ChessGui(1, false);
                 start();
             }
         });
 
-        add(bulletbutton);
+        add(bulletButton);
 
         add(Box.createVerticalStrut(10));
 
-        Button plusbutton = new Button("Chess Plus Plus");
-        plusbutton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
-        plusbutton.addActionListener(new AbstractAction() {
+        Button plusButton = new Button("Chess Plus Plus");
+        plusButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        plusButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // int gamemode = 2;
-                // bool highlight = 0;
                 // new ChessGui(2, false);
                 start();
             }
         });
+        add(plusButton);
 
-        add(plusbutton);
+        add(Box.createVerticalStrut(10));
+
+        Button backButton = new Button("Back");
+        backButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        backButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectNumPlayers();
+            }
+        });
+        add(backButton);
     }
 
     public void selectOnlineMode() {
@@ -199,7 +227,7 @@ public class Menu extends JPanel {
 
         add(jlabel);
 
-        add(Box.createVerticalStrut(100));
+        add(Box.createVerticalStrut(80));
 
         Button connectButton = new Button("Connect");
         connectButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
@@ -222,6 +250,18 @@ public class Menu extends JPanel {
             }
         });
         add(hostButton);
+
+        add(Box.createVerticalStrut(10));
+
+        Button backButton = new Button("Back");
+        backButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        backButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectNumPlayers();
+            }
+        });
+        add(backButton);
     }
 
     public void selectConnectMode() {
@@ -257,13 +297,13 @@ public class Menu extends JPanel {
 
         add(Box.createVerticalStrut(20));
 
-        JLabel portlabel = new JLabel("Port Number:");
-        portlabel.setFont(new Font("Algerian", Font.BOLD, 30));
-        portlabel.setForeground(Color.BLUE);
-        portlabel.setVerticalAlignment(jlabel.TOP);
-        portlabel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        JLabel portLabel = new JLabel("Port Number:");
+        portLabel.setFont(new Font("Algerian", Font.BOLD, 30));
+        portLabel.setForeground(Color.BLUE);
+        portLabel.setVerticalAlignment(jlabel.TOP);
+        portLabel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
 
-        add(portlabel);
+        add(portLabel);
         add(Box.createVerticalStrut(10));
 
         JTextField portField = new JTextField(10);
@@ -288,6 +328,18 @@ public class Menu extends JPanel {
             }
         });
         add(submitButton);
+
+        add(Box.createVerticalStrut(20));
+
+        Button backButton = new Button("Back");
+        backButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        backButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectOnlineMode();
+            }
+        });
+        add(backButton);
     }
 
     public void selectHostMode() {
@@ -325,6 +377,18 @@ public class Menu extends JPanel {
             }
         });
         add(submitButton);
+
+        add(Box.createVerticalStrut(150));
+
+        Button backButton = new Button("Back");
+        backButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        backButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectOnlineMode();
+            }
+        });
+        add(backButton);
     }
 
 

@@ -1,4 +1,4 @@
-package Menu;
+//package Menu;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -10,27 +10,27 @@ import java.awt.event.ActionEvent;
 public class ProfileMenu extends JPanel {
 
     public boolean started = false;
+    Profile currentProfile;
 
     public ProfileMenu() {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         JLabel plabel = new JLabel("Profile");
-        plabel.setFont(new Font("Algerian", Font.BOLD, 50));
+        plabel.setFont(new Font("Algerian", Font.BOLD, 20));
         plabel.setForeground(Color.BLUE);
         plabel.setVerticalAlignment(plabel.TOP);
         plabel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
 
         add(plabel);
 
-        add(Box.createVerticalStrut(20));
+        add(Box.createVerticalStrut(10));
 
         Button createProfile = new Button("Create Profile");
         createProfile.setAlignmentX(JPanel.CENTER_ALIGNMENT);
         createProfile.addActionListener (new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //chessGui gui = new chessGui();
                 createMenu();
             }
         });
@@ -39,12 +39,11 @@ public class ProfileMenu extends JPanel {
 
         add(Box.createVerticalStrut(10));
 
-        Button showProfile = new Button("Show Profile");
+        Button showProfile = new Button("Show Profiles");
         showProfile.setAlignmentX(JPanel.CENTER_ALIGNMENT);
         showProfile.addActionListener (new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //chessGui gui = new chessGui();
                 showMenu();
             }
         });
@@ -74,6 +73,21 @@ public class ProfileMenu extends JPanel {
                 deleteMenu();
             }
         });
+        add(deleteProfile);
+
+        add(Box.createVerticalStrut(10));
+
+        Button backButton = new Button("Back");
+        backButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        backButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JComponent comp = (JComponent) e.getSource();
+                Window win = SwingUtilities.getWindowAncestor(comp);
+                win.dispose();
+            }
+        });
+        add(backButton);
 
         /***
          try {
@@ -110,7 +124,9 @@ public class ProfileMenu extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 String username;
                 username = createField.getText();
-                //Profile newProfile = new Profile(username);
+                Profile newProfile = new Profile(username);
+                newProfile.addProfile(newProfile);
+                currentProfile = newProfile;
 
                 add(Box.createVerticalStrut(20));
 
@@ -121,13 +137,28 @@ public class ProfileMenu extends JPanel {
                 add(namelabel);
             }
         });
+
         add(createButton);
+
+        add(Box.createVerticalStrut(50));
+
+        Button backButton = new Button("Back");
+        backButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        backButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                 new ProfileMenu();
+            }
+        });
+        add(backButton);
     }
 
     public void showMenu() {
         removeAll();
         updateUI();
 
+        //Profile p;
+        //p.listProfiles();
 
     }
 
@@ -136,10 +167,11 @@ public class ProfileMenu extends JPanel {
     }
 
     public void deleteMenu() {
+        removeAll();
+        updateUI();
+
 
     }
-
-    //// Placeholders until button implementations.
 
     public void start() {
         started = true;

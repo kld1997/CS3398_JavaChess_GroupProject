@@ -1,4 +1,4 @@
-package Menu;
+//package Menu;
 
 import javax.swing.JFrame;
 
@@ -16,8 +16,5 @@ public class Main extends JFrame {
         setVisible(true);
     }
 
-
-    public static void main(String[] args) {
-        new Main();
-    }
+    public static void main(String[] args) { new Main(); }
 }

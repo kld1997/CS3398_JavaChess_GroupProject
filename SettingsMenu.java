@@ -1,5 +1,6 @@
-package Menu;
+//package Menu;
 
+import java.awt.*;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -67,16 +68,17 @@ public class SettingsMenu extends JPanel {
 
         add(Box.createVerticalStrut(100));
 
-        Button exitButton = new Button("Exit");
-        exitButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
-
-        exitButton.addActionListener(new AbstractAction() {
+        Button backButton = new Button("Back");
+        backButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        backButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+                JComponent comp = (JComponent) e.getSource();
+                Window win = SwingUtilities.getWindowAncestor(comp);
+                win.dispose();
             }
         });
-        add(exitButton);
+        add(backButton);
     }
 
     //// Placeholders until button implementations.
