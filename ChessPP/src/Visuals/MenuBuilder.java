@@ -233,7 +233,7 @@ public class MenuBuilder extends JMenuBar implements ItemListener
           {
             compare.setVisible(false);
             Images.newImages(currentTeam, i);
-        			for(Piece piece : p.gameBoard.pieceList.get(currentTeam)) {
+        			for(Piece piece : p.gameBoard.pieceList.get(currentTeam).values()) {
                   piece.setImage();
               }
           }
@@ -251,7 +251,7 @@ public class MenuBuilder extends JMenuBar implements ItemListener
           {
             compare.setVisible(false);
             Images.newImages(currentTeam, i);
-        			for(Piece piece : p.gameBoard.pieceList.get(currentTeam)) {
+        			for(Piece piece : p.gameBoard.pieceList.get(currentTeam).values()) {
                   piece.setImage();
               }
           }

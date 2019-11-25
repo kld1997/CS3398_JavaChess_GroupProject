@@ -121,6 +121,9 @@ public class Check {														//special check restrictions and pin calculati
         
         long interfere = 0L;
         
+        if(board.pieceList.get(notTeam).get('a') != null)
+			temp |= board.pieceList.get(notTeam).get('a').piece & Moves.archerPseudoCaptures(board.kingBB[team]) & (horizontal|vertical);
+        
         while(temp != 0) {
         	trail = Long.numberOfTrailingZeros(temp);
         	coord = 1L<<trail;
@@ -146,11 +149,17 @@ public class Check {														//special check restrictions and pin calculati
 	static public void getPinned(Board board) {
 		
 		int noti;
+		long xrayHV, xrayDX;
 		for(int i = 0; i < board.teamNum; i++) {
 			noti = Math.abs(i-1);
 			board.pinnedBB[i] = 0L;
-			board.pinnersBB[i] = Moves.xrayHV(~board.empty, board.kingBB[noti], board.teamBB[noti]) & board.cardinalsBB[i]
-					| Moves.xrayDX(~board.empty, board.kingBB[noti], board.teamBB[noti]) & board.ordinalsBB[i];
+			
+			xrayHV = Moves.xrayHV(~board.empty, board.kingBB[noti], board.teamBB[noti]);
+			xrayDX = Moves.xrayDX(~board.empty, board.kingBB[noti], board.teamBB[noti]);
+			
+			board.pinnersBB[i] = xrayHV & board.cardinalsBB[i] | xrayDX & board.ordinalsBB[i];
+			if(board.pieceList.get(i).get('a') != null)
+				board.pinnersBB[i] |= xrayHV & board.pieceList.get(i).get('a').piece & Moves.archerPseudoCaptures(board.kingBB[noti]);
 			board.interfereBB[i] = 0L;
 		}
 

@@ -15,7 +15,7 @@ public class ChessGui extends JFrame
     JPanel centerPanel = new JPanel(new BorderLayout());
     public MenuBuilder menu;
     public Board gameBoard;
-    public ChessGui(){}
+    
     public ChessGui(Board b)
     {
     	gameBoard = b;

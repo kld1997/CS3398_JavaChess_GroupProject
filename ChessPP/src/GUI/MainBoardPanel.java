@@ -60,7 +60,7 @@ public class MainBoardPanel extends JPanel
                         if(!locked)
                         {
                             boolean moveMade = false;
-                            String moveString = convertStrings(lastClicked[0], lastClicked[1]);
+                            String moveString = squares[lastClicked[0]][lastClicked[1]].getPositionCommand().toString();
 
                             ChessSquare temp = (ChessSquare) actionEvent.getSource();
                             temp.Highlight();
@@ -72,33 +72,37 @@ public class MainBoardPanel extends JPanel
                             {
                                 c.unHighlight();
                             }
-                            for (int i = 6; i < temp.getActionCommand().length(); i++)       //Find coordinates for current button being pressed
-                            {
-                                if (temp.getActionCommand().substring(i, i + 1).equals(" ")) {
-                                    lastClicked[0] = Integer.parseInt(temp.getActionCommand().substring(i + 1, i + 2));
-                                    lastClicked[1] = Integer.parseInt(temp.getActionCommand().substring(i + 3));
-                                    break;
-                                }
-                            }
-                            moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
-                            
+                            //Get Move Command
+                            lastClicked[0] = temp.getPositionCommand().getIntCoordx();
+                            lastClicked[1] = temp.getPositionCommand().getIntCoordy();
                             if(!gameBoard.options.getOnline() || gameBoard.teamTurn == yourTurn) {
-                                moveString += convertStrings(lastClicked[0], lastClicked[1]);                                   //Convert current coordinates into usable form
-
-                                moveMade = gameBoard.makeMove(moveString, false);                           //Check to see if a move has been made
+                                moveString += temp.getPositionCommand();
+                                moveMade = gameBoard.makeMove(moveString);                           //Check to see if a move has been made
                             }
-
                             if (moveMade)
                             {
                                 moveMade(g);
-
+                                ChessSquare movedPiece = squares[pieceMovedPos[0]][pieceMovedPos[1]];
                                 String tempString = "";
-                                String actionCommandString = squares[pieceMovedPos[0]][pieceMovedPos[1]].getActionCommand();
-                                tempString += actionCommandString.substring(0, 5);
-                                int spaceIndex = actionCommandString.substring(6).indexOf(' ') + 6;
-                                tempString += " " + actionCommandString.substring(6, spaceIndex);
+                                tempString += movedPiece.getActionCommand() + " ";
+
                                 tempString += " moved from " + moveString.substring(0, 2) + " to " + moveString.substring(2);
+                                char tempID = squares[lastClicked[0]][lastClicked[1]].getIDCommand();
+                                boolean tempBool = false;
+                                if(tempID != 'N')
+                                {
+                                    tempBool = true;
+                                    tempID = squares[pieceMovedPos[0]][pieceMovedPos[1]].getIDCommand();
+
+                                }
+                                if(tempID == 'N')
+                                {
+                                    tempID = squares[pieceMovedPos[0]][pieceMovedPos[1]].getIDCommand();
+                                }
+                                char capID = tempBool?temp.getIDCommand():'N';
+                                GameMove gameMove = new GameMove(moveString, tempID, tempBool, capID);
                                 g.getHisotryPanel().ph.addMove(tempString);
+                                g.getHisotryPanel().ph.addMove(gameMove);
                             }
                             else
                             {
@@ -108,14 +112,21 @@ public class MainBoardPanel extends JPanel
                                 } else {
                                     teamString = "Black";
                                 }
-                                if (squares[lastClicked[0]][lastClicked[1]].getActionCommand().substring(0, 5).equals(teamString)) {
-                                    highlightedSquares = displayPossibleMoves(gameBoard.showMoves(convertStrings(lastClicked[0], lastClicked[1])));     //Display the possible moves of piece that has been clicked
+                                ChessSquare clickedSquare = squares[lastClicked[0]][lastClicked[1]];
+                                if (clickedSquare.getActionCommand().substring(0, 5).equals(teamString)) {
+                                    highlightedSquares = displayPossibleMoves(gameBoard.showMoves(clickedSquare.getPositionCommand().toString()));
+                                    //Display the possible moves of piece that has been clicked
                                 }
                                 else {
                                     highlightedSquares = new ArrayList<ChessSquare>();
                                 }
                             }
                             updateBoard();                             //Action Command is set to coordinates on board of where you clicked.
+                            
+                            if(moveMade && !PawnPromote.promotion) {
+                            	cpuMakeMove(g);
+                            }
+                            
                         }
                     }
                 });
@@ -124,6 +135,14 @@ public class MainBoardPanel extends JPanel
             }
         }
     }
+    
+    public void cpuMakeMove(ChessGui g) {
+    	if(gameBoard.cpuStart()) {
+    		moveMade(g);
+    		updateBoard();
+    	}
+    }
+    
     public void moveMade(ChessGui g) {
     	if(g.getInfoPanel().getType() == 1)
         {
@@ -132,6 +151,7 @@ public class MainBoardPanel extends JPanel
         g.getInfoPanel().switchTeam();
         g.menu.teamChange();
     }
+    
     public void setLocked(boolean val)
     {
         locked = val;
@@ -152,7 +172,7 @@ public class MainBoardPanel extends JPanel
         }
         return retList;
     }
-    public String convertStrings(int x, int y)                                                                     //Converts coordinates to a different form
+    public static String convertStrings(int x, int y)                                                                     //Converts coordinates to a different form
     {
         String ret = "";
         ret+= (char)(y + 97);
@@ -164,15 +184,10 @@ public class MainBoardPanel extends JPanel
     {
         top = thisGui.getInfoPanel();
         right = thisGui.getHisotryPanel();
+        
         if(PawnPromote.promotion == true) {
-            if((gameBoard.pawnsBB[0]&Board.row8) != 0) {
-                right.pp.showPanel(0, PawnPromote.coord);
-                locked = true;
-            }
-            if((gameBoard.pawnsBB[1]&Board.row1) != 0) {
-                right.pp.showPanel(1, PawnPromote.coord);
-                locked = true;
-            }
+            right.pp.showPanel(gameBoard.teamTurn, PawnPromote.coord);
+            locked = true;
         }
         if(gameBoard.check[0] == 1)
         {
@@ -189,6 +204,8 @@ public class MainBoardPanel extends JPanel
             {
                 squares[x][y].setIcon(null);
                 squares[x][y].setActionCommand("White  " + x + " " + y);
+                squares[x][y].setPositionCommand(new Coordinate(x, y));
+                squares[x][y].setIDCommand('N');
             }
         }
         
@@ -203,7 +220,7 @@ public class MainBoardPanel extends JPanel
     		else
     			teamName = "Black";
     		
-    		for(Piece piece : gameBoard.pieceList.get(i)) {
+    		for(Piece piece : gameBoard.pieceList.get(i).values()) {
     			temp = piece.piece;
     			
     			while(temp != 0) {
@@ -211,8 +228,10 @@ public class MainBoardPanel extends JPanel
     				tempy = Long.numberOfTrailingZeros(temp)%8;
     				
     				squares[tempx][tempy].setIcon(new ImageIcon(piece.image));
-    				squares[tempx][tempy].setActionCommand(teamName + " " + piece.name + " " + tempx + " " + tempy);
-    				
+    				Coordinate tempCoord = new Coordinate(tempx, tempy);
+    				squares[tempx][tempy].setActionCommand(teamName + " " + piece.name);
+    				squares[tempx][tempy].setIDCommand(piece.ID);
+    				squares[tempx][tempy].setTeam(i);
     				temp &= temp - 1;
     			}
     		}

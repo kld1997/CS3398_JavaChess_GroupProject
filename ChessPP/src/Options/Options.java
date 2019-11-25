@@ -12,6 +12,8 @@ public class Options {
 	int[] timeInc = new int[Board.teamNum];
 	boolean highlight;
 	boolean online;
+	int cpu;
+	boolean captureKing;
 	ObjectOutputStream output;
 	ObjectInputStream input;
 	int turn;
@@ -66,11 +68,19 @@ public class Options {
 	public int getTurn() { return turn; }
 	public void setTurn(int t) { turn = t; }
 	
+	public int getCPU() { return cpu; }
+	public void setCPU(int c) { cpu = c; }
+	
+	public boolean getCaptureKing() { return captureKing; }
+	public void setCaptureKing(boolean c) { captureKing = c; }
+	
 	public void defaultSet() {
 		
 		timer = false;
 		highlight = true;
 		online = false;
+		cpu = 0;
+		captureKing = false;
 		mode = "STANDARD";
 		board = BoardTypes.standardChessBoard();
 		promote = "kbrq";
@@ -96,12 +106,22 @@ public class Options {
 				{"br","bk","bb","bq","bK","bb","bk","br"},
 				{"bp","bp","bp","bp","bp","bp","bp","bp"},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
-				{"wW","  ","wW","  ","wW","  ","wW","  "},
-				{"wB","bW","  ","bW","  ","bW","  ","bW"},
+				{"  ","  ","  ","  ","  ","  ","  ","bB"},
+				{"wB","  ","  ","  ","  ","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
 				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
 		
 		board = wallChessBoard;
+	}
+	
+	public int getCPUMissChance() {
+		switch(cpu) {
+		case 1: return 50;
+		case 2: return 75;
+		case 3: return 90;
+		case 4: return 95;
+		default: return 100;
+		}
 	}
 }

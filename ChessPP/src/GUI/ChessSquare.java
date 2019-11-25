@@ -7,10 +7,15 @@ import java.awt.event.MouseListener;
 
 public class ChessSquare extends JButton
 {
-    int x;
-    int y;
+    private int x;
+    private int y;
+    private String team;
+    private char ID;
+    private Coordinate positionCommand;
     public ChessSquare(int color, int xCoord, int yCoord)
     {
+        ID = 'N';
+        team = "None";
         x = xCoord;
         y = yCoord;
         if(color == 0)
@@ -31,7 +36,19 @@ public class ChessSquare extends JButton
     {
         setBorder(null);
     }
-
+    public void setPositionCommand(Coordinate g){ positionCommand = g;}
+    public Coordinate getPositionCommand(){ return positionCommand; }
+    public void setIDCommand(char i){ ID = i; }
+    public char getIDCommand(){ return ID; }
+    public void setTeam(int t)
+    {
+        if(t == 0){ team = "White"; }
+        else if(t == 1){ team = "Black"; }
+    }
+    public int getTeam()
+    {
+        return team.equals("White")?0:1;
+    }
     @Override
     public String toString()
     {
