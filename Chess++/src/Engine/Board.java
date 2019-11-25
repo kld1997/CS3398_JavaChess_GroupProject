@@ -266,6 +266,13 @@ public class Board {
 			for(Piece piece : ordinalList.get(i)) {
 				ordinalsBB[i] |= piece.piece;
 			}
+			
+			if(pieceList.get(i).containsKey('j')) {
+				if(pieceList.get(i).get('j').hv)
+					cardinalsBB[i] |= pieceList.get(i).get('j').piece;
+				else
+					ordinalsBB[i] |= pieceList.get(i).get('j').piece;
+			}
 		}
 		
 		notTeamBB[0] = ~(teamBB[0]);
@@ -494,6 +501,22 @@ public class Board {
 		teamTurn = Math.abs(teamTurn-1);
 	}
 	
+	public void rewindMove(GameMove move)
+	{
+		long coord1 = convertToCoord(move.getFrom().toString());
+		long coord2 = convertToCoord(move.getTo().toString());
+		Move m = new Move(Long.numberOfTrailingZeros(coord1), Long.numberOfTrailingZeros(coord2));
+		switchTeamTurn();
+
+		pieceList.get(teamTurn).get(move.getID()).movePiece(this, coord1, coord2, true);
+		if(move.getCapture())
+		{
+			pieceList.get(Math.abs(teamTurn-1)).get(move.getCaptureID()).piece |= coord2;
+		}
+		currentState();
+
+	}
+	
 	public boolean makeMove(String pos) {
 		
 		long coord1 = convertToCoord(pos.substring(0,2));
@@ -502,7 +525,6 @@ public class Board {
 		Move move = new Move(Long.numberOfTrailingZeros(coord1), Long.numberOfTrailingZeros(coord2));
 		
 		boolean valid = makeMove(teamTurn, move);
-
 		return valid;
 	}
 	

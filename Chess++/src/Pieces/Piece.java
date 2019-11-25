@@ -26,6 +26,7 @@ public abstract class Piece
 	public long pinned;
 	public boolean threat = false;
 	public BufferedImage image;
+	public boolean hv;
 
 	public Piece(int t) {
 		this.team = t;

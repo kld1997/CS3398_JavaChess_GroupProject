@@ -12,7 +12,7 @@ public class BoardTypes {
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
-				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
+				{"wr","wk","wb","wj","wK","wb","wk","wr"}};
 		
 		return standardChessBoard;
 	}

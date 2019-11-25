@@ -19,37 +19,20 @@ public class PawnPromote {
 	
 	public static void promotePawn(int team, long coord, Board board, int pawnID) {
 		
-		int newP = pawnID;
+		for(Piece piece : board.pieceList.get(team).values()) {
+			if(piece.iconNum == pawnID) {
+				board.removePromote(coord, team, piece.value);
+				board.pawnsBB[team] &= ~coord;
+				piece.piece |= coord;
 
-		switch(newP) {
-		  case 3: //knight
-			board.removePromote(coord, team, 3);
-			board.pawnsBB[team] &= ~coord;
-			board.pieceList.get(team).get(board.options.getPromote().charAt(0)).piece |= coord;
-		    break;
-		  case 4: //bishop
-			  board.removePromote(coord, team, 3);
-			board.pawnsBB[team] &= ~coord;
-			board.pieceList.get(team).get(board.options.getPromote().charAt(1)).piece |= coord;
-		    break;
-		  case 2: //rook
-			  board.removePromote(coord, team, 5);
-			board.pawnsBB[team] &= ~coord;
-			board.pieceList.get(team).get(board.options.getPromote().charAt(2)).piece |= coord;
-		    break;
-		  case 1: //queen
-			  board.removePromote(coord, team, 9);
-			board.pawnsBB[team] &= ~coord;
-			board.pieceList.get(team).get(board.options.getPromote().charAt(3)).piece |= coord;
-		    break;
-		  default:
-		    System.out.println("error");
+				break;
+			}
 		}
-
+		
 		promotion = false;
 		if(!board.cpuTurn) {
-			board.currentState();
 			board.switchTeamTurn();
+			board.currentState();
 		}
-	}	
+	}
 }
