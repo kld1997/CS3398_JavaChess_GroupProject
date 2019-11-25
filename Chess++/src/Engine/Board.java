@@ -601,6 +601,8 @@ public class Board {
 		if(move.type < 3) {
 			long redo = coord1|coord2;
 			pieceList.get(teamTurn).get(move.pid).piece ^= redo;
+			if(move.pid == 'j')
+				pieceList.get(teamTurn).get(move.pid).hv ^= true;
 			if(move.type > 0) {
 				Restore rst = restoreStack.pop();
 				pieceList.get(rst.team).get(rst.pid).piece |= rst.coord;

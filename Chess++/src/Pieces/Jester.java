@@ -35,7 +35,7 @@ public class Jester extends Piece
 			board.removePiece(coord2, team, enemyTeam);
 			
 		piece^= change;
-		hv = !hv;
+		hv ^= true;
 		return true;
 	}
 }

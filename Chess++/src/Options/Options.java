@@ -79,7 +79,7 @@ public class Options {
 		timer = false;
 		highlight = true;
 		online = false;
-		cpu = 0;
+		cpu = 1;
 		captureKing = false;
 		mode = "STANDARD";
 		board = BoardTypes.standardChessBoard();
