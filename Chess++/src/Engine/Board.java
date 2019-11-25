@@ -127,6 +127,8 @@ public class Board {
 	public Stack<Long> kTW;
 	public Stack<Long> kTB;
 	
+	public List<List<Restore>> captureList;
+	
 	public Options options;
 	
 	public Board(Options o) {                                                   //initializes all of the bitboards
@@ -139,6 +141,7 @@ public class Board {
 		castleableList = new ArrayList<Piece>();
 		promoteableList = new ArrayList<Set<Piece>>();
 		teamMoveList = new ArrayList<Move>();
+		captureList = new ArrayList<List<Restore>>();
 		
 		teamWonStack = new Stack<Integer>();
 		rookMovedStack = new Stack<Long>();
@@ -229,6 +232,7 @@ public class Board {
 			ordinalList.add(ordinal);
 			castleableList.addAll(castleable);
 			promoteableList.add(promoteable);
+			captureList.add(new ArrayList<Restore>());
 		}
 
 		currentState();
@@ -249,6 +253,10 @@ public class Board {
 		teamMoveList.clear();
 		
 		for(int i = 0; i < teamNum; i++) {
+			if(pieceList.get(i).get('K').piece == 0 && (pieceList.get(i).containsKey('P') && pieceList.get(i).get('P').piece != 0)) {
+				pieceList.get(i).get('K').piece = 1L<<Long.numberOfTrailingZeros(pieceList.get(i).get('P').piece);
+				pieceList.get(i).get('P').piece ^= pieceList.get(i).get('K').piece;
+			}
 			kingBB[i] = pieceList.get(i).get('K').piece;
 			check[i] = 0;
 			teamBB[i] = 0L;
@@ -282,7 +290,7 @@ public class Board {
 		
 		pieceMoved();
 		
-		if(!options.getCaptureKing()) {
+		if(!options.getCaptureKing() && !(pieceList.get(teamTurn).containsKey('P') && pieceList.get(teamTurn).get('P').piece != 0)) {
 			
 			getThreaten();
 			
@@ -296,6 +304,7 @@ public class Board {
 		if(((pieceList.get(0).get('p').piece&row8)|(pieceList.get(1).get('p').piece&row1)) != 0 && !cpuTurn) {
 			PawnPromote.pawnPromotion(this);
 		}
+		
 	}
 	
 	public void pieceMoved() {
@@ -379,6 +388,8 @@ public class Board {
 				if(cpuTurn) {
 					restoreStack.add(new Restore(enemyTeam, piece.ID, coord));
 				}
+				else
+					captureList.get(team).add(new Restore(enemyTeam, piece.ID, coord));
 				piece.piece ^= coord;
 				teamScore[team] += piece.value;
 				return;
@@ -461,6 +472,7 @@ public class Board {
 	public boolean makeMove(int team, Move move) {
 		
 		boolean valid = false;
+		boolean cpuTemp = cpuTurn;
 		
 		if(cpuTurn)
 			currentState();
@@ -470,11 +482,14 @@ public class Board {
 			valid = true;
 			long coord1 = 1L<<move.from;
 			long coord2 = 1L<<move.to;
+			cpuTurn = false;
 			if(move.type == 6) {
 				removePiece(coord2, team, Math.abs(team-1));
 			}
 			else
 				pieceList.get(team).get(move.pid).movePiece(this, coord1, coord2, true);
+			
+			cpuTurn = cpuTemp;
 			
 			if(move.pid == 'p')
 				enPassant(coord1, coord2, team);
@@ -505,7 +520,7 @@ public class Board {
 	{
 		long coord1 = convertToCoord(move.getFrom().toString());
 		long coord2 = convertToCoord(move.getTo().toString());
-		Move m = new Move(Long.numberOfTrailingZeros(coord1), Long.numberOfTrailingZeros(coord2));
+		//Move m = new Move(Long.numberOfTrailingZeros(coord1), Long.numberOfTrailingZeros(coord2));
 		switchTeamTurn();
 
 		pieceList.get(teamTurn).get(move.getID()).movePiece(this, coord1, coord2, true);
@@ -533,7 +548,7 @@ public class Board {
 		if(options.getCPU() > 0) {
 			currentState();
 			cpuTurn = true;
-			makeMove(1, alphaBeta(4, Integer.MIN_VALUE, Integer.MAX_VALUE).move);
+			makeMove(1, alphaBeta(options.getCPU(), Integer.MIN_VALUE, Integer.MAX_VALUE).move);
 			cpuTurn = false;
 			return true;
 		}
@@ -605,6 +620,10 @@ public class Board {
 				pieceList.get(teamTurn).get(move.pid).hv ^= true;
 			if(move.type > 0) {
 				Restore rst = restoreStack.pop();
+				if(rst.pid == 'K') {
+					pieceList.get(rst.team).get('P').piece |= pieceList.get(rst.team).get('K').piece;
+					pieceList.get(rst.team).get('K').piece = 0;
+				}
 				pieceList.get(rst.team).get(rst.pid).piece |= rst.coord;
 			}
 		}
@@ -617,6 +636,10 @@ public class Board {
 			Restore promoteR = restoreStack.pop();
 			removePiece(promoteR.coord);
 			Restore enemyR = restoreStack.pop();
+			if(enemyR.pid == 'K') {
+				pieceList.get(enemyR.team).get('P').piece |= pieceList.get(enemyR.team).get('K').piece;
+				pieceList.get(enemyR.team).get('K').piece = 0;
+			}
 			pieceList.get(enemyR.team).get(enemyR.pid).piece |= enemyR.coord;
 			pieceList.get(promoteR.team).get('p').piece |= coord1;
 		}
@@ -631,6 +654,10 @@ public class Board {
 		}
 		else if(move.type == 6) {
 			Restore rst = restoreStack.pop();
+			if(rst.pid == 'K') {
+				pieceList.get(rst.team).get('P').piece |= pieceList.get(rst.team).get('K').piece;
+				pieceList.get(rst.team).get('K').piece = 0;
+			}
 			pieceList.get(rst.team).get(rst.pid).piece |= rst.coord;
 		}
 		

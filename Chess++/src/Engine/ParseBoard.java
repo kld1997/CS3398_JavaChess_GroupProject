@@ -23,6 +23,7 @@ public class ParseBoard {
 		case 'W': return new Wall(team);
 		case 'a': return new Archer(team);
 		case 'j': return new Jester(team);
+		case 'P': return new Prince(team);
 		default: return null;
 		}	
 		

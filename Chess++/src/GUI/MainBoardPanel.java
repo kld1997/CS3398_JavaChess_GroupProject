@@ -103,6 +103,8 @@ public class MainBoardPanel extends JPanel
                                 GameMove gameMove = new GameMove(moveString, tempID, tempBool, capID);
                                 g.getHisotryPanel().ph.addMove(tempString);
                                 g.getHisotryPanel().ph.addMove(gameMove);
+                                lastClicked[0] = 0;
+                                lastClicked[1] = 0;
                             }
                             else
                             {
@@ -124,7 +126,11 @@ public class MainBoardPanel extends JPanel
                             updateBoard();                             //Action Command is set to coordinates on board of where you clicked.
                             
                             if(moveMade && !PawnPromote.promotion) {
-                            	cpuMakeMove(g);
+                            	SwingUtilities.invokeLater(new Runnable() {
+                            	    public void run() {
+                            	    	cpuMakeMove(g);
+                            	    }
+                            	});
                             }
                             
                         }

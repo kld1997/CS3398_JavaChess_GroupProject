@@ -9,6 +9,7 @@ public class King extends Piece
 	
 	public King(int t) {
 		super(t);
+		value = 5;
 		name = "King";
 		ID = 'K';
 		iconNum = 0;
