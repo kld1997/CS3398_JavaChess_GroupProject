@@ -41,7 +41,7 @@ public class PieceHistory extends JPanel
         {
             if(moveList.pop() != null)
             {
-                cg.gameBoard.rewindMove(moveCoords.pop());
+                cg.gameBoard.rewindMove();
                 cg.getInfoPanel().switchTeam();
             }
         }

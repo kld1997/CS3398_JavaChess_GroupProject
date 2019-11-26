@@ -86,8 +86,7 @@ public class King extends Piece
 
 			allMoves = possibleMoves(board, coord, false);
 			captures = allMoves&enemyPieces;
-			if(coord == board.kingMoved)
-				castles = allMoves&(coord>>2|coord<<2);
+			castles = allMoves&(coord>>2|coord<<2);
 			allMoves &= ~(captures|castles);
 			
 			while(allMoves != 0) {

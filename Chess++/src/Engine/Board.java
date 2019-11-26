@@ -128,6 +128,8 @@ public class Board {
 	public Stack<Long> kTB;
 	
 	public List<List<Restore>> captureList;
+	public List<List<Move>> moveHistory;
+	public Stack<Restore> captureStack;
 	
 	public Options options;
 	
@@ -142,6 +144,9 @@ public class Board {
 		promoteableList = new ArrayList<Set<Piece>>();
 		teamMoveList = new ArrayList<Move>();
 		captureList = new ArrayList<List<Restore>>();
+		moveHistory = new ArrayList<List<Move>>();
+		captureStack = new Stack<Restore>();
+		
 		
 		teamWonStack = new Stack<Integer>();
 		rookMovedStack = new Stack<Long>();
@@ -233,6 +238,7 @@ public class Board {
 			castleableList.addAll(castleable);
 			promoteableList.add(promoteable);
 			captureList.add(new ArrayList<Restore>());
+			moveHistory.add(new ArrayList<Move>());
 		}
 
 		currentState();
@@ -388,8 +394,10 @@ public class Board {
 				if(cpuTurn) {
 					restoreStack.add(new Restore(enemyTeam, piece.ID, coord));
 				}
-				else
+				else {
 					captureList.get(team).add(new Restore(enemyTeam, piece.ID, coord));
+					captureStack.add(new Restore(enemyTeam, piece.ID, coord));
+				}
 				piece.piece ^= coord;
 				teamScore[team] += piece.value;
 				return;
@@ -402,6 +410,8 @@ public class Board {
 		if(cpuTurn) {
 			restoreStack.add(new Restore(team, 'p', coord));
 		}
+		else
+			captureStack.add(new Restore(team, 'p', coord));
 		pieceList.get(team).get('p').piece ^= coord;
 		teamScore[team] += value - 1;
 	}
@@ -501,6 +511,8 @@ public class Board {
 			if((move.type == 3 || move.type == 4) && cpuTurn) {
 				PawnPromote.promotePawn(teamTurn, coord2, this, 1);
 			}
+			
+			moveHistory.get(team).add(move);
 
 			if(cpuTurn || (move.type != 3 && move.type != 4))
 				switchTeamTurn();
@@ -516,18 +528,69 @@ public class Board {
 		teamTurn = Math.abs(teamTurn-1);
 	}
 	
-	public void rewindMove(GameMove move)
+	public void rewindMove()
 	{
-		long coord1 = convertToCoord(move.getFrom().toString());
-		long coord2 = convertToCoord(move.getTo().toString());
-		//Move m = new Move(Long.numberOfTrailingZeros(coord1), Long.numberOfTrailingZeros(coord2));
+		
 		switchTeamTurn();
-
-		pieceList.get(teamTurn).get(move.getID()).movePiece(this, coord1, coord2, true);
-		if(move.getCapture())
-		{
-			pieceList.get(Math.abs(teamTurn-1)).get(move.getCaptureID()).piece |= coord2;
+		
+		Move move = moveHistory.get(teamTurn).get(moveHistory.get(teamTurn).size()-1);
+		moveHistory.get(teamTurn).remove(moveHistory.get(teamTurn).size()-1);
+		
+		long coord1 = 1L<<move.from;
+		long coord2 = 1L<<move.to;
+		
+		if(move.type < 3) {
+			long redo = coord1|coord2;
+			pieceList.get(teamTurn).get(move.pid).piece ^= redo;
+			if(move.pid == 'j')
+				pieceList.get(teamTurn).get(move.pid).hv ^= true;
+			if(move.type > 0) {
+				Restore rst = captureStack.pop();
+				captureList.get(teamTurn).remove(captureList.get(teamTurn).size()-1);
+				if(rst.pid == 'K') {
+					pieceList.get(rst.team).get('P').piece |= pieceList.get(rst.team).get('K').piece;
+					pieceList.get(rst.team).get('K').piece = 0;
+				}
+				pieceList.get(rst.team).get(rst.pid).piece |= rst.coord;
+			}
 		}
+		else if(move.type == 3) {
+			Restore rst = captureStack.pop();
+			removePiece(rst.coord);
+			pieceList.get(rst.team).get('p').piece |= coord1;
+		}
+		else if(move.type == 4) {
+			Restore promoteR = captureStack.pop();
+			removePiece(promoteR.coord);
+			Restore enemyR = captureStack.pop();
+			captureList.get(teamTurn).remove(captureList.get(teamTurn).size()-1);
+			if(enemyR.pid == 'K') {
+				pieceList.get(enemyR.team).get('P').piece |= pieceList.get(enemyR.team).get('K').piece;
+				pieceList.get(enemyR.team).get('K').piece = 0;
+			}
+			pieceList.get(enemyR.team).get(enemyR.pid).piece |= enemyR.coord;
+			pieceList.get(promoteR.team).get('p').piece |= coord1;
+		}
+		else if(move.type == 5) {
+			if(coord1<<2 == coord2)
+				castleableList.get(teamTurn).piece ^= coord2>>1|coord2<<1;
+			else
+				castleableList.get(teamTurn).piece ^= coord2<<1|coord2>>2;
+			
+			long redo = coord1|coord2;
+			pieceList.get(teamTurn).get(move.pid).piece ^= redo;
+		}
+		else if(move.type == 6) {
+			Restore rst = captureStack.pop();
+			captureList.get(teamTurn).remove(captureList.get(teamTurn).size()-1);
+			
+			if(rst.pid == 'K') {
+				pieceList.get(rst.team).get('P').piece |= pieceList.get(rst.team).get('K').piece;
+				pieceList.get(rst.team).get('K').piece = 0;
+			}
+			pieceList.get(rst.team).get(rst.pid).piece |= rst.coord;
+		}
+		
 		currentState();
 
 	}
@@ -540,6 +603,7 @@ public class Board {
 		Move move = new Move(Long.numberOfTrailingZeros(coord1), Long.numberOfTrailingZeros(coord2));
 		
 		boolean valid = makeMove(teamTurn, move);
+			
 		return valid;
 	}
 	
@@ -605,7 +669,7 @@ public class Board {
 		
 		epBB[Math.abs(teamTurn-1)] = 0;
 
-		teamTurn = Math.abs(teamTurn-1);
+		switchTeamTurn();
 		
 		currentState();
 		
@@ -613,7 +677,7 @@ public class Board {
 	
 	public void undoMove(Move move) {
 		
-		teamTurn = Math.abs(teamTurn-1);
+		switchTeamTurn();
 		
 		long coord1 = 1L<<move.from;
 		long coord2 = 1L<<move.to;
@@ -689,7 +753,12 @@ public class Board {
 		kThreatsBB[1] = kTB.pop();
 		
 		for(int i = 0; i < teamNum; i++) {
+			if(pieceList.get(i).get('K').piece == 0 && (pieceList.get(i).containsKey('P') && pieceList.get(i).get('P').piece != 0)) {
+				pieceList.get(i).get('K').piece = 1L<<Long.numberOfTrailingZeros(pieceList.get(i).get('P').piece);
+				pieceList.get(i).get('P').piece ^= pieceList.get(i).get('K').piece;
+			}
 			kingBB[i] = pieceList.get(i).get('K').piece;
+			check[i] = 0;
 			teamBB[i] = 0L;
 			cardinalsBB[i] = 0L;
 			ordinalsBB[i] = 0L;
@@ -706,6 +775,12 @@ public class Board {
 				ordinalsBB[i] |= piece.piece;
 			}
 			
+			if(pieceList.get(i).containsKey('j')) {
+				if(pieceList.get(i).get('j').hv)
+					cardinalsBB[i] |= pieceList.get(i).get('j').piece;
+				else
+					ordinalsBB[i] |= pieceList.get(i).get('j').piece;
+			}
 		}
 		
 		notTeamBB[0] = ~(teamBB[0]);
