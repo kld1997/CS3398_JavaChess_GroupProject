@@ -70,6 +70,15 @@ public class ParseBoard {
 		return chessBoard;
 	}
 	
+	static public void displayBitboards(List<Map<Character, Piece>> pieceList) {
+		String[][] b = bitboardToArray(pieceList);
+		for(String[] r : b) {
+			for(String c : r)
+				System.out.print("[" + c + "] ");
+			System.out.println();
+		}
+	}
+	
 	static public List<Map<Character, Piece>> pieceInit(String[][] pieceArr, String promoteTo) {
 		
 		Map<Character, Piece> pieceMap1 = new HashMap<Character, Piece>();

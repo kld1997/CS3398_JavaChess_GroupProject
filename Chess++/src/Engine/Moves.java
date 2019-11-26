@@ -138,15 +138,15 @@ public class Moves {														//class containing directional sliding movemen
 		int trail = Long.numberOfTrailingZeros(coord);	
 		long pm = 0L;
 		
-		if(trail == 18) {
+		if(trail == 26) {
 			pm = Board.archerMoves;
 		}
 		else {
-			if(trail > 18) {
-				pm = Board.archerMoves<<(trail - 18);
+			if(trail > 26) {
+				pm = Board.archerMoves<<(trail - 26);
 			}
-			else if(trail < 18) {
-				pm = Board.archerMoves>>(18 - trail);
+			else if(trail < 26) {
+				pm = Board.archerMoves>>(26 - trail);
 			}
 			
 			if((coord&(Board.colA|Board.colB)) != 0) {
@@ -165,15 +165,15 @@ public class Moves {														//class containing directional sliding movemen
 		int trail = Long.numberOfTrailingZeros(coord);	
 		long pm = 0L;
 		
-		if(trail == 18) {
+		if(trail == 26) {
 			pm = Board.archerCaptures;
 		}
 		else {
-			if(trail > 18) {
-				pm = Board.archerCaptures<<(trail - 18);
+			if(trail > 26) {
+				pm = Board.archerCaptures<<(trail - 26);
 			}
-			else if(trail < 18) {
-				pm = Board.archerCaptures>>(18 - trail);
+			else if(trail < 26) {
+				pm = Board.archerCaptures>>(26 - trail);
 			}
 			
 			if((coord&(Board.colA|Board.colB)) != 0) {

@@ -121,8 +121,12 @@ public class Check {														//special check restrictions and pin calculati
         
         long interfere = 0L;
         
-        if(board.pieceList.get(notTeam).get('a') != null)
-			temp |= board.pieceList.get(notTeam).get('a').piece & Moves.archerPseudoCaptures(board.kingBB[team]) & (horizontal|vertical);
+        if(board.pieceList.get(notTeam).get('a') != null) {
+        	long archers = board.pieceList.get(notTeam).get('a').piece;
+        	if((((king>>8|king<<8|king>>16|king<<16) & vertical) & archers) != 0)
+        		threats |= Board.colMasks[trail % 8] & ~(archers>>8|archers<<8|archers);
+			temp |= archers & Moves.archerPseudoCaptures(king) & (horizontal|vertical);
+        }
         
         while(temp != 0) {
         	trail = Long.numberOfTrailingZeros(temp);

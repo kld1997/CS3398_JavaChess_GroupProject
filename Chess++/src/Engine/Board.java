@@ -73,8 +73,8 @@ public class Board {
 	
 	public static long kingMoves = 460039L;
 	public static long knightMoves = 43234889994L;
-	public static long archerMoves = 0x40E1B0E04L;
-	public static long archerCaptures = 0x40A110A04L;
+	public static long archerMoves = 0x4040E1B0E0404L;
+	public static long archerCaptures = 0x4040A110A0404L;
 	
 	public static long rowMasks[] = {
 			255L, 65280L, 16711680L, 4278190080L, 1095216660480L, 280375465082880L, 71776119061217280L, -72057594037927936L
@@ -560,6 +560,11 @@ public class Board {
 		
 		long coord1 = 1L<<move.from;
 		long coord2 = 1L<<move.to;
+		
+		if((coord2&kingBB[Math.abs(teamTurn-1)]) != 0) {
+			
+			ParseBoard.displayBitboards(pieceList);
+		}
 
 		teamWonStack.add(teamWon);
 		rookMovedStack.add(rookMoved);
