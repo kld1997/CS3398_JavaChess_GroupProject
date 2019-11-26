@@ -139,7 +139,7 @@ public class Menu extends JPanel {
 
         add(jlabel);
 
-        add(Box.createVerticalStrut(100));
+        add(Box.createVerticalStrut(30));
 
         Button regularbutton = new Button("Regular Chess");
         regularbutton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
@@ -183,6 +183,19 @@ public class Menu extends JPanel {
         });
 
         add(plusbutton);
+        add(Box.createVerticalStrut(10));
+
+        Button custombutton = new Button("Custom Mode");
+        custombutton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        custombutton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new GameModeChooserMain();
+                //new ChessGui(new Board(new Options(true, true)));
+            }
+        });
+
+        add(custombutton);
     }
 
     public void selectOnlineMode() {

@@ -25,8 +25,11 @@ public class PieceHistory extends JPanel
     }
     public void addMove(GameMove gm)
     {
-        //JLabel newMove = new JLabel("Placeholder", SwingConstants.CENTER);
+        String temp = getPiece(gm.getID()) + "";
+        temp += " moved from " + gm.getFrom().toString() + " to " + gm.getTo().toString();
+        JLabel newMove = new JLabel(temp, SwingConstants.CENTER);
         if(moveList.size() >= 35){ moveList.pop(); moveCoords.pop(); }
+        moveList.push(newMove);
         moveCoords.push(gm);
         update();
     }
@@ -49,6 +52,22 @@ public class PieceHistory extends JPanel
         cg.getMainPanel().updateBoard();
 
 
+    }
+    public static String getPiece(char id)
+    {
+        switch(id)
+        {
+            case 'a': return "Archer";
+            case 'b': return "Bishop";
+            case 'B': return "Builder";
+            case 'K': return "King";
+            case 'k': return "Knight";
+            case 'p': return "Pawn";
+            case 'q': return "Queen";
+            case 'r': return "Rook";
+            case 'W': return "Wall";
+            default: return "N";
+        }
     }
     public void update()
     {

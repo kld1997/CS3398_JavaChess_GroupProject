@@ -101,7 +101,6 @@ public class MainBoardPanel extends JPanel
                                 }
                                 char capID = tempBool?temp.getIDCommand():'N';
                                 GameMove gameMove = new GameMove(moveString, tempID, tempBool, capID);
-                                g.getHisotryPanel().ph.addMove(tempString);
                                 g.getHisotryPanel().ph.addMove(gameMove);
                             }
                             else

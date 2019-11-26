@@ -34,7 +34,10 @@ public class Options {
 		else
 			defaultSet();
 	}
-	
+	public Options(boolean bullet, boolean plusPlus)
+	{
+		customSet(bullet, plusPlus);
+	}
 	public boolean getTimer() { return timer; }
 	public void setTimer(boolean t) { timer = t; }
 	
@@ -97,7 +100,32 @@ public class Options {
 			timeInc[i] = 1;
 		}
 	}
-	
+	public void customSet(boolean bullet, boolean plusPlus)
+	{
+		defaultSet();
+		if(bullet)
+		{
+			timer = true;
+			for(int i = 0; i < Board.teamNum; i++) {
+				time[i] = 120;
+				timeInc[i] = 1;
+			}
+		}
+		if(plusPlus)
+		{
+			String wallChessBoard[][] = {
+					{"br","bk","bb","bq","bK","bb","bk","br"},
+					{"bp","bp","bp","bp","bp","bp","bp","bp"},
+					{"  ","  ","  ","  ","  ","  ","  ","  "},
+					{"  ","  ","  ","  ","  ","  ","  ","bB"},
+					{"wa","  ","  ","  ","  ","  ","  ","  "},
+					{"  ","  ","  ","  ","  ","  ","  ","  "},
+					{"wp","wp","wp","wp","wp","wp","wp","wp"},
+					{"wr","wk","wb","wq","wK","wb","wk","wr"}};
+
+			board = wallChessBoard;
+		}
+	}
 	public void wallSet() {
 		
 		defaultSet();
@@ -107,7 +135,7 @@ public class Options {
 				{"bp","bp","bp","bp","bp","bp","bp","bp"},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","bB"},
-				{"wB","  ","  ","  ","  ","  ","  ","  "},
+				{"wa","  ","  ","  ","  ","  ","  ","  "},
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
 				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
