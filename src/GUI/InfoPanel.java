@@ -12,11 +12,12 @@ public class InfoPanel extends GenericInfoPanel
     public InfoPanel(ChessGui g)
     {
         thisGui = g;
+        currTeam = g.gameBoard.teamTurn;
         setLayout(new BorderLayout());
         teamText = new JLabel();
         teamText.setFont(new Font("Serif", Font.BOLD, 20));
         teamText.setHorizontalAlignment(JLabel.CENTER);
-        teamText.setText("White Turn");
+        setTeamText(currTeam);
         add(teamText, BorderLayout.CENTER);
     }
 

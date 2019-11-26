@@ -1,0 +1,106 @@
+public class ChessGui {
+
+  public ChessGui(Board b)
+  {
+	this.addWindowListener(new WindowAdapter() {
+          public void windowClosing(WindowEvent e) {
+            int confirmed = JOptionPane.showConfirmDialog(null,
+              "Do you want to save the current game?", "Save Game Message Box",
+              JOptionPane.YES_NO_OPTION);
+            if (confirmed == JOptionPane.YES_OPTION) {
+              dispose();
+            }
+            else {
+              dispose();
+            }
+          }
+        });
+  }
+
+
+}
+
+
+public class Menu extends JPanel {
+
+   import Saves.*;
+
+   public SaveState loadMenu;
+
+   public Menu() {
+	loadMenu = SaveState.createMenu();	//top
+	loadMenu.initButtons();
+
+	add(Box.createVerticalStrut(10));	//bottom
+
+        Button loadbutton = new Button("Load Game");
+        loadbutton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        loadbutton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadMenu.displayLoadMenu();
+            }
+        });
+
+        add(loadbutton);
+
+   }
+}
+
+public class Options {
+
+	public void bulletSet() {
+
+	   setMode("BULLET");
+	}
+
+	public void wallSet() {
+	   setMode("WALL");
+	}
+}
+
+public class Board {
+
+	public Board(options o){
+		teamTurn = options.getTurn();		
+		setPieces();
+
+	}
+}
+
+class InfoPanel {
+
+	thisGui = g;
+        currTeam = g.gameBoard.teamTurn; //////
+
+	teamText.setText("White Turn"); ->  setTeamText(currTeam);
+
+}
+
+class MainBoardPanel {
+									//pawnID ??
+     public ArrayList<ChessSquare> displayPossibleMoves(long board){
+              
+		if(((board>>(x*8)+y)&1) == 1)
+                {
+                    squares[x][y].Highlight();		//This part?
+                    retList.add(squares[x][y]);
+                }
+	}
+
+     public void updateBoard(){
+
+	for(int x = 0; x < 8; x ++)
+        {
+            for(int y = 0; y < 8; y++)
+            {
+              if(!highlightedSquares.contains(squares[x][y])) {		//This part
+                squares[x][y].setIcon(null);
+                squares[x][y].setActionCommand("White  " + x + " " + y);
+              }
+            }
+        }
+     }
+
+}
+

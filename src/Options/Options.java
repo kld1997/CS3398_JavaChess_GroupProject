@@ -84,6 +84,7 @@ public class Options {
 	public void bulletSet() {
 
 		defaultSet();
+		setMode("BULLET");
 
 		timer = true;
 
@@ -96,6 +97,7 @@ public class Options {
 	public void wallSet() {
 
 		defaultSet();
+		setMode("WALL");
 
 		String wallChessBoard[][] = {
 				{"br","bk","bb","bq","bK","bb","bk","br"},

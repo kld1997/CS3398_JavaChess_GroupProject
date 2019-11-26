@@ -1,11 +1,13 @@
 package GUI;
 
 import javax.swing.*;
+import java.awt.event.*;
 import java.awt.*;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import Engine.*;
 import Visuals.*;
+import Saves.*;
 
 public class ChessGui extends JFrame
 {
@@ -31,11 +33,22 @@ public class ChessGui extends JFrame
         rightPanel.pp.setGui(this);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setSize((int)(screenSize.getWidth()*.7), (int)(screenSize.getHeight()*.75));
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocation((int)(screenSize.getWidth()*.15), (int) (screenSize.getHeight()*.15));
         setLayout(new BorderLayout());
         addPanels();
+        this.addWindowListener(new WindowAdapter() {
+          public void windowClosing(WindowEvent e) {
+            int confirmed = JOptionPane.showConfirmDialog(null,
+              "Do you want to save the current game?", "Save Game Message Box",
+              JOptionPane.YES_NO_OPTION);
+            if (confirmed == JOptionPane.YES_OPTION) {
+              SaveState.createMenu().displaySaveMenu();
+            }
+          }
+        });
         setVisible(true);
+        toFront();
     }
     public void addPanels()
     {

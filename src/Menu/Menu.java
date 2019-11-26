@@ -16,14 +16,22 @@ import javax.sound.sampled.AudioInputStream;
 import Engine.*;
 import GUI.*;
 import Online.*;
+import Saves.*;
 import Options.Options;
 
 public class Menu extends JPanel {
 
     public boolean started = false;
+    public static SaveState loadMenu;
 
     public Menu() {
 
+        loadMenu = SaveState.createMenu();
+        try {
+          loadMenu.initButtons();
+        } catch(Exception e) {
+          e.printStackTrace();
+        }
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         //add(Box.createVerticalStrut(280));
@@ -73,6 +81,19 @@ public class Menu extends JPanel {
             }
         });
         add(settingsButton);
+
+        add(Box.createVerticalStrut(10));
+
+        Button loadbutton = new Button("Load Game");
+        loadbutton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        loadbutton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadMenu.displayLoadMenu();
+            }
+        });
+
+        add(loadbutton);
 
         /***
          try {
@@ -161,8 +182,7 @@ public class Menu extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-            	Options options = new Options("bullet");
-            	new ChessGui(new Board(options));
+            	new ChessGui(new Board(new Options("bullet")));
             }
         });
 

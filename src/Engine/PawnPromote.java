@@ -3,12 +3,12 @@ package Engine;
 import Pieces.*;
 
 public class PawnPromote {
-	
+
 	public static boolean promotion = false;
 	public static long coord = 0L;
-	
+
 	public static void pawnPromotion(Board board) {
-		
+
 		int p = 0;
 		long promote = (board.pieceList.get(0).get('p').piece&Board.row8)|(board.pieceList.get(1).get('p').piece&Board.row1);
 		p = Long.numberOfTrailingZeros(promote);
@@ -16,11 +16,10 @@ public class PawnPromote {
 
 		promotion = true;
 	}
-	
+
 	public static void promotePawn(int team, long coord, Board board, int pawnID) {
-		
+
 		int newP = pawnID;
-		System.out.println(team);
 
 		switch(newP) {
 		  case 3: //knight
@@ -52,5 +51,5 @@ public class PawnPromote {
 			board.currentState();
 			board.switchTeamTurn();
 		}
-	}	
+	}
 }

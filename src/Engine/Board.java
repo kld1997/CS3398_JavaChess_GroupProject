@@ -20,45 +20,45 @@ import Pieces.PieceTypes.*;
 import Options.*;
 
 public class Board {
-	
+
 	public static int teamNum = 2;
 	public int teamTurn = 0;
 	public int[] teamScore = new int[teamNum];
 	public boolean cpuTurn = false;
-	
+
 	ObjectOutputStream output;
-	
+
 	// pieces
 	public long[] kingBB = new long[teamNum];
-	public long[] pawnsBB = new long[teamNum];	
+	public long[] pawnsBB = new long[teamNum];
 	public long[] teamBB = new long[teamNum];
-	
+
 	public long[] cardinalsBB = new long[teamNum];
 	public long[] ordinalsBB = new long[teamNum];
-	
+
 	//king and sliders
 	public long[] pinnersBB = new long[teamNum];
 	public long[] pinnedBB = new long[teamNum];
 	public long[] interfereBB = new long[teamNum];
 	public long[] slideThreatsBB = new long[teamNum];
-	
+
 	//misc
 	public long[] notTeamBB = new long[teamNum];
 	public long empty;
-	
+
 	//aggregate moves and threats
 	public long[] threatenBB = new long[teamNum];
 	public long[] kThreatsBB = new long[teamNum];
-	
+
 	//special position conditions
 	public long kingMoved;
 	public long rookMoved;
 	public long[] epBB = new long[teamNum];
-	
+
 	//checks and win conditions
 	public int[] check = new int[teamNum];
 	public int teamWon;
-	
+
 	public static long row1 = -72057594037927936L;
 	public static long row2 = 71776119061217280L;
 	public static long row4 = 1095216660480L;
@@ -69,40 +69,40 @@ public class Board {
 	public static long colB = 144680345676153346L;
 	public static long colG = 4629771061636907072L;
 	public static long colH = -9187201950435737472L;
-	
+
 	public static long kingMoves = 460039L;
 	public static long knightMoves = 43234889994L;
 	public static long archerMoves = 0x40E1B0E04L;
 	public static long archerCaptures = 0x40A110A04L;
-	
+
 	public static long rowMasks[] = {
 			255L, 65280L, 16711680L, 4278190080L, 1095216660480L, 280375465082880L, 71776119061217280L, -72057594037927936L
 	};
-	
+
 	public static long colMasks[] = {
 			72340172838076673L, 144680345676153346L, 289360691352306692L, 578721382704613384L,
 			1157442765409226768L, 2314885530818453536L, 4629771061636907072L, -9187201950435737472L
 	};
-	
+
 	public static long bltrMasks[] = {
 		0x1L, 0x102L, 0x10204L, 0x1020408L, 0x102040810L, 0x10204081020L, 0x1020408102040L,
 		0x102040810204080L, 0x204081020408000L, 0x408102040800000L, 0x810204080000000L,
 		0x1020408000000000L, 0x2040800000000000L, 0x4080000000000000L, 0x8000000000000000L
 	};
-	
+
 	public static long tlbrMasks[] = {
 		0x80L, 0x8040L, 0x804020L, 0x80402010L, 0x8040201008L, 0x804020100804L, 0x80402010080402L,
 		0x8040201008040201L, 0x4020100804020100L, 0x2010080402010000L, 0x1008040201000000L,
 		0x804020100000000L, 0x402010000000000L, 0x201000000000000L, 0x100000000000000L
 	};
-	
+
 	public List<Map<Character, Piece>> pieceList;
 	public List<Set<Piece>> cardinalList;
 	public List<Set<Piece>> ordinalList;
 	public List<Piece> castleableList;
 	public List<Set<Piece>> promoteableList;
 	public List<Move> teamMoveList;
-	
+
 	public Stack<Integer> teamWonStack;
 	public Stack<Long> rookMovedStack;
 	public Stack<Long> kingMovedStack;
@@ -125,20 +125,20 @@ public class Board {
 	public Stack<Long> threatenB;
 	public Stack<Long> kTW;
 	public Stack<Long> kTB;
-	
+
 	public Options options;
-	
+
 	public Board(Options o) {                                                   //initializes all of the bitboards
 
 		options = o;
-		
+
 		pieceList = new ArrayList<Map<Character, Piece>>();
 		cardinalList = new ArrayList<Set<Piece>>();
 		ordinalList = new ArrayList<Set<Piece>>();
 		castleableList = new ArrayList<Piece>();
 		promoteableList = new ArrayList<Set<Piece>>();
 		teamMoveList = new ArrayList<Move>();
-		
+
 		teamWonStack = new Stack<Integer>();
 		rookMovedStack = new Stack<Long>();
 		kingMovedStack = new Stack<Long>();
@@ -161,57 +161,59 @@ public class Board {
 		threatenB = new Stack<Long>();
 		kTW = new Stack<Long>();
 		kTB = new Stack<Long>();
-		
+
 		for(int i = 0; i < teamNum; i++) {
 			kingBB[i] = 0L;
 			notTeamBB[i] = 0;
-			
+
 			pinnersBB[i] = 0;
 			pinnedBB[i] = 0;
 			interfereBB[i] = 0;
 			slideThreatsBB[i] = 0;
-			
+
 			threatenBB[i] = 0;
 			kThreatsBB[i] = 0;
 			check[i] = 0;
 			epBB[i] = 0;
-			
+
 			cardinalsBB[i] = 0L;
 			ordinalsBB[i] = 0L;
-			
+
 			teamScore[i] = 0;
 		}
-		
+
 		empty = 0;
-		
+
 		kingMoved = 0x1000000000000010L;
 		rookMoved = 0x8100000000000081L;
-		
+
 		teamWon = 2;
-		
+
 		if(options.getOnline())
 			output = options.getOutput();
-		
+
+		teamTurn = options.getTurn();
 		setPieces();
-		
+
+
 	}
-	
+
 	public void setPieces() {
-		
+
 		pieceList = ParseBoard.pieceInit(options.getBoard(), options.getPromote());
-		
+
 		Set<Piece> cardinal = new HashSet<Piece>();
 		Set<Piece> ordinal = new HashSet<Piece>();
 		List<Piece> castleable = new ArrayList<Piece>();
 		Set<Piece> promoteable = new HashSet<Piece>();
-		
-		for(int i = 0; i < teamNum; i++) {	
-			
+
+		for(int i = 0; i < teamNum; i++) {
+
 			cardinal = new HashSet<Piece>();
 			ordinal = new HashSet<Piece>();
 			castleable = new ArrayList<Piece>();
 			promoteable = new HashSet<Piece>();
-			
+
 			for(Piece piece : pieceList.get(i).values()) {
 				if(piece instanceof Cardinal)
 					cardinal.add(piece);
@@ -221,9 +223,9 @@ public class Board {
 					castleable.add(piece);
 				if(piece instanceof Promoteable)
 					promoteable.add(piece);
-					
+
 			}
-			
+
 			cardinalList.add(cardinal);
 			ordinalList.add(ordinal);
 			castleableList.addAll(castleable);
@@ -231,33 +233,33 @@ public class Board {
 		}
 
 		currentState();
-		
+
 	}
-	
+
 	public long convertStringToBitboard(String Binary) {                    //converts the string of binary numbers into actual binary fit for bitboards
-		
+
         if (Binary.charAt(0)=='0') {                                        //not negative
             return Long.parseLong(Binary, 2);
         } else {
             return Long.parseLong("1"+Binary.substring(2), 2)*2;
         }
     }
-	
+
 	public void currentState() {
-		
+
 		teamMoveList.clear();
-		
+
 		for(int i = 0; i < teamNum; i++) {
 			kingBB[i] = pieceList.get(i).get('K').piece;
 			check[i] = 0;
 			teamBB[i] = 0L;
 			cardinalsBB[i] = 0L;
 			ordinalsBB[i] = 0L;
-			
+
 			for(Piece piece : pieceList.get(i).values()) {
 				teamBB[i] |= piece.piece;
 			}
-			
+
 			for(Piece piece : cardinalList.get(i)) {
 				cardinalsBB[i] |= piece.piece;
 			}
@@ -266,33 +268,33 @@ public class Board {
 				ordinalsBB[i] |= piece.piece;
 			}
 		}
-		
+
 		notTeamBB[0] = ~(teamBB[0]);
 		notTeamBB[1] = ~(teamBB[1]);
-		
+
 		empty = ~(teamBB[0]|teamBB[1]);
-		
+
 		pieceMoved();
-		
+
 		getThreaten();
-		
+
 		//code for making a bitboard of all of the pinned and pinning pieces
 		Check.getPinned(this);
-		
+
 		Check.slideThreats(this);
 
 		checkmate();
-		
+
 		if(((pieceList.get(0).get('p').piece&row8)|(pieceList.get(1).get('p').piece&row1)) != 0 && !cpuTurn) {
 			PawnPromote.pawnPromotion(this);
 		}
 
 	}
-	
+
 	public void pieceMoved() {
-		
+
 		long rooks = 0L;
-		
+
 		for(int i = 0; i < teamNum; i++) {
 			rooks |= castleableList.get(i).piece;
 		}
@@ -306,7 +308,7 @@ public class Board {
 	}
 
 	public void checkmate() {
-		
+
 		for(Piece piece : pieceList.get(teamTurn).values()) {
 			piece.getAllPM(this);
 			teamMoveList.addAll(piece.moveList);
@@ -324,20 +326,20 @@ public class Board {
 				teamScore[1] = 0;
 			}
 		}
-		
+
 	}
-	
+
 	public void getThreaten() {
-		
+
 		long currentThreat;
 		int noti = 0;
-		
+
 		for(int i = 0; i < teamNum; i++) {
 			threatenBB[i] = 0;
 			kThreatsBB[i] = 0;
 			currentThreat = 0;
 			noti = Math.abs(i-1);
-			
+
 			for(Piece piece : pieceList.get(i).values()) {
 				currentThreat = piece.threaten(this);
 				threatenBB[i] |= currentThreat;
@@ -347,9 +349,9 @@ public class Board {
 			}
 		}
 	}
-	
+
 	public void removePiece(long coord) {
-		
+
 		for(int i = 0; i < teamNum; i++) {
 			if((teamBB[i]&coord) != 0) {
 				for(Piece piece : pieceList.get(i).values()) {
@@ -362,9 +364,9 @@ public class Board {
 			}
 		}
 	}
-	
+
 	public void removePiece(long coord, int team, int enemyTeam) {
-		
+
 		for(Piece piece : pieceList.get(enemyTeam).values()) {
 			if((piece.piece&coord) != 0) {
 				if(cpuTurn) {
@@ -376,24 +378,24 @@ public class Board {
 			}
 		}
 	}
-	
+
 	public void removePromote(long coord, int team, int value) {
-		
+
 		if(cpuTurn) {
 			restoreStack.add(new Restore(team, 'p', coord));
 		}
 		pieceList.get(team).get('p').piece ^= coord;
 		teamScore[team] += value - 1;
 	}
-	
+
 	static public void displayBitboard(long bitBoard) {
-		
+
 		String display = Long.toBinaryString(bitBoard);
-		
+
 		while(display.length() <= 64) {
 			display = "0" + display;
 		}
-		
+
 		for(int i = 7; i >= 0; i--) {
 			for(int j = 8; j > 0; j--) {
 				System.out.print(display.charAt(8*i+j) + " ");
@@ -402,29 +404,29 @@ public class Board {
 		}
 		System.out.println();
 	}
-	
+
 	public static long convertToCoord(String pos) {
-		
+
 		try {
 			int x = pos.charAt(0) - 97;
 			int y = 8 - Integer.parseInt(pos.substring(1,2));
 			long coord = 1L<<((y*8)+x);
-			
+
 			return coord;
 		} catch(NullPointerException e) {
 			return -1L;
 		}
 	}
-	
+
 	public static long convertToCoord(int x, int y) {
 
 		long coord = 1L<<((y*8)+x);
-		
+
 		return coord;
 	}
-	
+
 	public void enPassant(long coord1, long coord2, int team) {
-		
+
 		if(team == 0) {
 			if(coord2 == coord1>>16)
 				epBB[0] |= coord1>>8;
@@ -438,9 +440,9 @@ public class Board {
 				removePiece(coord2>>8, team, Math.abs(team-1));
 		}
 	}
-	
+
 	public void castle(long coord1, long coord2, int team) {
-		
+
 		if(coord2 == coord1<<2) {
 			castleableList.get(team).piece ^= coord2>>1|(castleableList.get(team).piece&(rookMoved&~(coord1-1)));
 		}
@@ -448,14 +450,14 @@ public class Board {
 			castleableList.get(team).piece ^= coord2<<1|(castleableList.get(team).piece&(rookMoved&(coord1-1)));
 		}
 	}
-	
+
 	public boolean makeMove(int team, Move move) {
-		
+
 		boolean valid = false;
-		
+
 		if(cpuTurn)
 			currentState();
-		
+
 		if(teamMoveList.contains(move)) {
 			move = teamMoveList.get(teamMoveList.indexOf(move));
 			valid = true;
@@ -466,46 +468,46 @@ public class Board {
 			}
 			else
 				pieceList.get(team).get(move.pid).movePiece(this, coord1, coord2, true);
-			
+
 			if(move.pid == 'p')
 				enPassant(coord1, coord2, team);
 			else if(move.pid == 'K')
 				castle(coord1, coord2, team);
-			
+
 			epBB[Math.abs(team-1)] = 0;
-			
+
 			if((move.type == 3 || move.type == 4) && cpuTurn) {
 				PawnPromote.promotePawn(teamTurn, coord2, this, 1);
 			}
 
 			if(cpuTurn || (move.type != 3 && move.type != 4))
 				switchTeamTurn();
-			
+
 			currentState();
 		}
-		
+
 		return valid;
 	}
-	
+
 	public void switchTeamTurn() {
-		
+
 		teamTurn = Math.abs(teamTurn-1);
 	}
-	
+
 	public boolean makeMove(String pos) {
-		
+
 		long coord1 = convertToCoord(pos.substring(0,2));
 		long coord2 = convertToCoord(pos.substring(2,4));
-		
+
 		Move move = new Move(Long.numberOfTrailingZeros(coord1), Long.numberOfTrailingZeros(coord2));
-		
+
 		boolean valid = makeMove(teamTurn, move);
 
 		return valid;
 	}
-	
+
 	public boolean cpuStart() {
-		
+
 		if(options.getCPU()) {
 			currentState();
 			cpuTurn = true;
@@ -516,9 +518,9 @@ public class Board {
 		else
 			return false;
 	}
-	
+
 	public void cpuMove(Move move) {
-		
+
 		long coord1 = 1L<<move.from;
 		long coord2 = 1L<<move.to;
 
@@ -543,33 +545,33 @@ public class Board {
 		threatenB.add(threatenBB[1]);
 		kTW.add(kThreatsBB[0]);
 		kTB.add(kThreatsBB[1]);
-		
+
 		pieceList.get(teamTurn).get(move.pid).movePiece(this, coord1, coord2, true);
-		
+
 		if(move.type == 3 || move.type == 4) {
 			PawnPromote.promotePawn(teamTurn, coord2, this, 1);
 		}
-		
+
 		if(move.type == 2)
 			enPassant(coord1, coord2, teamTurn);
 		else if(move.type == 5)
 			castle(coord1, coord2, teamTurn);
-		
+
 		epBB[Math.abs(teamTurn-1)] = 0;
 
 		teamTurn = Math.abs(teamTurn-1);
-		
+
 		currentState();
-		
+
 	}
-	
+
 	public void undoMove(Move move) {
-		
+
 		teamTurn = Math.abs(teamTurn-1);
-		
+
 		long coord1 = 1L<<move.from;
 		long coord2 = 1L<<move.to;
-		
+
 		if(move.type < 3) {
 			long redo = coord1|coord2;
 			pieceList.get(teamTurn).get(move.pid).piece ^= redo;
@@ -595,11 +597,11 @@ public class Board {
 				castleableList.get(teamTurn).piece ^= coord2>>1|coord2<<1;
 			else
 				castleableList.get(teamTurn).piece ^= coord2<<1|coord2>>2;
-			
+
 			long redo = coord1|coord2;
 			pieceList.get(teamTurn).get(move.pid).piece ^= redo;
 		}
-		
+
 		teamWon = teamWonStack.pop();
 		rookMoved = rookMovedStack.pop();
 		kingMoved = kingMovedStack.pop();
@@ -621,17 +623,17 @@ public class Board {
 		threatenBB[1] = threatenB.pop();
 		kThreatsBB[0] = kTW.pop();
 		kThreatsBB[1] = kTB.pop();
-		
+
 		for(int i = 0; i < teamNum; i++) {
 			kingBB[i] = pieceList.get(i).get('K').piece;
 			teamBB[i] = 0L;
 			cardinalsBB[i] = 0L;
 			ordinalsBB[i] = 0L;
-			
+
 			for(Piece piece : pieceList.get(i).values()) {
 				teamBB[i] |= piece.piece;
 			}
-			
+
 			for(Piece piece : cardinalList.get(i)) {
 				cardinalsBB[i] |= piece.piece;
 			}
@@ -639,19 +641,19 @@ public class Board {
 			for(Piece piece : ordinalList.get(i)) {
 				ordinalsBB[i] |= piece.piece;
 			}
-			
+
 		}
-		
+
 		notTeamBB[0] = ~(teamBB[0]);
 		notTeamBB[1] = ~(teamBB[1]);
-		
+
 		empty = ~(teamBB[0]|teamBB[1]);
 	}
-	
+
 	public long showMoves(String pos) {
-		
+
 		long coord = convertToCoord(pos);
-		
+
 		for(int i = 0; i < teamNum; i++) {
 			if((coord&teamBB[i]) != 0) {
 				for(Piece piece : pieceList.get(i).values()) {
@@ -662,12 +664,12 @@ public class Board {
 		}
 		return 0L;
 	}
-	
+
 	private MoveScore alphaBeta(int depth, int alpha, int beta) {
 
 		Move best = null;
 		MoveScore ms;
-		
+
 	    if(depth == 0 || teamWon != 2)
 	        return new MoveScore(teamScore[1] - teamScore[0], best);
 	    else {
@@ -702,5 +704,5 @@ public class Board {
 	        }
 	    }
 	}
-	
+
 }

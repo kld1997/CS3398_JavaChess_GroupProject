@@ -17,12 +17,13 @@ public class MenuBuilder extends JMenuBar implements ItemListener
   JMenu playerTwoIcons = new JMenu("Icon Set");
   ButtonGroup groupOne = new ButtonGroup();
   ButtonGroup groupTwo = new ButtonGroup();
-  int currentTeam = 0;
+  int currentTeam;;
   MainBoardPanel p;
 
   public MenuBuilder(MainBoardPanel panel)
   {
     p = panel;
+    currentTeam = p.gameBoard.teamTurn;
     playerTwoIcons.setVisible(false);
     JMenu menu = new JMenu("Options");
     JMenu iconSet = new JMenu();
@@ -67,6 +68,7 @@ public class MenuBuilder extends JMenuBar implements ItemListener
     menu.add(playerOneIcons);
     menu.add(playerTwoIcons);
     menu.add(new ColorMenu("Choose Board Color", p.getSquares()));
+    menu.add(new SaveButton("Save Game", panel.gameBoard));
     setListener();
   }
 
