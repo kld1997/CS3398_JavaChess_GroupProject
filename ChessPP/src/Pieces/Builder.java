@@ -8,7 +8,7 @@ public class Builder extends Piece implements Ordinal
     {
         super(t);
         name = "Builder";
-        ID = '5';
+        ID = 'B';
         iconNum = 4;
         image = Images.pieces[Math.abs(team-1)][iconNum];
     }

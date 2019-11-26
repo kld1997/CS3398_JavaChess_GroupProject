@@ -506,8 +506,11 @@ public class Board {
 		long coord2 = convertToCoord(move.getTo().toString());
 		Move m = new Move(Long.numberOfTrailingZeros(coord1), Long.numberOfTrailingZeros(coord2));
 		switchTeamTurn();
-
-		pieceList.get(teamTurn).get(move.getID()).movePiece(this, coord1, coord2, true);
+		if(move.getID() != 'B'){ pieceList.get(teamTurn).get(move.getID()).movePiece(this, coord1, coord2, true); }
+		else
+		{
+			removePiece(pieceList.get(teamTurn).get('W').piece&coord2);
+		}
 		if(move.getCapture())
 		{
 			pieceList.get(Math.abs(teamTurn-1)).get(move.getCaptureID()).piece |= coord2;

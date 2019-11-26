@@ -228,7 +228,6 @@ public class MainBoardPanel extends JPanel
     				tempy = Long.numberOfTrailingZeros(temp)%8;
     				
     				squares[tempx][tempy].setIcon(new ImageIcon(piece.image));
-    				Coordinate tempCoord = new Coordinate(tempx, tempy);
     				squares[tempx][tempy].setActionCommand(teamName + " " + piece.name);
     				squares[tempx][tempy].setIDCommand(piece.ID);
     				squares[tempx][tempy].setTeam(i);
