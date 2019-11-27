@@ -11,7 +11,7 @@ public class SaveState {
     public static SaveMenu saveMenu;
     public static File[] saveFiles = new File[3];
     public static File dirPath = new File("saveFiles");
-    public static Board boardState;
+    public static Board boardState = null;
 
     private SaveState() {
         if(!dirPath.exists())
@@ -37,8 +37,7 @@ public class SaveState {
     }
 
     public static SaveState createMenu(Board curBoard) {
-        if (boardState == null)
-          boardState = curBoard;
+        boardState = curBoard;
         return obj;
     }
 
@@ -52,9 +51,9 @@ public class SaveState {
 
     public static void initButtons() throws IOException, ClassNotFoundException {
       for(int i = 0; i < 3; i++) {
-        FileInputStream fis = new FileInputStream(saveFiles[i]);
-        ObjectInputStream ois = new ObjectInputStream(fis);
         try {
+          FileInputStream fis = new FileInputStream(saveFiles[i]);
+          ObjectInputStream ois = new ObjectInputStream(fis);
           Object obj = ois.readObject();
           if(obj == null) {
             ois.close();
@@ -64,8 +63,7 @@ public class SaveState {
             ois.close();
           }
         } catch(Exception e) {
-          ois.close();
-          e.printStackTrace();
+          System.out.println("Empty File Initialized Succesfully");
         }
       }
     }
@@ -73,20 +71,12 @@ public class SaveState {
     public static void serialize(int file) throws IOException {
         String newSaveFile = "saveFile" + file + ".ser";
         File overwrite = new File(dirPath, newSaveFile);
-        System.out.println(saveFiles[file].delete());;
         saveFiles[file] = overwrite;
-        try {
-          System.out.println(overwrite.createNewFile());
-        } catch(IOException e) {
-          e.printStackTrace();
-        }
 
         String curMode = boardState.options.getMode();
-        Object obj = ParseBoard.bitboardToArray(boardState.pieceList);
+        String[][] temp = ParseBoard.bitboardToArray(boardState.pieceList);
         int curTeam = boardState.teamTurn;
-        System.out.println(curMode);
-        System.out.println((String[][])obj);
-        System.out.println(curTeam);
+        Object obj = ((Object)temp);
 		    FileOutputStream fos = new FileOutputStream(overwrite);
 		    ObjectOutputStream oos = new ObjectOutputStream(fos);
         oos.writeObject(saveMenu.saveArray[file].curTitle);
@@ -115,7 +105,8 @@ public class SaveState {
         op.setBoard(loadBoard);
         op.setTurn(teamObj);
     		ois.close();
-        new ChessGui(new Board(op));
+        boardState = new Board(op);
+        new ChessGui(boardState);
     }
 
 }

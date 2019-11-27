@@ -68,7 +68,7 @@ public class MenuBuilder extends JMenuBar implements ItemListener
     menu.add(playerOneIcons);
     menu.add(playerTwoIcons);
     menu.add(new ColorMenu("Choose Board Color", p.getSquares()));
-    menu.add(new SaveButton("Save Game", panel.gameBoard));
+    menu.add(new SaveButton("Save Game", p.gameBoard));
     setListener();
   }
 

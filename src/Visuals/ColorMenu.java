@@ -18,8 +18,8 @@ public class ColorMenu extends JMenuItem
       static private Color buttonColorTwo;
       static private Color boardColorOne = Color.WHITE;
       static private Color boardColorTwo = Color.BLACK;
-      static JColorChooser firstColor = new JColorChooser(boardColorOne);
-      static JColorChooser secondColor = new JColorChooser(boardColorTwo);
+      public JColorChooser firstColor = new JColorChooser(boardColorOne);
+      public JColorChooser secondColor = new JColorChooser(boardColorTwo);
 
       public ColorMenu(String title, ChessSquare[][] tiles) {
           super(title);
@@ -41,7 +41,7 @@ public class ColorMenu extends JMenuItem
       }
 
 
-      private static void createGUI() {
+      private void createGUI() {
 
         buttonColorOne = Color.WHITE;
         buttonColorTwo = Color.BLACK;
