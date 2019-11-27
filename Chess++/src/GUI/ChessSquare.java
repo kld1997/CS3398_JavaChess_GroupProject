@@ -1,6 +1,8 @@
 package GUI;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
@@ -12,6 +14,7 @@ public class ChessSquare extends JButton
     private String team;
     private char ID;
     private Coordinate positionCommand;
+    ImageIcon highlightMarker;
     public ChessSquare(int color, int xCoord, int yCoord)
     {
         ID = 'N';
@@ -30,11 +33,22 @@ public class ChessSquare extends JButton
     }
     public void Highlight()
     {
-        setBorder(BorderFactory.createLineBorder(Color.RED, 5));
+        if(this.getIcon() != null && this.getIcon() != highlightMarker) {
+            setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(this.getBackground(), 1),
+                      BorderFactory.createLineBorder(new Color(0xFFFFFFFF - this.getBackground().getRGB()), 4)));
+        }
+        else {
+            highlightMarker = new ImageIcon(new CustomCircle(new Color((0xFFFFFFFF - this.getBackground().getRGB()) + 0xFF000000)).getCircle());
+            this.setIcon(highlightMarker);
+            this.setBorder(new EmptyBorder(1, 1, 1, 1));
+        }
+
     }
     public void unHighlight()
     {
         setBorder(null);
+        if(this.getIcon() == highlightMarker)
+          this.setIcon(null);
     }
     public void setPositionCommand(Coordinate g){ positionCommand = g;}
     public Coordinate getPositionCommand(){ return positionCommand; }

@@ -208,8 +208,12 @@ public class MainBoardPanel extends JPanel
         {
             for(int y = 0; y < 8; y++)
             {
-                squares[x][y].setIcon(null);
-                squares[x][y].setActionCommand("White  " + x + " " + y);
+            	if(!highlightedSquares.contains(squares[x][y])) {		//This part
+                    squares[x][y].setIcon(null);
+                    squares[x][y].setActionCommand("White  " + x + " " + y);
+                  }
+                //squares[x][y].setIcon(null);
+                //squares[x][y].setActionCommand("White  " + x + " " + y);
                 squares[x][y].setPositionCommand(new Coordinate(x, y));
                 squares[x][y].setIDCommand('N');
             }
