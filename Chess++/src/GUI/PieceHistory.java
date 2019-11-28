@@ -46,6 +46,7 @@ public class PieceHistory extends JPanel
             }
         }
         update();
+        cg.getMainPanel().highlightedSquares.clear();
         cg.getMainPanel().updateBoard();
 
 

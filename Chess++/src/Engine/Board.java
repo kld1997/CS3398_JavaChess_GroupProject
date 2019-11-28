@@ -627,7 +627,7 @@ public class Board {
 		
 		if((coord2&kingBB[Math.abs(teamTurn-1)]) != 0) {
 			
-			ParseBoard.displayBitboards(pieceList);
+			//ParseBoard.displayBitboards(pieceList);
 		}
 
 		teamWonStack.add(teamWon);
