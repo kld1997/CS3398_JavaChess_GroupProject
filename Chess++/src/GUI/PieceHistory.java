@@ -13,20 +13,18 @@ public class PieceHistory extends JPanel
     {
         cg = g;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        Dimension d = new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.155), (int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.75));
-        setPreferredSize(d);
     }
     public void addMove(String move)
     {
         JLabel newMove = new JLabel(move, SwingConstants.CENTER);
-        if(moveList.size() >= 35){ moveList.pop(); moveCoords.pop();}
+        //if(moveList.size() >= 35){ moveList.pop(); moveCoords.pop();}
         moveList.push(newMove);
         update();
     }
     public void addMove(GameMove gm)
     {
         //JLabel newMove = new JLabel("Placeholder", SwingConstants.CENTER);
-        if(moveList.size() >= 35){ moveList.pop(); moveCoords.pop(); }
+        //if(moveList.size() >= 35){ moveList.pop(); moveCoords.pop(); }
         moveCoords.push(gm);
         update();
     }
@@ -42,7 +40,8 @@ public class PieceHistory extends JPanel
             if(moveList.pop() != null)
             {
                 cg.gameBoard.rewindMove();
-                cg.getInfoPanel().switchTeam();
+                if(cg.gameBoard.options.getCPU() == 0)
+                	cg.getInfoPanel().switchTeam();
             }
         }
         update();

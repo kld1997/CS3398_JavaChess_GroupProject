@@ -8,15 +8,18 @@ import java.util.Observer;
 //Has Labels for time and team.
 public class InfoPanel extends GenericInfoPanel
 {
-    ChessGui thisGui;
-    public InfoPanel(ChessGui g)
+
+    public InfoPanel(int turn)
     {
-        thisGui = g;
+    	currTeam = turn;
         setLayout(new BorderLayout());
         teamText = new JLabel();
         teamText.setFont(new Font("Serif", Font.BOLD, 20));
         teamText.setHorizontalAlignment(JLabel.CENTER);
-        teamText.setText("White Turn");
+        if(turn == 0)
+        	teamText.setText("White Turn");
+        else
+        	teamText.setText("Black Turn");
         add(teamText, BorderLayout.CENTER);
     }
 

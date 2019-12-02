@@ -13,6 +13,7 @@ public class Options {
 	boolean highlight;
 	boolean online;
 	int cpu;
+	int cpuTeam;
 	boolean captureKing;
 	ObjectOutputStream output;
 	ObjectInputStream input;
@@ -71,6 +72,9 @@ public class Options {
 	public int getCPU() { return cpu; }
 	public void setCPU(int c) { cpu = c; }
 	
+	public int getCPUTeam() { return cpuTeam; }
+	public void setCPUTeam(int c) { cpuTeam = c; }
+	
 	public boolean getCaptureKing() { return captureKing; }
 	public void setCaptureKing(boolean c) { captureKing = c; }
 	
@@ -79,7 +83,9 @@ public class Options {
 		timer = false;
 		highlight = true;
 		online = false;
-		cpu = 0;
+		turn = 0;
+		cpu = 3;
+		cpuTeam = 1;
 		captureKing = false;
 		mode = "STANDARD";
 		board = BoardTypes.standardChessBoard();

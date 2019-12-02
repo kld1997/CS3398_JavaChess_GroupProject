@@ -142,7 +142,8 @@ public class Check {														//special check restrictions and pin calculati
         }
         interfere &= ~king;
         
-        threats &= ~(cardinals|ordinals);
+        if(board.check[team] < 2)
+        threats &= ~((cardinals|ordinals)&board.kThreatsBB[team]);
         
 		board.interfereBB[team] = interfere;
 		board.slideThreatsBB[team] = threats;

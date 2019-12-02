@@ -23,11 +23,12 @@ public class MainBoardPanel extends JPanel
     GenericInfoPanel top;
     HistoryPanel right;
     boolean locked = false;
-    int pawnID = 0;
     public ChessSquare[][] squares = new ChessSquare[8][8];
     public int[] lastClicked = new int[2];
     public ArrayList<ChessSquare> highlightedSquares = new ArrayList<ChessSquare>();
     int yourTurn;
+    ChessSquare lastMoved1;
+    ChessSquare lastMoved2;
 
     ChessGui thisGui;
     public MainBoardPanel(ChessGui g)
@@ -41,6 +42,12 @@ public class MainBoardPanel extends JPanel
         setLayout(new GridLayout(8,8));
         boardSet(g);
         updateBoard();
+        if(gameBoard.options.getCPU() > 0 && gameBoard.options.getTurn() == gameBoard.options.getCPUTeam())
+        	SwingUtilities.invokeLater(new Runnable() {
+        	    public void run() {
+        	    	cpuMakeMove(g);
+        	    }
+        	});
     }
     public void boardSet(ChessGui g) {
 
@@ -105,6 +112,7 @@ public class MainBoardPanel extends JPanel
                                 g.getHisotryPanel().ph.addMove(gameMove);
                                 lastClicked[0] = 0;
                                 lastClicked[1] = 0;
+                                highlightedSquares.clear();
                             }
                             else
                             {
@@ -211,9 +219,7 @@ public class MainBoardPanel extends JPanel
             	if(!highlightedSquares.contains(squares[x][y])) {		//This part
                     squares[x][y].setIcon(null);
                     squares[x][y].setActionCommand("White  " + x + " " + y);
-                  }
-                //squares[x][y].setIcon(null);
-                //squares[x][y].setActionCommand("White  " + x + " " + y);
+                }
                 squares[x][y].setPositionCommand(new Coordinate(x, y));
                 squares[x][y].setIDCommand('N');
             }
@@ -238,7 +244,6 @@ public class MainBoardPanel extends JPanel
     				tempy = Long.numberOfTrailingZeros(temp)%8;
     				
     				squares[tempx][tempy].setIcon(new ImageIcon(piece.image));
-    				Coordinate tempCoord = new Coordinate(tempx, tempy);
     				squares[tempx][tempy].setActionCommand(teamName + " " + piece.name);
     				squares[tempx][tempy].setIDCommand(piece.ID);
     				squares[tempx][tempy].setTeam(i);

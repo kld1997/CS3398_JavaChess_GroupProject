@@ -77,6 +77,7 @@ public class ParseBoard {
 				System.out.print("[" + c + "] ");
 			System.out.println();
 		}
+		System.out.println();
 	}
 	
 	static public List<Map<Character, Piece>> pieceInit(String[][] pieceArr, String promoteTo) {

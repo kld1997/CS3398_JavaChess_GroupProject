@@ -100,7 +100,7 @@ public class Board {
 	public List<Map<Character, Piece>> pieceList;
 	public List<Set<Piece>> cardinalList;
 	public List<Set<Piece>> ordinalList;
-	public List<Piece> castleableList;
+	public List<Set<Piece>> castleableList;
 	public List<Set<Piece>> promoteableList;
 	public List<Move> teamMoveList;
 	
@@ -126,6 +126,8 @@ public class Board {
 	public Stack<Long> threatenB;
 	public Stack<Long> kTW;
 	public Stack<Long> kTB;
+	public List<Stack<Long>> saveMoved;
+	public List<Stack<Long>> saveEP;
 	
 	public List<List<Restore>> captureList;
 	public List<List<Move>> moveHistory;
@@ -140,13 +142,12 @@ public class Board {
 		pieceList = new ArrayList<Map<Character, Piece>>();
 		cardinalList = new ArrayList<Set<Piece>>();
 		ordinalList = new ArrayList<Set<Piece>>();
-		castleableList = new ArrayList<Piece>();
+		castleableList = new ArrayList<Set<Piece>>();
 		promoteableList = new ArrayList<Set<Piece>>();
 		teamMoveList = new ArrayList<Move>();
 		captureList = new ArrayList<List<Restore>>();
 		moveHistory = new ArrayList<List<Move>>();
 		captureStack = new Stack<Restore>();
-		
 		
 		teamWonStack = new Stack<Integer>();
 		rookMovedStack = new Stack<Long>();
@@ -170,6 +171,16 @@ public class Board {
 		threatenB = new Stack<Long>();
 		kTW = new Stack<Long>();
 		kTB = new Stack<Long>();
+		saveMoved = new ArrayList<Stack<Long>>();
+		Stack<Long> saveRM = new Stack<Long>();
+		Stack<Long> saveKM = new Stack<Long>();
+		saveMoved.add(saveRM);
+		saveMoved.add(saveKM);
+		saveEP = new ArrayList<Stack<Long>>();
+		Stack<Long> saveEPW = new Stack<Long>();
+		Stack<Long> saveEPB = new Stack<Long>();
+		saveEP.add(saveEPW);
+		saveEP.add(saveEPB);
 		
 		for(int i = 0; i < teamNum; i++) {
 			kingBB[i] = 0L;
@@ -197,6 +208,7 @@ public class Board {
 		rookMoved = 0x8100000000000081L;
 		
 		teamWon = 2;
+		teamTurn = options.getTurn();
 		
 		if(options.getOnline())
 			output = options.getOutput();
@@ -211,14 +223,14 @@ public class Board {
 		
 		Set<Piece> cardinal = new HashSet<Piece>();
 		Set<Piece> ordinal = new HashSet<Piece>();
-		List<Piece> castleable = new ArrayList<Piece>();
+		Set<Piece> castleable = new HashSet<Piece>();
 		Set<Piece> promoteable = new HashSet<Piece>();
 		
 		for(int i = 0; i < teamNum; i++) {	
 			
 			cardinal = new HashSet<Piece>();
 			ordinal = new HashSet<Piece>();
-			castleable = new ArrayList<Piece>();
+			castleable = new HashSet<Piece>();
 			promoteable = new HashSet<Piece>();
 			
 			for(Piece piece : pieceList.get(i).values()) {
@@ -235,7 +247,7 @@ public class Board {
 			
 			cardinalList.add(cardinal);
 			ordinalList.add(ordinal);
-			castleableList.addAll(castleable);
+			castleableList.add(castleable);
 			promoteableList.add(promoteable);
 			captureList.add(new ArrayList<Restore>());
 			moveHistory.add(new ArrayList<Move>());
@@ -307,7 +319,8 @@ public class Board {
 
 		checkmate();
 		
-		if(((pieceList.get(0).get('p').piece&row8)|(pieceList.get(1).get('p').piece&row1)) != 0 && !cpuTurn) {
+		if((pieceList.get(0).containsKey('p') && ((pieceList.get(0).get('p').piece&row8) != 0))
+				|| (pieceList.get(1).containsKey('p') && (pieceList.get(1).get('p').piece&row1) != 0) && !cpuTurn) {
 			PawnPromote.pawnPromotion(this);
 		}
 		
@@ -318,7 +331,8 @@ public class Board {
 		long rooks = 0L;
 		
 		for(int i = 0; i < teamNum; i++) {
-			rooks |= castleableList.get(i).piece;
+			if(pieceList.get(i).containsKey('r'))
+				rooks |= pieceList.get(i).get('r').piece;
 		}
 
 		if(kingMoved != 0 && kingMoved != ((kingBB[0]|kingBB[1])&kingMoved)) {  	//if king moves
@@ -338,7 +352,7 @@ public class Board {
 		Collections.shuffle(teamMoveList);
 		teamMoveList.sort(Comparator.comparing(Move -> Move.type, Comparator.reverseOrder()));
 		if(teamMoveList.isEmpty() && teamWon == 2) {
-			if(check[teamTurn] == 1) {
+			if(check[teamTurn] == 1 || kThreatsBB[teamTurn] != 0) {
 				teamWon = 1 - teamTurn;
 				teamScore[Math.abs(teamTurn-1)] = Integer.MAX_VALUE;
 			}
@@ -472,10 +486,10 @@ public class Board {
 	public void castle(long coord1, long coord2, int team) {
 		
 		if(coord2 == coord1<<2) {
-			castleableList.get(team).piece ^= coord2>>1|(castleableList.get(team).piece&(rookMoved&~(coord1-1)));
+			pieceList.get(team).get('r').piece ^= coord2>>>1|(pieceList.get(team).get('r').piece&(rookMoved&~(coord1-1)));
 		}
-		else if(coord2 == coord1>>2) {
-			castleableList.get(team).piece ^= coord2<<1|(castleableList.get(team).piece&(rookMoved&(coord1-1)));
+		else if(coord2 == coord1>>>2) {
+			pieceList.get(team).get('r').piece ^= coord2<<1|(pieceList.get(team).get('r').piece&(rookMoved&(coord1-1)));
 		}
 	}
 	
@@ -499,8 +513,6 @@ public class Board {
 			else
 				pieceList.get(team).get(move.pid).movePiece(this, coord1, coord2, true);
 			
-			cpuTurn = cpuTemp;
-			
 			if(move.pid == 'p')
 				enPassant(coord1, coord2, team);
 			else if(move.pid == 'K')
@@ -508,14 +520,21 @@ public class Board {
 			
 			epBB[Math.abs(team-1)] = 0;
 			
-			if((move.type == 3 || move.type == 4) && cpuTurn) {
-				PawnPromote.promotePawn(teamTurn, coord2, this, 1);
+			if((move.type == 3 || move.type == 4) && cpuTemp) {
+				PawnPromote.promotePawn(teamTurn, coord2, this, options.getPromote().charAt(options.getPromote().length()-1));
 			}
 			
 			moveHistory.get(team).add(move);
 
 			if(cpuTurn || (move.type != 3 && move.type != 4))
 				switchTeamTurn();
+			
+			cpuTurn = cpuTemp;
+			
+			saveMoved.get(0).add(rookMoved);
+			saveMoved.get(1).add(kingMoved);
+			saveEP.get(0).add(epBB[0]);
+			saveEP.get(1).add(epBB[1]);
 			
 			currentState();
 		}
@@ -532,6 +551,11 @@ public class Board {
 	{
 		
 		switchTeamTurn();
+		
+		rookMoved = saveMoved.get(0).pop();
+		kingMoved = saveMoved.get(1).pop();
+		epBB[0] = saveEP.get(0).pop();
+		epBB[1] = saveEP.get(1).pop();
 		
 		Move move = moveHistory.get(teamTurn).get(moveHistory.get(teamTurn).size()-1);
 		moveHistory.get(teamTurn).remove(moveHistory.get(teamTurn).size()-1);
@@ -573,9 +597,9 @@ public class Board {
 		}
 		else if(move.type == 5) {
 			if(coord1<<2 == coord2)
-				castleableList.get(teamTurn).piece ^= coord2>>1|coord2<<1;
+				pieceList.get(teamTurn).get('r').piece ^= coord2>>>1|coord2<<1;
 			else
-				castleableList.get(teamTurn).piece ^= coord2<<1|coord2>>2;
+				pieceList.get(teamTurn).get('r').piece ^= coord2<<1|coord2>>>2;
 			
 			long redo = coord1|coord2;
 			pieceList.get(teamTurn).get(move.pid).piece ^= redo;
@@ -592,6 +616,9 @@ public class Board {
 		}
 		
 		currentState();
+		
+		if(options.getCPU() > 0 && teamTurn == options.getCPUTeam())
+			rewindMove();
 
 	}
 	
@@ -612,7 +639,7 @@ public class Board {
 		if(options.getCPU() > 0) {
 			currentState();
 			cpuTurn = true;
-			makeMove(1, alphaBeta(options.getCPU(), Integer.MIN_VALUE, Integer.MAX_VALUE).move);
+			makeMove(options.getCPUTeam(), alphaBeta(options.getCPU(), Integer.MIN_VALUE, Integer.MAX_VALUE).move);
 			cpuTurn = false;
 			return true;
 		}
@@ -626,7 +653,7 @@ public class Board {
 		long coord2 = 1L<<move.to;
 		
 		if((coord2&kingBB[Math.abs(teamTurn-1)]) != 0) {
-			
+
 			//ParseBoard.displayBitboards(pieceList);
 		}
 
@@ -659,7 +686,7 @@ public class Board {
 			pieceList.get(teamTurn).get(move.pid).movePiece(this, coord1, coord2, true);
 		
 		if(move.type == 3 || move.type == 4) {
-			PawnPromote.promotePawn(teamTurn, coord2, this, 1);
+			PawnPromote.promotePawn(teamTurn, coord2, this, options.getPromote().charAt(options.getPromote().length()-1));
 		}
 		
 		if(move.type == 2)
@@ -714,9 +741,9 @@ public class Board {
 		}
 		else if(move.type == 5) {
 			if(coord1<<2 == coord2)
-				castleableList.get(teamTurn).piece ^= coord2>>1|coord2<<1;
+				pieceList.get(teamTurn).get('r').piece ^= coord2>>>1|coord2<<1;
 			else
-				castleableList.get(teamTurn).piece ^= coord2<<1|coord2>>2;
+				pieceList.get(teamTurn).get('r').piece ^= coord2<<1|coord2>>>2;
 			
 			long redo = coord1|coord2;
 			pieceList.get(teamTurn).get(move.pid).piece ^= redo;

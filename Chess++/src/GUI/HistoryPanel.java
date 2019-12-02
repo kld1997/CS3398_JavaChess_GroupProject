@@ -11,22 +11,32 @@ public class HistoryPanel extends JPanel
 {
     MainBoardPanel mp;
     PieceHistory ph;
+    JScrollPane sp;
     PawnPromotePanel pp;
     JButton rw;
     public HistoryPanel(ChessGui g)
     {
-        setLayout(new GridLayout(3, 1));
+        setLayout(new BorderLayout());
         mp = g.getMainPanel();
         ph = new PieceHistory(g);
+        sp = new JScrollPane(ph);
+        sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        Dimension d = new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.155), 
+        		(int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.75));
+        sp.setPreferredSize(d);
         pp = new PawnPromotePanel();
+        pp.setPreferredSize(new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.155), 
+        		(int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.2)));
         rewindSetup();
-        add(ph);
-        add(rw);
-        add(pp);
+        add(rw, BorderLayout.NORTH);
+        add(sp, BorderLayout.CENTER);
+        add(pp, BorderLayout.SOUTH);
     }
     private void rewindSetup()
     {
         rw = new JButton("Rewind");
+        rw.setPreferredSize(new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.155), 
+        		(int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.05)));
         rw.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {

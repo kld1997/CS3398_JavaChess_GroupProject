@@ -13,7 +13,7 @@ import Visuals.Images;
 public class PawnPromotePanel extends JPanel
 {
     MainBoardPanel mp;
-    int promoButtonClicked = 0;
+    char promoButtonClicked;
     ChessGui thisGui;
     public PawnPromotePanel()
     {
@@ -26,15 +26,14 @@ public class PawnPromotePanel extends JPanel
         	Piece p = board.pieceList.get(team).get(c);
             JButton choiceButton = new JButton();
             choiceButton.setIcon(new ImageIcon(Images.pieces[teamIcon][p.iconNum]));
-            choiceButton.setActionCommand(p.iconNum + "");
+            choiceButton.setActionCommand(p.ID + "");
             choiceButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     mp = (MainBoardPanel)thisGui.getMainPanel();
                     mp.setLocked(false);
                     JButton temp = (JButton) e.getSource();
-                    promoButtonClicked = Integer.parseInt(temp.getActionCommand());
-                    mp.pawnID = promoButtonClicked;
-                    PawnPromote.promotePawn(team, coord, board, mp.pawnID);
+                    promoButtonClicked = temp.getActionCommand().charAt(0);
+                    PawnPromote.promotePawn(team, coord, board, promoButtonClicked);
                     mp.cpuMakeMove(thisGui);
                     temp.getParent().removeAll();
                     repaint();

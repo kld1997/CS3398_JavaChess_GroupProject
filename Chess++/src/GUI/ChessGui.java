@@ -20,9 +20,9 @@ public class ChessGui extends JFrame
     {
     	gameBoard = b;
     	if(b.options.getTimer())
-    		topPanel = new BulletInfoPanel(this, b.options.getTime());
+    		topPanel = new BulletInfoPanel(this, b.options.getTurn(), b.options.getTime());
     	else
-    		topPanel = new InfoPanel(this);
+    		topPanel = new InfoPanel(b.options.getTurn());
         mainPanel = new ChessPanel(this);
         rightPanel = new HistoryPanel(this);
         setJMenuBar(menu);

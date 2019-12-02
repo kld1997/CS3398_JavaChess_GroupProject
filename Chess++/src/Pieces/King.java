@@ -32,13 +32,16 @@ public class King extends Piece
 		
 		slideThreats = board.slideThreatsBB[team];
 		threaten = board.threatenBB[enemyTeam];
-		rooks = board.castleableList.get(team).piece;
+		if(board.pieceList.get(team).containsKey('r'))
+			rooks = board.pieceList.get(team).get('r').piece;
+		else
+			rooks = 0L;
 		
 		if((piece&coord) != 0)
 			moves = pseudoMoves(0L, coord);
 		
 		if((board.kingMoved&piece) != 0 && check == 0) {	//castling
-			rooks &= board.rookMoved&board.castleableList.get(team).piece;
+			rooks &= board.rookMoved;
 			long checkSpaces = 0L;
 			while(rooks != 0) {
 				long rookPos = Long.numberOfTrailingZeros(rooks);
@@ -57,10 +60,15 @@ public class King extends Piece
 			}
 		}
 		
-		moves &= ~slideThreats;
-		
-		if(!threat)
-			moves &= notAlly&~threaten;
+		if(!board.options.getCaptureKing() && !(board.pieceList.get(team).containsKey('P') && board.pieceList.get(team).get('P').piece != 0)) {
+			
+			moves &= ~slideThreats;
+			
+			if(!threat)
+				moves &= notAlly&~threaten;
+		}
+		else if(!threat)
+			moves &= notAlly;
 		
 		return moves;
 	}
@@ -86,7 +94,7 @@ public class King extends Piece
 
 			allMoves = possibleMoves(board, coord, false);
 			captures = allMoves&enemyPieces;
-			castles = allMoves&(coord>>2|coord<<2);
+			castles = allMoves&(coord>>>2|coord<<2);
 			allMoves &= ~(captures|castles);
 			
 			while(allMoves != 0) {

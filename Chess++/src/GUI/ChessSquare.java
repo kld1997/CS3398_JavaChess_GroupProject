@@ -5,9 +5,10 @@ import javax.swing.border.EmptyBorder;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class ChessSquare extends JButton
+public class ChessSquare extends JButton implements MouseListener
 {
     private int x;
     private int y;
@@ -17,6 +18,7 @@ public class ChessSquare extends JButton
     ImageIcon highlightMarker;
     public ChessSquare(int color, int xCoord, int yCoord)
     {
+    	this.setBorder(new EmptyBorder(1, 1, 1, 1));
         ID = 'N';
         team = "None";
         x = xCoord;
@@ -34,8 +36,8 @@ public class ChessSquare extends JButton
     public void Highlight()
     {
         if(this.getIcon() != null && this.getIcon() != highlightMarker) {
-            setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(this.getBackground(), 1),
-                      BorderFactory.createLineBorder(new Color(0xFFFFFFFF - this.getBackground().getRGB()), 4)));
+            setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(this.getBackground(), 4),
+                      BorderFactory.createLineBorder(new Color(0xFFFFFFFF - this.getBackground().getRGB()), 8)));
         }
         else {
             highlightMarker = new ImageIcon(new CustomCircle(new Color((0xFFFFFFFF - this.getBackground().getRGB()) + 0xFF000000)).getCircle());
@@ -68,4 +70,29 @@ public class ChessSquare extends JButton
     {
         return "X: " + x + ", Y: " + y;
     }
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+			
+	}
 }

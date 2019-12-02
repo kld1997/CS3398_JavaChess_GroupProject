@@ -9,14 +9,18 @@ public class BulletInfoPanel extends GenericInfoPanel
     Timer wt, bt;
     JLabel whiteTime, blackTime;
     ChessGui thisGui;
-    public BulletInfoPanel(ChessGui g, int[] st)
+    public BulletInfoPanel(ChessGui g, int turn, int[] st)
     {
         thisGui = g;
+        currTeam = turn;
         setLayout(new GridLayout(1, 3));
         teamText = new JLabel();
         teamText.setFont(new Font("Serif", Font.BOLD, 20));
         teamText.setHorizontalAlignment(JLabel.CENTER);
-        teamText.setText("White Turn");
+        if(turn == 0)
+        	teamText.setText("White Turn");
+        else
+        	teamText.setText("Black Turn");
 
         whiteTime = new JLabel();
         blackTime = new JLabel();
@@ -32,7 +36,6 @@ public class BulletInfoPanel extends GenericInfoPanel
         blackTime.setFont(new Font("Serif", Font.BOLD, 25));
         blackTime.setHorizontalAlignment(JLabel.RIGHT);
         wt = new Timer();
-        wt.scheduleAtFixedRate(new ChessTimer(thisGui, whiteTime, st[0]), 0, 1000);
         bt = new Timer();
         int secs = st[1]%60;
         String ss;
@@ -44,7 +47,14 @@ public class BulletInfoPanel extends GenericInfoPanel
         	ss = "" + secs;
         
         String bst = "" + st[1]/60 + ":" + ss;
-        blackTime.setText(bst);
+        if(currTeam == 0) {
+        	wt.scheduleAtFixedRate(new ChessTimer(thisGui, whiteTime, st[0]), 0, 1000);
+        	blackTime.setText(bst);
+        }
+        else {
+        	bt.scheduleAtFixedRate(new ChessTimer(thisGui, blackTime, st[1]), 0, 1000);
+        	whiteTime.setText(bst);
+        }
     }
     public void pauseAndSwitch()
     {

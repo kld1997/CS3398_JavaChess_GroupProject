@@ -11,6 +11,7 @@ import javax.swing.*;
 
 import Engine.Board;
 import GUI.ChessGui;
+import GUI.SetPiecesFrame;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -201,7 +202,7 @@ public class Menu extends JPanel {
         plusButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	new ChessGui(new Board(new Options("wall")));
+            	new SetPiecesFrame();
             }
         });
         add(plusButton);
