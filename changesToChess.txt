@@ -2,20 +2,25 @@ public class ChessGui {
 
   public ChessGui(Board b)
   {
-	this.addWindowListener(new WindowAdapter() {
+	setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setLocation((int)(screenSize.getWidth()*.15), (int) (screenSize.getHeight()*.15));
+        setLayout(new BorderLayout());
+        addPanels();
+        this.addWindowListener(new WindowAdapter() {
           public void windowClosing(WindowEvent e) {
             int confirmed = JOptionPane.showConfirmDialog(null,
               "Do you want to save the current game?", "Save Game Message Box",
               JOptionPane.YES_NO_OPTION);
-            if (confirmed == JOptionPane.YES_OPTION) {
-              dispose();
+            if(confirmed == JOptionPane.YES_OPTION) {
+              SaveState.createMenu().displaySaveMenu();
             }
-            else {
-              dispose();
-            }
+            SaveState.createMenu().boardState = null;
+            SaveState.createMenu().mainMenu.displayMainMenu();
           }
         });
-  }
+        setVisible(true);
+        toFront();
+    }
 
 
 }
@@ -78,12 +83,39 @@ class InfoPanel {
 }
 
 class MainBoardPanel {
+
+import java.awt.event.MouseListener;
+     
+     MyGlassPane glass;
+     public MainBoardPanel(ChessGui g) {
+
+	ButtonListener.setBoardPanel(this);
+        glass = new MyGlassPane(thisGui.getContentPane(), thisGui.menu);
+        thisGui.setGlassPane(glass);
+        boardSet();
+        updateBoard();
+    }
+
+     public void boardSet() {
+
+	for(int j = 0; j < 8; j ++)
+            {
+                ChessSquare newSquare = new ChessSquare(counter, i, j);
+                squares[i][j] = newSquare;					
+		newSquare.setFocusable(false);                
+		newSquare.removeMouseListener(temp[0]);
+		MouseListener[] temp = newSquare.getMouseListeners();		//this part
+                newSquare.addMouseListener(new ButtonListener());
+                add(squares[i][j]);
+                counter = Math.abs(counter-1);
+            }
+     }
 									//pawnID ??
      public ArrayList<ChessSquare> displayPossibleMoves(long board){
               
 		if(((board>>(x*8)+y)&1) == 1)
                 {
-                    squares[x][y].Highlight();		//This part?
+                    squares[x][y].Highlight();	
                     retList.add(squares[x][y]);
                 }
 	}
