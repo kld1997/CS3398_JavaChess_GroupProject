@@ -50,8 +50,9 @@ class MyGlassPane extends JComponent implements MenuListener, WindowFocusListene
     protected Rectangle getImageBounds() {
         Rectangle bounds = new Rectangle(0, 0, 0, 0);
         if (listener.temp != null) {
-            bounds.setLocation(imgPoint);
-            bounds.setSize(listener.temp.getWidth(), listener.temp.getHeight());
+            Point rectPoint = SwingUtilities.convertPoint(listener.component.getParent(), listener.component.getLocation(), this);
+            bounds.setLocation(rectPoint);
+            bounds.setSize(listener.component.getWidth(), listener.component.getHeight());
         }
         return bounds;
     }
@@ -102,7 +103,6 @@ class CBListener extends MouseInputAdapter {
 
     public void mouseDragged(MouseEvent e) {
       if(!menuBar.p.locked) {
-        System.out.println(menuBar.p.highlightedSquares.isEmpty());
         if(!menuBar.p.highlightedSquares.isEmpty()){
           if (glassPane.offset != null) {
               ((ChessSquare)component).setIcon(null);
@@ -130,14 +130,17 @@ class CBListener extends MouseInputAdapter {
         Point mp = e.getPoint();
         if (bounds.contains(mp)) {
             glassPane.offset = new Point();
-            glassPane.offset.x = mp.x - bounds.x;
-            glassPane.offset.y = mp.y - bounds.y;
+            glassPane.offset.x = (temp.getWidth()/2);
+            glassPane.offset.y = (temp.getHeight()/2);
         }
       }
     }
 
     public void mouseReleased(MouseEvent e) {
       if(!menuBar.p.locked) {
+        glassPane.setDragIcon(null);
+        glassPane.repaint();
+        menuBar.p.updateBoard();
         redispatchMouseEvent(e);
         glassPane.offset = null;
 
@@ -146,7 +149,6 @@ class CBListener extends MouseInputAdapter {
         } else {
           temp = null;
         }
-        glassPane.setDragIcon(null);
      }
    }
 
