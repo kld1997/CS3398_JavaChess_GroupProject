@@ -299,6 +299,10 @@ public class Board {
 			}
 		}
 		
+		if(kingBB[teamTurn] == 0) {
+			teamWon = Math.abs(teamTurn-1);
+		}
+		
 		notTeamBB[0] = ~(teamBB[0]);
 		notTeamBB[1] = ~(teamBB[1]);
 		

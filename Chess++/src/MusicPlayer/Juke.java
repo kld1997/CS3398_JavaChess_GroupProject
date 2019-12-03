@@ -19,7 +19,6 @@ import java.util.Vector;
 import java.net.URL;
 
 
-
 public class Juke extends JPanel implements Runnable, LineListener, MetaEventListener, ControlContext {
 
     final int bufSize = 16384;

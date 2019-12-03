@@ -5,12 +5,13 @@ import Menu.*;
 import Visuals.*;
 
 public class Main extends JFrame {
-    public Main() {
+    public Main(String[] arg) {
         setTitle("Chess++");
 
         setSize(720, 640);
         setResizable(false);
-        Menu menu = new Menu();
+        String[] path = arg;
+        Menu menu = new Menu(path);
         add(menu);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -21,7 +22,8 @@ public class Main extends JFrame {
 
     public static void main(String[] args) {
     	Images.setUpImages();
+    	String[] path = args;
     	Images.readMenuIcons();
-        new Main();
+        new Main(path);
     }
 }

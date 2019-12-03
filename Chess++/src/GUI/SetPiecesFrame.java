@@ -40,16 +40,18 @@ public class SetPiecesFrame extends JFrame {
             	customBoard.setCPUTeam(Math.abs(spb.teamSet-1));
             	customBoard.setStartTurn(spb.teamTurn);
             	customBoard.setPromote(sps.promote);
-            	Board testBoard = new Board(customBoard);
-            	int otherTeam = Math.abs(testBoard.teamTurn-1);
-            	for(Move move : testBoard.teamMoveList) {
-            		if((1L<<move.to) == testBoard.pieceList.get(otherTeam).get('K').piece && !testBoard.pieceList.get(otherTeam).containsKey('P')) {
-            			testBoard = null;
-            			JOptionPane.showMessageDialog(null, "A king is capturable!", "Error", JOptionPane.INFORMATION_MESSAGE);
-            			return;
-            		}
+            	if(!customBoard.getCaptureKing()) {
+	            	Board testBoard = new Board(customBoard);
+	            	int otherTeam = Math.abs(testBoard.teamTurn-1);
+	            	for(Move move : testBoard.teamMoveList) {
+	            		if((1L<<move.to) == testBoard.pieceList.get(otherTeam).get('K').piece && !testBoard.pieceList.get(otherTeam).containsKey('P')) {
+	            			testBoard = null;
+	            			JOptionPane.showMessageDialog(null, "A king is capturable!", "Error", JOptionPane.INFORMATION_MESSAGE);
+	            			return;
+	            		}
+	            	}
+	            	testBoard = null;
             	}
-            	testBoard = null;
                 new ChessGui(new Board(customBoard));
                 setVisible(false);
                 dispose();

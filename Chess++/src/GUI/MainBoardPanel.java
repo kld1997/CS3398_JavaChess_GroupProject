@@ -124,7 +124,7 @@ public class MainBoardPanel extends JPanel
                                 lastClicked[1] = 0;
                                 highlightedSquares.clear();
                             }
-                            else
+                            else if(gameBoard.options.getHighlight())
                             {
                                 String teamString = "";
                                 if (gameBoard.teamTurn == 0) {

@@ -146,6 +146,8 @@ public class CustomMenu extends JPanel {
 				
 				customOptions.setHighlight(highlight.isSelected());
 				
+				customOptions.setCaptureKing(capture.isSelected());
+				
 				customOptions.setTimer(timeToggle.isSelected());
 				
 				if(timeToggle.isSelected()) {
@@ -303,6 +305,7 @@ public class CustomMenu extends JPanel {
 		jpan.add(jlabel);
 		
 		highlight = new JCheckBox();
+		highlight.setSelected(true);
 		
 		jpan.add(highlight);
         
