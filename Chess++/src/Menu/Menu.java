@@ -12,14 +12,11 @@ import javax.swing.*;
 import Engine.Board;
 import GUI.ChessGui;
 import GUI.SetPiecesFrame;
-
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.AudioInputStream;
 import Main.Main;
 import Online.ChessClient;
 import Online.ChessServer;
 import Options.Options;
+//import MusicPlayer.*;
 
 public class Menu extends JPanel {
 
@@ -36,14 +33,14 @@ public class Menu extends JPanel {
 
         add(jlabel);
 
-        add(Box.createVerticalStrut(35));
+        add(Box.createVerticalStrut(10));
 
         Button playbutton = new Button("Play");
         playbutton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
         playbutton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                selectNumPlayers();
+                newOrLoadGame();
             }
         });
 
@@ -64,16 +61,19 @@ public class Menu extends JPanel {
 
         add(Box.createVerticalStrut(10));
 
-        Button settingsButton = new Button("Settings");
-        settingsButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
-        settingsButton.addActionListener(new AbstractAction() {
+        Button musicButton = new Button("Music Player");
+        musicButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        musicButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new SettingsMain();
-                settingsButton.click = false;
+                //start();
+                //String media = "./audio";
+                //Juke juke = new Juke("/.audio");
+            	new SetPiecesFrame();
             }
         });
-        add(settingsButton);
+
+        add(musicButton);
 
         add(Box.createVerticalStrut(10));
 
@@ -85,17 +85,65 @@ public class Menu extends JPanel {
                 System.exit(0);
             }
         });
-        add(exitButton);
 
-        /***
-         try {
-         We can put background music later here.
-         }
-         ***/
+        add(exitButton);
     }
 
     public void start() {
         started = true;
+    }
+
+    void newOrLoadGame() {
+        removeAll();
+        updateUI();
+
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        JLabel jlabel = new JLabel("New or Load Game");
+        jlabel.setFont(new Font("Algerian", Font.BOLD, 30));
+        jlabel.setForeground(Color.BLUE);
+        jlabel.setVerticalAlignment(jlabel.TOP);
+        jlabel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+
+        add(Box.createVerticalStrut(50));
+
+        Button newButton = new Button("New Game");
+        newButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        newButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectNumPlayers();
+            }
+        });
+        add(newButton);
+
+        add(Box.createVerticalStrut(10));
+
+        Button loadButton = new Button("Load Game");
+        loadButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        loadButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // load game implementation;
+                start();
+            }
+        });
+        add(loadButton);
+
+        add(Box.createVerticalStrut(10));
+
+        Button backButton = new Button("Back");
+        backButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        backButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JComponent comp = (JComponent) e.getSource();
+                Window win = SwingUtilities.getWindowAncestor(comp);
+                win.dispose();
+                new Main();
+            }
+        });
+        add(backButton);
     }
 
     public void selectNumPlayers() {
@@ -114,24 +162,26 @@ public class Menu extends JPanel {
 
         add(Box.createVerticalStrut(100));
 
-        Button onePlayerButton = new Button("Single Player");
+        Button onePlayerButton = new Button("One Player");
         onePlayerButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
         onePlayerButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                selectGameMode();
+            	Options options = new Options();
+            	options.setCPU(3);
+                selectGameMode(options);
             }
         });
         add(onePlayerButton);
 
         add(Box.createVerticalStrut(10));
 
-        Button twoPlayerButton = new Button("Two Player (Online)");
+        Button twoPlayerButton = new Button("Two Player");
         twoPlayerButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
         twoPlayerButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                selectOnlineMode();
+                selectTwoPlayerMode();
             }
         });
         add(twoPlayerButton);
@@ -143,16 +193,66 @@ public class Menu extends JPanel {
         backButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JComponent comp = (JComponent) e.getSource();
-                Window win = SwingUtilities.getWindowAncestor(comp);
-                win.dispose();
-                new Main();
+                newOrLoadGame();
             }
         });
         add(backButton);
     }
 
-    public void selectGameMode() {
+    public void selectTwoPlayerMode() {
+        removeAll();
+        updateUI();
+
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        JLabel jlabel = new JLabel("Two Player");
+        jlabel.setFont(new Font("Algerian", Font.BOLD, 30));
+        jlabel.setForeground(Color.BLUE);
+        jlabel.setVerticalAlignment(jlabel.TOP);
+        jlabel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+
+        add(jlabel);
+
+        add(Box.createVerticalStrut(50));
+        
+        Button localButton = new Button("Local");
+        localButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        localButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	Options options = new Options();
+            	options.setCPU(0);
+                selectGameMode(options);
+            }
+        });
+        add(localButton);
+
+        add(Box.createVerticalStrut(10));
+
+        Button onlineButton = new Button("Online");
+        onlineButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        onlineButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectOnlineMode();
+            }
+        });
+        add(onlineButton);
+
+        add(Box.createVerticalStrut(10));
+
+        Button backButton = new Button("Back");
+        backButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        backButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectNumPlayers();
+            }
+        });
+        add(backButton);
+    }
+
+    public void selectGameMode(Options op) {
         removeAll();
         updateUI();
 
@@ -173,7 +273,8 @@ public class Menu extends JPanel {
         regularButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	new ChessGui(new Board(new Options()));
+            	Options options = op;
+                new ChessGui(new Board(options));
             }
         });
 
@@ -186,7 +287,8 @@ public class Menu extends JPanel {
         bulletButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	Options options = new Options("bullet");
+            	Options options = op;
+            	options = new Options("bullet");
             	int[] timey = {120, 60};
             	options.setTime(timey);
             	new ChessGui(new Board(options));
@@ -197,12 +299,13 @@ public class Menu extends JPanel {
 
         add(Box.createVerticalStrut(10));
 
-        Button plusButton = new Button("Chess Plus Plus");
+        Button plusButton = new Button("Custom");
         plusButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
         plusButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	new SetPiecesFrame();
+            	Options options = op;
+                new CustomMain(options);
             }
         });
         add(plusButton);
@@ -254,6 +357,7 @@ public class Menu extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectHostMode();
+                //// got to Custom Games Settings as well
             }
         });
         add(hostButton);
@@ -298,7 +402,6 @@ public class Menu extends JPanel {
         add(Box.createVerticalStrut(10));
 
         JTextField ipField = new JTextField(10);
-        //ipField.setColumns(10);
         ipField.setMaximumSize(new Dimension(300, 25));
         add(ipField);
 
@@ -346,7 +449,6 @@ public class Menu extends JPanel {
                 if(client.connection.isConnected()) {
                 	Options options = new Options();
                 	options.setOnline(true);
-                	options.setCPU(0);
                 	options.setOutput(client.output);
                 	options.setInput(client.input);
                 	options.setTurn(client.turn);
@@ -416,7 +518,6 @@ public class Menu extends JPanel {
                 if(server.connection.isConnected()) {
                 	Options options = new Options();
                 	options.setOnline(true);
-                	options.setCPU(0);
                 	options.setOutput(server.output);
                 	options.setInput(server.input);
                 	options.setTurn(server.turn);
@@ -439,7 +540,6 @@ public class Menu extends JPanel {
         });
         add(backButton);
     }
-
 
     @Override
     public void paintComponent (Graphics g) {

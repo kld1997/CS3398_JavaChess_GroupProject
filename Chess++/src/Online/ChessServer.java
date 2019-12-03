@@ -54,7 +54,7 @@ public class ChessServer {
  							// TODO Auto-generated catch block
  							e.printStackTrace();
  						}
- 			            	readin();
+ 			            readin();
  				}
  				finally {
  					System.out.println(connection.getInputStream());

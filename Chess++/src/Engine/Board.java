@@ -206,10 +206,8 @@ public class Board {
 		
 		kingMoved = 0x1000000000000010L;
 		rookMoved = 0x8100000000000081L;
-		System.out.println("0: " + teamTurn);
 		teamWon = 2;
 		teamTurn = options.getStartTurn();
-		System.out.println("1: " + teamTurn);
 		if(options.getOnline())
 			output = options.getOutput();
 		
@@ -318,7 +316,6 @@ public class Board {
 		}
 
 		checkmate();
-		System.out.println("2: " + teamTurn);
 		
 		if((pieceList.get(0).containsKey('p') && ((pieceList.get(0).get('p').piece&row8) != 0))
 				|| (pieceList.get(1).containsKey('p') && (pieceList.get(1).get('p').piece&row1) != 0) && !cpuTurn) {

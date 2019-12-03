@@ -13,7 +13,7 @@ public class Jester extends Piece
 		value = 7;
 		name = "Jester";
 		ID = 'j';
-		iconNum = 0;
+		iconNum = 7;
 		image = Images.pieces[Math.abs(team-1)][iconNum];
 		hv = true;
 	}

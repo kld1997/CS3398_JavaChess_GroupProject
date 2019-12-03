@@ -13,7 +13,7 @@ public class Archer extends Piece
 		value = 4;
 		name = "Archer";
 		ID = 'a';
-		iconNum = 1;
+		iconNum = 8;
 		image = Images.pieces[Math.abs(team-1)][iconNum];
 	}
 	

@@ -13,7 +13,7 @@ public class Prince extends Piece
 		value = 5;
 		name = "Prince";
 		ID = 'P';
-		iconNum = 3;
+		iconNum = 9;
 		image = Images.pieces[Math.abs(team-1)][iconNum];
 	}
 	

@@ -22,12 +22,12 @@ public class Images {
         try
         {
             BufferedImage biPieces = ImageIO.read(pathArray[m]);
-						BufferedImage pieceSet[][] = new BufferedImage[2][6];
+						BufferedImage pieceSet[][] = new BufferedImage[2][11];
             for(int i = 0; i < 2; i++)
             {
-                for(int j = 0; j < 6; j++)
+                for(int j = 0; j < 11; j++)
                 {
-                    pieceSet[i][j] = biPieces.getSubimage(j*(biPieces.getWidth()/6), i*(biPieces.getWidth()/6), (biPieces.getWidth()/6), (biPieces.getWidth()/6));
+                    pieceSet[i][j] = biPieces.getSubimage(j*(biPieces.getWidth()/11), i*(biPieces.getWidth()/11), (biPieces.getWidth()/11), (biPieces.getWidth()/11));
                 }
             }
 						pieceModels.add(pieceSet);
@@ -56,9 +56,9 @@ public class Images {
     }
 
 		public static void newImages(int tm, int mdl) {
-			BufferedImage[][] temp = new BufferedImage[2][6];
+			BufferedImage[][] temp = new BufferedImage[2][11];
 			temp = pieceModels.get(mdl/2);
-			BufferedImage[] im = new BufferedImage[6];
+			BufferedImage[] im = new BufferedImage[11];
 			im = temp[mdl%2];
 			pieces[tm] = im;
 		}

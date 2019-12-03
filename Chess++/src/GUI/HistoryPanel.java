@@ -30,8 +30,10 @@ public class HistoryPanel extends JPanel
         pp = new PawnPromotePanel();
         pp.setPreferredSize(new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.155), 
         		(int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.2)));
-        rewindSetup();
-        add(rw, BorderLayout.NORTH);
+        if(!g.gameBoard.options.getOnline()) {
+        	rewindSetup();
+        	add(rw, BorderLayout.NORTH);
+        }
         add(sp, BorderLayout.CENTER);
         add(pp, BorderLayout.SOUTH);
     }

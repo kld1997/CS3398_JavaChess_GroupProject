@@ -43,7 +43,7 @@ public class MainBoardPanel extends JPanel
         setLayout(new GridLayout(8,8));
         boardSet(g);
         updateBoard();
-        if(gameBoard.options.getCPU() > 0 && gameBoard.options.getTurn() == gameBoard.options.getCPUTeam())
+        if(gameBoard.options.getCPU() > 0 && gameBoard.options.getStartTurn() == gameBoard.options.getCPUTeam())
         	SwingUtilities.invokeLater(new Runnable() {
         	    public void run() {
         	    	cpuMakeMove(g);
@@ -89,7 +89,7 @@ public class MainBoardPanel extends JPanel
                             }
                             if (moveMade)
                             {
-                            	if(gameBoard.options.getOnline())
+                            	if(gameBoard.options.getOnline()) {
 									try {
 										gameBoard.output.writeObject(moveString);
 										gameBoard.output.flush();
@@ -97,7 +97,7 @@ public class MainBoardPanel extends JPanel
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
-                            	
+                            	}
                                 moveMade(g);
                                 ChessSquare movedPiece = squares[pieceMovedPos[0]][pieceMovedPos[1]];
                                 String tempString = "";

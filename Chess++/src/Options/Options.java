@@ -89,7 +89,7 @@ public class Options {
 		online = false;
 		startTurn = 0;
 		turn = 0;
-		cpu = 5;
+		cpu = 2;
 		cpuTeam = 1;
 		captureKing = false;
 		mode = "STANDARD";
