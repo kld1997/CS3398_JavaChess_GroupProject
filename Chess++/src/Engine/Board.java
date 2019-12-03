@@ -208,7 +208,7 @@ public class Board {
 		rookMoved = 0x8100000000000081L;
 		
 		teamWon = 2;
-		teamTurn = options.getTurn();
+		teamTurn = options.getStartTurn();
 		
 		if(options.getOnline())
 			output = options.getOutput();

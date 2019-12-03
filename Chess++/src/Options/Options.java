@@ -18,6 +18,7 @@ public class Options {
 	ObjectOutputStream output;
 	ObjectInputStream input;
 	int turn;
+	int startTurn;
 	String mode;
 	String[][] board = new String[8][8];
 	String[] promote = new String[2];
@@ -69,6 +70,9 @@ public class Options {
 	public int getTurn() { return turn; }
 	public void setTurn(int t) { turn = t; }
 	
+	public int getStartTurn() { return startTurn; }
+	public void setStartTurn(int t) { startTurn = t; }
+	
 	public int getCPU() { return cpu; }
 	public void setCPU(int c) { cpu = c; }
 	
@@ -83,6 +87,7 @@ public class Options {
 		timer = false;
 		highlight = true;
 		online = false;
+		startTurn = 0;
 		turn = 0;
 		cpu = 5;
 		cpuTeam = 1;

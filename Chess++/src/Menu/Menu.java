@@ -346,6 +346,7 @@ public class Menu extends JPanel {
                 if(client.connection.isConnected()) {
                 	Options options = new Options();
                 	options.setOnline(true);
+                	options.setCPU(0);
                 	options.setOutput(client.output);
                 	options.setInput(client.input);
                 	options.setTurn(client.turn);
@@ -415,6 +416,7 @@ public class Menu extends JPanel {
                 if(server.connection.isConnected()) {
                 	Options options = new Options();
                 	options.setOnline(true);
+                	options.setCPU(0);
                 	options.setOutput(server.output);
                 	options.setInput(server.input);
                 	options.setTurn(server.turn);
