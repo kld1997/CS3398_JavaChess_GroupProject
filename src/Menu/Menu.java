@@ -4,25 +4,30 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowAdapter;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferStrategy;
 import java.nio.Buffer;
 import javax.swing.*;
+import java.io.File;
 
 import Engine.Board;
 import GUI.ChessGui;
-
 import Main.Main;
 import Online.ChessClient;
 import Online.ChessServer;
 import Options.Options;
-//import MusicPlayer.*;
+import MusicPlayer.*;
 
 public class Menu extends JPanel {
 
     public boolean started = false;
+    public String[] args;
 
-    public Menu() {
+
+    public Menu(String[] arg) {
+        args = arg;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         JLabel jlabel = new JLabel("Chess++");
@@ -66,9 +71,31 @@ public class Menu extends JPanel {
         musicButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                start();
-                //String media = "./audio";
-                //Juke juke = new Juke("/.audio");
+                String media = "./audio";
+
+                final Juke juke = new Juke(arg.length == 0 ? media : arg[0]);
+                juke.open();
+                JFrame f = new JFrame("Music Box");
+                f.addWindowListener(new WindowAdapter() {
+                    public void windowClosing(WindowEvent e) {System.exit(0);}
+                    public void windowIconified(WindowEvent e) {
+                        //juke.credits.interrupt();
+                    }
+                });
+                f.getContentPane().add("Center", juke);
+                f.pack();
+                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                int w = 750;
+                int h = 340;
+                f.setLocation(screenSize.width/2 - w/2, screenSize.height/2 - h/2);
+                f.setSize(w, h);
+                f.setVisible(true);
+                if (arg.length > 0) {
+                    File file = new File(arg[0]);
+                    if (file == null && !file.isDirectory()) {
+                        System.out.println("usage: java Juke audioDirectory");
+                    }
+                }
             }
         });
 
@@ -139,7 +166,8 @@ public class Menu extends JPanel {
                 JComponent comp = (JComponent) e.getSource();
                 Window win = SwingUtilities.getWindowAncestor(comp);
                 win.dispose();
-                new Main();
+                String[] path = args;
+                new Main(path);
             }
         });
         add(backButton);

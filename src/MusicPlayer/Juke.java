@@ -1,4 +1,4 @@
-package Play;
+package MusicPlayer;
 import java.awt.*;
 import java.awt.font.*;
 import java.awt.geom.*;
@@ -17,7 +17,6 @@ import java.io.FileInputStream;
 import java.io.BufferedInputStream;
 import java.util.Vector;
 import java.net.URL;
-
 
 
 public class Juke extends JPanel implements Runnable, LineListener, MetaEventListener, ControlContext {

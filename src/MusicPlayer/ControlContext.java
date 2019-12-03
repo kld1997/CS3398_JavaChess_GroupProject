@@ -1,4 +1,4 @@
-package Play;
+package MusicPlayer;
 
 public interface ControlContext {
 

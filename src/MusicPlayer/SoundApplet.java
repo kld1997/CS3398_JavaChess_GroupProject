@@ -1,4 +1,4 @@
-package Play;
+package MusicPlayer;
 import javax.swing.JApplet;
 
 

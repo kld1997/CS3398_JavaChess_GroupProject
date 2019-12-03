@@ -1,4 +1,4 @@
-package Play;
+package MusicPlayer;
 
 import java.awt.*;
 import java.awt.event.*;

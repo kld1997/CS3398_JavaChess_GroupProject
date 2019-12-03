@@ -21,7 +21,7 @@ public class ProfileMenu extends JPanel {
     public boolean started = false;
     public Profile currentProfile = new Profile("Username");
     ArrayList<Profile> profiles = new ArrayList<Profile>();
-    public String fileName = "ProfileData.txt";
+    public String fileName = "imgMenu/ProfileData.txt";
     File dataFile = new File(fileName);
 
     public ProfileMenu() {
