@@ -69,7 +69,7 @@ public class Menu extends JPanel {
                 //start();
                 //String media = "./audio";
                 //Juke juke = new Juke("/.audio");
-            	new SetPiecesFrame();
+            	
             }
         });
 
@@ -545,7 +545,7 @@ public class Menu extends JPanel {
     public void paintComponent (Graphics g) {
         super.paintComponent(g);
         if (!started) {
-        	g.drawImage(new ImageIcon("imgMenu/Chess.jpg").getImage(), 0, 0, 640, 480, this);
+        	g.drawImage(new ImageIcon("imgMenu/Chess.jpg").getImage(), 0, 0, 720, 640, this);
         } else {
             setBackground(Color.RED);
         }

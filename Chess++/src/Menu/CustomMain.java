@@ -8,7 +8,7 @@ public class CustomMain extends JFrame {
     public CustomMain(Options customOptions) {
         setTitle("Custom Game");
 
-        setSize(640, 480);
+        setSize(720, 640);
         setResizable(false);
         CustomMenu custom = new CustomMenu(customOptions);
         add(custom);

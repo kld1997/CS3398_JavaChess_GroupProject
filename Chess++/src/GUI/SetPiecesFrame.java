@@ -25,7 +25,7 @@ public class SetPiecesFrame extends JFrame {
 	JPanel center;
 	JButton submit;
 	
-	public SetPiecesFrame() {
+	public SetPiecesFrame(Options co) {
 
         spb = new SetPiecesBoard();
         sps = new SetPiecesSelect(spb);
@@ -34,7 +34,7 @@ public class SetPiecesFrame extends JFrame {
         submit = new JButton("Submit");
 		submit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	Options customBoard = new Options();
+            	Options customBoard = co;
             	customBoard.setBoard(spb.startBoard);
             	customBoard.setTurn(spb.teamSet);
             	customBoard.setCPUTeam(Math.abs(spb.teamSet-1));

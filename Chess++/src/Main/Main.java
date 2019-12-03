@@ -8,7 +8,7 @@ public class Main extends JFrame {
     public Main() {
         setTitle("Chess++");
 
-        setSize(640, 480);
+        setSize(720, 640);
         setResizable(false);
         Menu menu = new Menu();
         add(menu);
