@@ -38,7 +38,7 @@ public class Menu extends JPanel {
 
         add(jlabel);
 
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(70));
 
         Button playbutton = new Button("Play");
         playbutton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
@@ -50,19 +50,6 @@ public class Menu extends JPanel {
         });
 
         add(playbutton);
-
-        add(Box.createVerticalStrut(10));
-
-        Button profilebutton = new Button("Profile");
-        profilebutton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
-        profilebutton.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new ProfileMain();
-            }
-        });
-
-        add(profilebutton);
 
         add(Box.createVerticalStrut(10));
 
@@ -566,7 +553,7 @@ public class Menu extends JPanel {
     public void paintComponent (Graphics g) {
         super.paintComponent(g);
         if (!started) {
-        	g.drawImage(new ImageIcon("imgMenu/Chess.jpg").getImage(), 0, 0, 640, 480, this);
+        	g.drawImage(new ImageIcon("imgMenu/Chess.jpg").getImage(), 0, 0, 720, 640, this);
         } else {
             setBackground(Color.RED);
         }

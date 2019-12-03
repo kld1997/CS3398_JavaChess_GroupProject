@@ -21,7 +21,7 @@ public class ProfileMenu extends JPanel {
     public boolean started = false;
     public Profile currentProfile = new Profile("Username");
     ArrayList<Profile> profiles = new ArrayList<Profile>();
-    public String fileName = "imgMenu/ProfileData.txt";
+    public String fileName = "Profiles/ProfileData.txt";
     File dataFile = new File(fileName);
 
     public ProfileMenu() {
@@ -194,6 +194,9 @@ public class ProfileMenu extends JPanel {
         submitButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                removeAll();
+                updateUI();
+
                 String username;
                 username = enterField.getText();
                 Profile profileToFind  = new Profile(username);
@@ -250,6 +253,9 @@ public class ProfileMenu extends JPanel {
         createButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                removeAll();
+                updateUI();
+
                 String username;
                 username = createField.getText();
                 Profile newProfile = new Profile(username);
@@ -358,6 +364,9 @@ public class ProfileMenu extends JPanel {
 
             profiles = (ArrayList<Profile>) is.readObject();
             System.out.println("Read Successful\n");
+            for (Profile profile : profiles) {
+                System.out.println(profile + "\n");
+            }
         } catch (FileNotFoundException e) {
             System.out.println("File not found!\n");
             e.printStackTrace();
