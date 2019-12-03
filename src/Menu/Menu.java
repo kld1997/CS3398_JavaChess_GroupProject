@@ -12,9 +12,6 @@ import javax.swing.*;
 import Engine.Board;
 import GUI.ChessGui;
 
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.AudioInputStream;
 import Main.Main;
 import Online.ChessClient;
 import Online.ChessServer;
@@ -69,21 +66,13 @@ public class Menu extends JPanel {
         musicButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                start();
                 //String media = "./audio";
                 //Juke juke = new Juke("/.audio");
             }
         });
 
-        Button settingsButton = new Button("Settings");
-        settingsButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
-        settingsButton.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new SettingsMain();
-                settingsButton.click = false;
-            }
-        });
-        add(settingsButton);
+        add(musicButton);
 
         add(Box.createVerticalStrut(10));
 
@@ -95,6 +84,7 @@ public class Menu extends JPanel {
                 System.exit(0);
             }
         });
+
         add(exitButton);
     }
 
@@ -240,7 +230,6 @@ public class Menu extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectGameMode();
-                start();
             }
         });
         add(localButton);
@@ -406,7 +395,6 @@ public class Menu extends JPanel {
         add(Box.createVerticalStrut(10));
 
         JTextField ipField = new JTextField(10);
-        //ipField.setColumns(10);
         ipField.setMaximumSize(new Dimension(300, 25));
         add(ipField);
 

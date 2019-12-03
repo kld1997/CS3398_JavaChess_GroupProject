@@ -5,13 +5,12 @@ import Options.Options;
 import javax.swing.*;
 
 public class CustomMain extends JFrame {
-    //Options customOptions = new Options();
-    public CustomMain(Options o) {
+    public CustomMain(Options customOptions) {
         setTitle("Custom Game");
 
         setSize(640, 480);
         setResizable(false);
-        CustomMenu custom = new CustomMenu(o);
+        CustomMenu custom = new CustomMenu(customOptions);
         add(custom);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
