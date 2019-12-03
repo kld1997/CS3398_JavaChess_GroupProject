@@ -82,7 +82,6 @@ public class ChessServer {
     			if(gui.gameBoard.makeMove(message)) {
     				//System.out.println(message);
     				gui.getMainPanel().moveMade(gui);
-    				System.out.println("???");
     				gui.getMainPanel().updateBoard();
     			}
     		}
