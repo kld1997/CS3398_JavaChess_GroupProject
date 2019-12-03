@@ -15,6 +15,7 @@
 * [Contact](#contact)
 * [Sprint 1 Review](#Sprint-1-Review)
 * [Sprint 2 Review](#Sprint-2-Review)
+* [Sprint 3 Review](#Sprint-3-Review)
 
 ## General info
 
@@ -29,7 +30,7 @@
 * Tech 3 - version 3.0
 
 ## Setup
-Describe how to install / setup your local environement / add link to demo version.
+Describe how to install / setup your local environment / add link to demo version.
 
 ## Code Examples
 Show examples of usage:
@@ -68,6 +69,7 @@ To-do list:
 ## Status
 Project is: in progress. Sprint 1 is complete. See each member's status below in Sprint 1 Review.
                          Sprint 2 is complete. See each member's status below in Sprint 2 Review.
+                         Sprint 3 is complete. See each member's status below in Sprint 3 Review.
 
 ## Inspiration
 Add here credits. Project inspired by..., based on...
@@ -179,3 +181,26 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
         
 * Felipe Rodriguez
   -      I will be working on the music portion of the code as well as intergrate new elo scores for players to have different scoring systems based on the game mode they want to play 
+  
+## Sprint 3 Review
+
+* Roy Grady
+
+  -      (Roy's Review)
+
+* Kieran Hsieh
+
+  -      	(Kierig cup's Review).
+  
+* Guillermo Gomez
+
+  -      Completed the Menu GUI entirely as a fullt functional menu. The musicplayer was also added to the menu so we now have a 
+         music player in the background while you play. This implementations are in Menu.java, CustomMain.java, CustomMenu,java, and 
+         MusicPlayer.java
+  -      My next step will be to fully complete Profile creation. bugs are still present in the the Profile but will be fixed for the            next release. 
+
+* Kody Davis
+  -     (Kody-kin's Review)
+        
+* Felipe Rodriguez
+  -      (NANI!?)
