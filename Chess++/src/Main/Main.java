@@ -10,7 +10,7 @@ public class Main extends JFrame {
 
         setSize(640, 480);
         setResizable(false);
-        Menu menu = new Menu();
+        Menu menu = new Menu(this);
         add(menu);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

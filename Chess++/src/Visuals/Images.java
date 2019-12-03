@@ -62,4 +62,42 @@ public class Images {
 			im = temp[mdl%2];
 			pieces[tm] = im;
 		}
+
+		public static BufferedImage getBufferedImage(String tm, String pce) {
+				Integer index1, index2;
+				if(tm.equals("White"))
+					index1 = 1;
+				else
+					index1 = 0;
+
+				switch(pce){
+					case "Pawn":
+							index2 = 5;
+							break;
+					case "Bishop":
+							index2 = 4;
+							break;
+					case "Knight":
+							index2 = 3;
+							break;
+					case "Wall":
+					case "Rook":
+							index2 = 2;
+							break;
+					case "Archer":
+					case "Queen":
+							index2 = 1;
+							break;
+					case "King":
+							index2 = 0;
+							break;
+					default:
+							index2 = null;
+							break;
+				}
+				if(index2 == null)
+					return null;
+				else
+					return pieces[index1][index2];
+		}
 }

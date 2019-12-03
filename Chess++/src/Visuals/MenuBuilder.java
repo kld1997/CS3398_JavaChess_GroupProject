@@ -17,14 +17,20 @@ public class MenuBuilder extends JMenuBar implements ItemListener
   JMenu playerTwoIcons = new JMenu("Icon Set");
   ButtonGroup groupOne = new ButtonGroup();
   ButtonGroup groupTwo = new ButtonGroup();
-  int currentTeam = 0;
-  MainBoardPanel p;
+  int currentTeam;
+  public MainBoardPanel p;
+  public ColorMenu cMenu;
+  public SaveButton saveB;
+  public JMenu menu;
 
   public MenuBuilder(MainBoardPanel panel)
   {
     p = panel;
+    currentTeam = p.gameBoard.teamTurn;
     playerTwoIcons.setVisible(false);
-    JMenu menu = new JMenu("Options");
+    teamChange();
+    teamChange();
+    menu = new JMenu("Options");
     JMenu iconSet = new JMenu();
     add(menu);
 
@@ -66,7 +72,11 @@ public class MenuBuilder extends JMenuBar implements ItemListener
 
     menu.add(playerOneIcons);
     menu.add(playerTwoIcons);
-    menu.add(new ColorMenu("Choose Board Color", p.getSquares()));
+    cMenu = new ColorMenu("Choose Board Color", p.getSquares());
+    saveB = new SaveButton("Save Game", p.gameBoard);
+    menu.add(cMenu);
+    if(!p.gameBoard.options.getOnline() && !p.gameBoard.options.getMode().equals("BULLET"))
+      menu.add(saveB);
     setListener();
   }
 
@@ -274,5 +284,12 @@ public class MenuBuilder extends JMenuBar implements ItemListener
       AbstractButton compare = buttons.nextElement();
       compare.addItemListener(this);
     }
+  }
+
+  public String getTeam() {
+    if(currentTeam == 1)
+      return "White";
+    else
+      return "Black";
   }
 }

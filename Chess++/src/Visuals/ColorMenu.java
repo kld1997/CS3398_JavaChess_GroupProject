@@ -11,15 +11,15 @@ import GUI.*;
 
 public class ColorMenu extends JMenuItem
 {
-      static JFrame frame;
+      public static JFrame frame;
       static public ChessSquare[][] boardTiles = new ChessSquare[8][8];
       static private JButton[][] previewArray = new JButton[8][8];
       static private Color buttonColorOne;
       static private Color buttonColorTwo;
       static public Color boardColorOne = Color.WHITE;
       static public Color boardColorTwo = Color.BLACK;
-      static JColorChooser firstColor = new JColorChooser(boardColorOne);
-      static JColorChooser secondColor = new JColorChooser(boardColorTwo);
+      public JColorChooser firstColor = new JColorChooser(boardColorOne);
+      public JColorChooser secondColor = new JColorChooser(boardColorTwo);
 
       public ColorMenu(String title, ChessSquare[][] tiles) {
           super(title);
@@ -41,7 +41,7 @@ public class ColorMenu extends JMenuItem
       }
 
 
-      private static void createGUI() {
+      private void createGUI() {
 
         buttonColorOne = Color.WHITE;
         buttonColorTwo = Color.BLACK;
@@ -169,10 +169,16 @@ public class ColorMenu extends JMenuItem
           {
             for(int j = 0; j < 8; j++)
             {
-              if(!((i % 2 == 0) ^ (j % 2 == 0)))
+              if(!((i % 2 == 0) ^ (j % 2 == 0))) {
                 boardTiles[i][j].setBackground(one);
-              else
+                if(boardTiles[i][j].getBorder() != null)
+                  boardTiles[i][j].Highlight();
+              }
+              else {
                 boardTiles[i][j].setBackground(two);
+                if(boardTiles[i][j].getBorder() != null)
+                  boardTiles[i][j].Highlight();
+              }
             }
           }
       }

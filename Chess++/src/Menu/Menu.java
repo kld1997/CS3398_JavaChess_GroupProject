@@ -20,12 +20,32 @@ import Main.Main;
 import Online.ChessClient;
 import Online.ChessServer;
 import Options.Options;
+import Saves.*;
 
 public class Menu extends JPanel {
 
     public boolean started = false;
+    public static SaveState loadMenu;
+    public JFrame parent;
 
-    public Menu() {
+    public Menu(JFrame creator) {
+        parent = creator;
+        loadMenu = SaveState.createMenu();
+        SaveState.createMenu(this);
+        try {
+          loadMenu.initButtons();
+        } catch(Exception e) {
+          e.printStackTrace();
+        }
+
+        displayMainMenu();
+    }
+
+
+      public void displayMainMenu() {
+        parent.setVisible(true);
+        removeAll();
+        updateUI();
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         JLabel jlabel = new JLabel("Chess++");
@@ -77,15 +97,18 @@ public class Menu extends JPanel {
 
         add(Box.createVerticalStrut(10));
 
-        Button exitButton = new Button("Exit");
-        exitButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
-        exitButton.addActionListener(new AbstractAction() {
+        Button loadbutton = new Button("Load Game");
+        loadbutton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        loadbutton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+                loadMenu.displayLoadMenu();
+                if(loadMenu.boardState != null)
+                    parent.setVisible(false);
             }
         });
-        add(exitButton);
+
+        add(loadbutton);
 
         /***
          try {
@@ -143,10 +166,7 @@ public class Menu extends JPanel {
         backButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JComponent comp = (JComponent) e.getSource();
-                Window win = SwingUtilities.getWindowAncestor(comp);
-                win.dispose();
-                new Main();
+                displayMainMenu();
             }
         });
         add(backButton);
@@ -332,9 +352,9 @@ public class Menu extends JPanel {
                 System.out.println(ipaddress + "\n");
                 System.out.println(port);
                 int p = Integer.parseInt(port);
-                
+
                 ChessClient client = new ChessClient(ipaddress, p);
-                
+
                 while(!client.connected()) {
                 	try {
 						Thread.sleep(250);
@@ -346,11 +366,10 @@ public class Menu extends JPanel {
                 if(client.connection.isConnected()) {
                 	Options options = new Options();
                 	options.setOnline(true);
-                	options.setCPU(0);
                 	options.setOutput(client.output);
                 	options.setInput(client.input);
                 	options.setTurn(client.turn);
-                	
+
                 	client.setGui(new ChessGui(new Board(options)));
                 }
             }
@@ -402,9 +421,9 @@ public class Menu extends JPanel {
                 port = portField.getText();
                 System.out.println(port);
                 int p = Integer.parseInt(port);
-                
+
                 ChessServer server = new ChessServer(p);
-                
+
                 while(!server.connected()) {
                 	try {
 						Thread.sleep(250);
@@ -416,11 +435,10 @@ public class Menu extends JPanel {
                 if(server.connection.isConnected()) {
                 	Options options = new Options();
                 	options.setOnline(true);
-                	options.setCPU(0);
                 	options.setOutput(server.output);
                 	options.setInput(server.input);
                 	options.setTurn(server.turn);
-                	
+
                 	server.setGui(new ChessGui(new Board(options)));
                 }
             }

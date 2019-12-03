@@ -1,6 +1,7 @@
 package GUI;
+import java.io.*;
 
-public class Coordinate
+public class Coordinate implements Serializable
 {
     private int intCoordx, intCoordy;
     private String stringCoordx, stringCoordy;

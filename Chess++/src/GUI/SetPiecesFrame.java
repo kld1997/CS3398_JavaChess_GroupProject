@@ -24,7 +24,7 @@ public class SetPiecesFrame extends JFrame {
 	JPanel right;
 	JPanel center;
 	JButton submit;
-	
+
 	public SetPiecesFrame() {
 
         spb = new SetPiecesBoard();
@@ -36,10 +36,9 @@ public class SetPiecesFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
             	Options customBoard = new Options();
             	customBoard.setBoard(spb.startBoard);
-            	customBoard.setTurn(spb.teamSet);
-            	customBoard.setCPUTeam(Math.abs(spb.teamSet-1));
-            	customBoard.setStartTurn(spb.teamTurn);
+            	customBoard.setTurn(spb.teamTurn);
             	customBoard.setPromote(sps.promote);
+							customBoard.setMode("Chess++");
             	Board testBoard = new Board(customBoard);
             	int otherTeam = Math.abs(testBoard.teamTurn-1);
             	for(Move move : testBoard.teamMoveList) {
@@ -57,9 +56,9 @@ public class SetPiecesFrame extends JFrame {
         });
         right = new JPanel();
         right.setLayout(new BorderLayout());
-        sob.setPreferredSize(new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.15), 
+        sob.setPreferredSize(new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.15),
         		(int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.1)));
-        submit.setPreferredSize(new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.15), 
+        submit.setPreferredSize(new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.15),
         		(int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.05)));
         right.add(sob, BorderLayout.NORTH);
         right.add(sps, BorderLayout.CENTER);

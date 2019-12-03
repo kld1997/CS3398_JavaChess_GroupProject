@@ -1,12 +1,13 @@
 package Options;
+import java.io.*;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import Engine.Board;
 
-public class Options {
-	
+public class Options implements Serializable {
+
 	boolean timer;
 	int[] time = new int[Board.teamNum];
 	int[] timeInc = new int[Board.teamNum];
@@ -15,20 +16,20 @@ public class Options {
 	int cpu;
 	int cpuTeam;
 	boolean captureKing;
-	ObjectOutputStream output;
-	ObjectInputStream input;
+	transient ObjectOutputStream output;
+	transient ObjectInputStream input;
 	int turn;
-	int startTurn;
 	String mode;
 	String[][] board = new String[8][8];
 	String[] promote = new String[2];
-	
+	boolean wasLoaded = false;
+
 	public Options() {
-		
+
 		defaultSet();
 	}
 	public Options(String preset) {
-		
+
 		if(preset.equals("bullet"))
 			bulletSet();
 		else if(preset.equals("wall"))
@@ -36,58 +37,57 @@ public class Options {
 		else
 			defaultSet();
 	}
-	
+
 	public boolean getTimer() { return timer; }
 	public void setTimer(boolean t) { timer = t; }
-	
+
 	public int[] getTime() { return time; }
 	public void setTime(int[] t) { time = t; }
-	
+
 	public int[] getTimeInc() { return timeInc; }
 	public void setTimeInc(int[] i) { timeInc = i; }
-	
+
 	public boolean getHighlight() { return highlight; }
 	public void setHighlight(boolean h) { highlight = h; }
-	
+
 	public boolean getOnline() { return online; }
 	public void setOnline(boolean o) { online = o; }
-	
+
 	public String getMode() { return mode; }
 	public void setMode(String m) { mode = m; }
-	
+
 	public String[][] getBoard() { return board; }
 	public void setBoard(String[][] b) { board = b; }
-	
+
 	public String[] getPromote() { return promote; }
 	public void setPromote(String p[]) { promote = p; }
-	
+
 	public ObjectOutputStream getOutput() { return output; }
 	public void setOutput(ObjectOutputStream o) { output = o; }
-	
+
 	public ObjectInputStream getInput() { return input; }
 	public void setInput(ObjectInputStream i) { input = i; }
-	
+
 	public int getTurn() { return turn; }
 	public void setTurn(int t) { turn = t; }
-	
-	public int getStartTurn() { return startTurn; }
-	public void setStartTurn(int t) { startTurn = t; }
-	
+
 	public int getCPU() { return cpu; }
 	public void setCPU(int c) { cpu = c; }
-	
+
 	public int getCPUTeam() { return cpuTeam; }
 	public void setCPUTeam(int c) { cpuTeam = c; }
-	
+
 	public boolean getCaptureKing() { return captureKing; }
 	public void setCaptureKing(boolean c) { captureKing = c; }
-	
+
+	public boolean getLoaded() { return wasLoaded; }
+	public void setLoaded(boolean l) { wasLoaded = l; }
+
 	public void defaultSet() {
-		
+
 		timer = false;
 		highlight = true;
 		online = false;
-		startTurn = 0;
 		turn = 0;
 		cpu = 5;
 		cpuTeam = 1;
@@ -97,23 +97,24 @@ public class Options {
 		promote[0] = "kbrq";
 		promote[1] = promote[0];
 	}
-	
+
 	public void bulletSet() {
-		
 		defaultSet();
-		
+		setMode("BULLET");
+
 		timer = true;
-		
+
 		for(int i = 0; i < Board.teamNum; i++) {
 			time[i] = 120;
 			timeInc[i] = 1;
 		}
 	}
-	
+
 	public void wallSet() {
-		
+
 		defaultSet();
-		
+		setMode("WALL");
+
 		String wallChessBoard[][] = {
 				{"br","bk","bb","bq","bK","bb","bk","br"},
 				{"bp","bp","bp","bp","bp","bp","bp","bp"},
@@ -123,10 +124,10 @@ public class Options {
 				{"  ","  ","  ","  ","  ","  ","  ","  "},
 				{"wp","wp","wp","wp","wp","wp","wp","wp"},
 				{"wr","wk","wb","wq","wK","wb","wk","wr"}};
-		
+
 		board = wallChessBoard;
 	}
-	
+
 	public int getCPUMissChance() {
 		switch(cpu) {
 		case 1: return 50;

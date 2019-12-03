@@ -1,27 +1,28 @@
 package Pieces;
+import java.io.*;
 
-public class Move {
+public class Move implements Serializable{
 
 	public int from;
 	public int to;
 	public int type; //0: normal, 1: capture, 2: EP, 3: promote, 4: capture+promote, 5: castle, 6: distant capture
 	public char pid;
-	
+
 	public Move(int f, int t) {
-		
+
 		this.from = f;
 		this.to = t;
 	}
-	
+
 	public Move(int f, int t, int ty) {
-		
+
 		this.from = f;
 		this.to = t;
 		this.type = ty;
 	}
-	
+
 	public Move(int f, int t, int ty, char p) {
-		
+
 		this.from = f;
 		this.to = t;
 		this.type = ty;

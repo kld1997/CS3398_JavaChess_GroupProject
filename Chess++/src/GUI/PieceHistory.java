@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 import java.lang.reflect.Array;
 import java.util.*;
+import Saves.*;
 public class PieceHistory extends JPanel
 {
     private Stack<JLabel> moveList = new Stack<JLabel>();
@@ -13,6 +14,17 @@ public class PieceHistory extends JPanel
     {
         cg = g;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        if(g.gameBoard.options.getLoaded()) {
+            moveList = SaveState.createMenu().stackLabels;
+            moveCoords = SaveState.createMenu().stackCoords;
+        }
+        update();
+    }
+    public Stack<JLabel> getLabels() {
+        return moveList;
+    }
+    public Stack<GameMove> getMoves() {
+        return moveCoords;
     }
     public void addMove(String move)
     {

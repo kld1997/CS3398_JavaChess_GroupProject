@@ -1,6 +1,7 @@
 package GUI;
+import java.io.*;
 
-public class GameMove
+public class GameMove implements Serializable
 {
     private Coordinate[] moveString = new Coordinate[2];
     private Coordinate from;

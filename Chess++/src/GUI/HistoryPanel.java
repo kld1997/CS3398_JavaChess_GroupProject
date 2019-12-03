@@ -13,7 +13,7 @@ import java.util.Stack;
 public class HistoryPanel extends JPanel
 {
     MainBoardPanel mp;
-    PieceHistory ph;
+    public PieceHistory ph;
     JScrollPane sp;
     PawnPromotePanel pp;
     JButton rw;
@@ -24,11 +24,11 @@ public class HistoryPanel extends JPanel
         ph = new PieceHistory(g);
         sp = new JScrollPane(ph);
         sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        Dimension d = new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.155), 
+        Dimension d = new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.155),
         		(int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.75));
         sp.setPreferredSize(d);
         pp = new PawnPromotePanel();
-        pp.setPreferredSize(new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.155), 
+        pp.setPreferredSize(new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.155),
         		(int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.2)));
         rewindSetup();
         add(rw, BorderLayout.NORTH);
@@ -38,7 +38,7 @@ public class HistoryPanel extends JPanel
     private void rewindSetup()
     {
         rw = new JButton("Rewind");
-        rw.setPreferredSize(new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.155), 
+        rw.setPreferredSize(new Dimension((int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getWidth()*.155),
         		(int)(Toolkit.getDefaultToolkit().getScreenSize().getSize().getHeight()*.05)));
         rw.addActionListener(new ActionListener() {
             @Override
