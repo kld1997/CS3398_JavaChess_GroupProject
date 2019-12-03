@@ -20,7 +20,7 @@ public class Options {
 	int turn;
 	String mode;
 	String[][] board = new String[8][8];
-	String promote;
+	String[] promote = new String[2];
 	
 	public Options() {
 		
@@ -57,8 +57,8 @@ public class Options {
 	public String[][] getBoard() { return board; }
 	public void setBoard(String[][] b) { board = b; }
 	
-	public String getPromote() { return promote; }
-	public void setPromote(String p) { promote = p; }
+	public String[] getPromote() { return promote; }
+	public void setPromote(String p[]) { promote = p; }
 	
 	public ObjectOutputStream getOutput() { return output; }
 	public void setOutput(ObjectOutputStream o) { output = o; }
@@ -84,12 +84,13 @@ public class Options {
 		highlight = true;
 		online = false;
 		turn = 0;
-		cpu = 3;
+		cpu = 5;
 		cpuTeam = 1;
 		captureKing = false;
 		mode = "STANDARD";
 		board = BoardTypes.standardChessBoard();
-		promote = "kbrq";
+		promote[0] = "kbrq";
+		promote[1] = promote[0];
 	}
 	
 	public void bulletSet() {

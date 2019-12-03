@@ -16,8 +16,8 @@ public class ColorMenu extends JMenuItem
       static private JButton[][] previewArray = new JButton[8][8];
       static private Color buttonColorOne;
       static private Color buttonColorTwo;
-      static private Color boardColorOne = Color.WHITE;
-      static private Color boardColorTwo = Color.BLACK;
+      static public Color boardColorOne = Color.WHITE;
+      static public Color boardColorTwo = Color.BLACK;
       static JColorChooser firstColor = new JColorChooser(boardColorOne);
       static JColorChooser secondColor = new JColorChooser(boardColorTwo);
 

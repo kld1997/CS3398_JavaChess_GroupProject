@@ -5,8 +5,8 @@ public class Check {														//special check restrictions and pin calculati
 	
 	static public void addCheck(Board board, int team) {			//increment check of a team
 		
-		board.check[team]++;
-
+		if(!(board.pieceList.get(team).containsKey('P') && board.pieceList.get(team).get('P').piece != 0))
+			board.check[team]++;
 	}
 	
 	static public long checkRestrict(Board board, int team, long coord, long pinned) { 

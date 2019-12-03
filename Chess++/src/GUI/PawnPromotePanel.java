@@ -22,7 +22,7 @@ public class PawnPromotePanel extends JPanel
     public void showPanel(Board board, int team, long coord)
     {
         int teamIcon = Math.abs(team - 1);
-        for (char c : board.options.getPromote().toCharArray()) {
+        for (char c : board.options.getPromote()[team].toCharArray()) {
         	Piece p = board.pieceList.get(team).get(c);
             JButton choiceButton = new JButton();
             choiceButton.setIcon(new ImageIcon(Images.pieces[teamIcon][p.iconNum]));

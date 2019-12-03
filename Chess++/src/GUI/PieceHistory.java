@@ -30,7 +30,10 @@ public class PieceHistory extends JPanel
     }
     public void rewind(int num)
     {
-        cg.getMainPanel().updateBoard();
+    	cg.getMainPanel().squares[cg.getMainPanel().lastClicked[0]][cg.getMainPanel().lastClicked[1]].setBorder(null);
+    	cg.getMainPanel().lastClicked[0] = 0;
+    	cg.getMainPanel().lastClicked[1] = 0;
+    	cg.getMainPanel().clearLastMovedVisuals();
         if(num > moveList.size())
         {
             num = moveList.size();
@@ -47,8 +50,6 @@ public class PieceHistory extends JPanel
         update();
         cg.getMainPanel().highlightedSquares.clear();
         cg.getMainPanel().updateBoard();
-
-
     }
     public void update()
     {

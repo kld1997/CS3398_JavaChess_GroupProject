@@ -29,6 +29,7 @@ public class MainBoardPanel extends JPanel
     int yourTurn;
     ChessSquare lastMoved1;
     ChessSquare lastMoved2;
+    ChessSquare checkSq;
 
     ChessGui thisGui;
     public MainBoardPanel(ChessGui g)
@@ -162,8 +163,39 @@ public class MainBoardPanel extends JPanel
         {
             ((BulletInfoPanel)g.getInfoPanel()).pauseAndSwitch();
         }
+    	Move lastMove;
+    	if(!PawnPromote.promotion)
+    		lastMove = gameBoard.moveHistory.get(Math.abs(gameBoard.teamTurn-1)).get(gameBoard.moveHistory.get(Math.abs(gameBoard.teamTurn-1)).size()-1);
+    	else
+    		lastMove = gameBoard.moveHistory.get(gameBoard.teamTurn).get(gameBoard.moveHistory.get(gameBoard.teamTurn).size()-1);
+    	clearLastMovedVisuals();
+    	lastMoved1 = squares[lastMove.from/8][lastMove.from%8];
+    	lastMoved2 = squares[lastMove.to/8][lastMove.to%8];
+    	lastMoved1.setBackground(Color.YELLOW);
+    	if(lastMove.type == 1 || lastMove.type == 2 || lastMove.type == 4 || lastMove.type == 6)
+    		lastMoved2.setBackground(Color.RED);
+    	else
+    		lastMoved2.setBackground(Color.YELLOW);
+    	lastMoved1.setBorder(BorderFactory.createLineBorder(Color.GREEN, 5));
+    	lastMoved2.setBorder(BorderFactory.createLineBorder(Color.GREEN, 5));
         g.getInfoPanel().switchTeam();
         g.menu.teamChange();
+    }
+    
+    public void clearLastMovedVisuals() {
+    	
+    	if(lastMoved1 != null) {
+			if(lastMoved1.startColor == 1)
+				lastMoved1.setBackground(ColorMenu.boardColorOne);
+			else
+				lastMoved1.setBackground(ColorMenu.boardColorTwo);
+			if(lastMoved2.startColor == 1)
+				lastMoved2.setBackground(ColorMenu.boardColorOne);
+			else
+				lastMoved2.setBackground(ColorMenu.boardColorTwo);
+			lastMoved1.unHighlight();
+			lastMoved2.unHighlight();
+    	}
     }
     
     public void setLocked(boolean val)
@@ -203,13 +235,23 @@ public class MainBoardPanel extends JPanel
             right.pp.showPanel(gameBoard, gameBoard.teamTurn, PawnPromote.coord);
             locked = true;
         }
+        if(checkSq != null) {
+        	checkSq.setBorder(null);
+        	checkSq = null;
+        }
         if(gameBoard.check[0] == 1)
         {
             top.setCheck(1);
+            int king = Long.numberOfTrailingZeros(gameBoard.kingBB[0]);
+            squares[king/8][king%8].setBorder(BorderFactory.createLineBorder(Color.RED, 5));
+            checkSq = squares[king/8][king%8];
         }
         else if(gameBoard.check[1] == 1)
         {
             top.setCheck(0);
+            int king = Long.numberOfTrailingZeros(gameBoard.kingBB[1]);
+            squares[king/8][king%8].setBorder(BorderFactory.createLineBorder(Color.RED, 5));
+            checkSq = squares[king/8][king%8];
         }
         if(gameBoard.teamWon != 2){ top.setWinner(gameBoard.teamWon); }
         for(int x = 0; x < 8; x ++)

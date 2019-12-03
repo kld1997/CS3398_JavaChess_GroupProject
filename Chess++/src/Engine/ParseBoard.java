@@ -80,7 +80,7 @@ public class ParseBoard {
 		System.out.println();
 	}
 	
-	static public List<Map<Character, Piece>> pieceInit(String[][] pieceArr, String promoteTo) {
+	static public List<Map<Character, Piece>> pieceInit(String[][] pieceArr, String[] promoteTo) {
 		
 		Map<Character, Piece> pieceMap1 = new HashMap<Character, Piece>();
 		Map<Character, Piece> pieceMap2 = new HashMap<Character, Piece>();
@@ -122,7 +122,7 @@ public class ParseBoard {
 		for(int i = 0; i < Board.teamNum; i++) {
 			
 			if(hasPromoteable(pieceList.get(i).values())) {
-				pieceList.get(i).putAll(addMissingPromote(pieceList.get(i), promoteTo, i));
+				pieceList.get(i).putAll(addMissingPromote(pieceList.get(i), promoteTo[i], i));
 			}
 		}
 		

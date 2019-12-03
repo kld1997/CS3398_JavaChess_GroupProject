@@ -1,6 +1,9 @@
 package GUI;
 
 import javax.swing.*;
+
+import Engine.PawnPromote;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,7 +43,8 @@ public class HistoryPanel extends JPanel
         rw.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                ph.rewind(1);
+            	if(!PawnPromote.promotion)
+            		ph.rewind(1);
             }
         });
     }

@@ -520,8 +520,11 @@ public class Board {
 			
 			epBB[Math.abs(team-1)] = 0;
 			
-			if((move.type == 3 || move.type == 4) && cpuTemp) {
-				PawnPromote.promotePawn(teamTurn, coord2, this, options.getPromote().charAt(options.getPromote().length()-1));
+			if((move.type == 3 || move.type == 4)) {
+				if(check[team] == 1 && ((1L<<move.to)&(interfereBB[team]|kThreatsBB[team])) == 0)
+					PawnPromote.promotePawn(team, coord2, this, 'P');
+				else if(cpuTemp)
+					PawnPromote.promotePawn(team, coord2, this, options.getPromote()[team].charAt(options.getPromote()[team].length()-1));
 			}
 			
 			moveHistory.get(team).add(move);
@@ -533,8 +536,9 @@ public class Board {
 			
 			saveMoved.get(0).add(rookMoved);
 			saveMoved.get(1).add(kingMoved);
-			saveEP.get(0).add(epBB[0]);
-			saveEP.get(1).add(epBB[1]);
+			for(int i = 0; i < teamNum; i++) {
+				saveEP.get(i).add(epBB[i]);
+			}
 			
 			currentState();
 		}
@@ -551,11 +555,13 @@ public class Board {
 	{
 		
 		switchTeamTurn();
+		teamWon = 2;
 		
 		rookMoved = saveMoved.get(0).pop();
 		kingMoved = saveMoved.get(1).pop();
-		epBB[0] = saveEP.get(0).pop();
-		epBB[1] = saveEP.get(1).pop();
+		for(int i = 0; i < teamNum; i++) {
+			epBB[i] = saveEP.get(i).pop();
+		}
 		
 		Move move = moveHistory.get(teamTurn).get(moveHistory.get(teamTurn).size()-1);
 		moveHistory.get(teamTurn).remove(moveHistory.get(teamTurn).size()-1);
@@ -686,7 +692,10 @@ public class Board {
 			pieceList.get(teamTurn).get(move.pid).movePiece(this, coord1, coord2, true);
 		
 		if(move.type == 3 || move.type == 4) {
-			PawnPromote.promotePawn(teamTurn, coord2, this, options.getPromote().charAt(options.getPromote().length()-1));
+			if(check[teamTurn] == 1 && ((1L<<move.to)&(interfereBB[teamTurn]|kThreatsBB[teamTurn])) == 0)
+				PawnPromote.promotePawn(teamTurn, coord2, this, 'P');
+			else
+				PawnPromote.promotePawn(teamTurn, coord2, this, options.getPromote()[teamTurn].charAt(options.getPromote()[teamTurn].length()-1));
 		}
 		
 		if(move.type == 2)

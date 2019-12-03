@@ -10,6 +10,7 @@ import java.awt.event.MouseListener;
 
 public class ChessSquare extends JButton implements MouseListener
 {
+	public int startColor;
     private int x;
     private int y;
     private String team;
@@ -19,6 +20,7 @@ public class ChessSquare extends JButton implements MouseListener
     public ChessSquare(int color, int xCoord, int yCoord)
     {
     	this.setBorder(new EmptyBorder(1, 1, 1, 1));
+    	startColor = color;
         ID = 'N';
         team = "None";
         x = xCoord;

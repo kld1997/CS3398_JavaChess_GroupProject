@@ -37,6 +37,7 @@ public class SetPiecesFrame extends JFrame {
             	Options customBoard = new Options();
             	customBoard.setBoard(spb.startBoard);
             	customBoard.setTurn(spb.teamTurn);
+            	customBoard.setPromote(sps.promote);
             	Board testBoard = new Board(customBoard);
             	int otherTeam = Math.abs(testBoard.teamTurn-1);
             	for(Move move : testBoard.teamMoveList) {

@@ -28,8 +28,12 @@ public class Pawn extends Piece implements Promoteable
 		if((piece&coord) != 0 && check < 2) {	
 			moves = pseudoMoves(occ, coord, EP);
 		}	
-		if(check == 1)
-			moves &= Check.checkRestrict(board, team, coord, pinned)|EP;
+		if(check == 1) {
+			long pr = 0L;
+			if(board.options.getPromote()[team].contains("P"))
+				pr = (team == 0) ? Board.row8 : Board.row1;
+			moves &= Check.checkRestrict(board, team, coord, pinned)|EP|pr;
+		}
 		else if((coord & pinned) != 0)
 			moves &= Check.pinRestrict(board, coord, team);
 		if((moves&EP) != 0) {
@@ -93,6 +97,8 @@ public class Pawn extends Piece implements Promoteable
 		
 		if(check == 1) {
 			cr = board.kThreatsBB[team]|board.interfereBB[team];
+			if(board.options.getPromote()[team].contains("P"))
+				cr |= (team == 0) ? Board.row8 : Board.row1;
 		}
 		else {
 			cr = 0xFFFFFFFFFFFFFFFFL;
