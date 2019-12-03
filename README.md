@@ -186,21 +186,21 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
 
 * Roy Grady
 
-  -      (Roy's Review)
+  - (Roy's Review)
 
 * Kieran Hsieh
 
-  -      	(Kierig cup's Review).
+  - (Kierig cup's Review).
   
 * Guillermo Gomez
 
   -      Completed the Menu GUI entirely as a fullt functional menu. The musicplayer was also added to the menu so we now have a 
          music player in the background while you play. This implementations are in Menu.java, CustomMain.java, CustomMenu,java, and 
          MusicPlayer.java
-  -      My next step will be to fully complete Profile creation. bugs are still present in the the Profile but will be fixed for the            next release. 
+  -      My next step will be to fully complete Profile creation. Bugs are still present in the the Profile but will be fixed for the            next release. 
 
 * Kody Davis
   -     (Kody-kin's Review)
         
 * Felipe Rodriguez
-  -      (NANI!?)
+  -     (NANI!?)
