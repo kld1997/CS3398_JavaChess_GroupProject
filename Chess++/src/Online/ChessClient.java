@@ -27,7 +27,7 @@ public class ChessClient {
     	
     	Thread thread = new Thread(){
             public void run(){
-              System.out.println("Client Running");
+              //System.out.println("Client Running");
               startRunning();
             }
           };
@@ -79,6 +79,7 @@ public class ChessClient {
     			if(gui.gameBoard.makeMove(message)) {
     				//System.out.println(message);
     				gui.getMainPanel().moveMade(gui);
+    				System.out.println("????");
     				gui.getMainPanel().updateBoard();
     			}
     		}

@@ -26,7 +26,7 @@ public class ChessServer {
 		
 		Thread thread = new Thread(){
             public void run(){
-              System.out.println("Client Running");
+              //System.out.println("Client Running");
               startRunning();
             }
           };
@@ -82,6 +82,7 @@ public class ChessServer {
     			if(gui.gameBoard.makeMove(message)) {
     				//System.out.println(message);
     				gui.getMainPanel().moveMade(gui);
+    				System.out.println("???");
     				gui.getMainPanel().updateBoard();
     			}
     		}
