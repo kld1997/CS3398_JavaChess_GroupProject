@@ -89,6 +89,15 @@ public class MainBoardPanel extends JPanel
                             }
                             if (moveMade)
                             {
+                            	if(gameBoard.options.getOnline())
+									try {
+										gameBoard.output.writeObject(moveString);
+										gameBoard.output.flush();
+									} catch (IOException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+                            	
                                 moveMade(g);
                                 ChessSquare movedPiece = squares[pieceMovedPos[0]][pieceMovedPos[1]];
                                 String tempString = "";

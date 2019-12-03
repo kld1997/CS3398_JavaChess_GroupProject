@@ -27,7 +27,7 @@ public class Board {
 	public int[] teamScore = new int[teamNum];
 	public boolean cpuTurn = false;
 	
-	ObjectOutputStream output;
+	public ObjectOutputStream output;
 	
 	// pieces
 	public long[] kingBB = new long[teamNum];
