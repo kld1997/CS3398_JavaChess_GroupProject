@@ -87,28 +87,35 @@ public class SetPiecesBoard extends JPanel{
                     	if(lastClicked[0] >= 0)
                     		squares[lastClicked[0]][lastClicked[1]].unHighlight();
                     	char team;
-                    	if(lastClicked[0] >= 0 && startBoard[lastClicked[0]][lastClicked[1]] != "  ") {
-                    		startBoard[xcoord][ycoord] = startBoard[lastClicked[0]][lastClicked[1]];
-                    		startBoard[lastClicked[0]][lastClicked[1]] = "  ";
-                    		
+                    	if(((xcoord == 0 && teamSet == 0) || (xcoord == 7 && teamSet == 1)) && selectedPiece == 'p') {
+                    		JOptionPane.showMessageDialog(null, "Cannot promote on first turn!", "Error", JOptionPane.INFORMATION_MESSAGE);
                     		lastClicked[0] = -1;
-                        	lastClicked[1] = -1;
-                        	selectedPiece = '0';
+                    		lastClicked[1] = -1;
                     	}
-                    	else if(selectedPiece != '0' && startBoard[xcoord][ycoord] == "  ") {
-                        	if(teamSet == 0)
-                        		team = 'w';
-                        	else
-                        		team = 'b';
-                        	startBoard[xcoord][ycoord] = "" + team + selectedPiece;
-                        	//selectedPiece = '0';
-                        	lastClicked[0] = -1;
-                        	lastClicked[1] = -1;
-                        }
                     	else {
-                    		lastClicked[0] = xcoord;
-                    		lastClicked[1] = ycoord;
-                    		temp.Highlight();
+                    		if(lastClicked[0] >= 0 && startBoard[lastClicked[0]][lastClicked[1]] != "  ") {
+	                    		startBoard[xcoord][ycoord] = startBoard[lastClicked[0]][lastClicked[1]];
+	                    		startBoard[lastClicked[0]][lastClicked[1]] = "  ";
+	                    		
+	                    		lastClicked[0] = -1;
+	                        	lastClicked[1] = -1;
+	                        	selectedPiece = '0';
+	                    	}
+	                    	else if(selectedPiece != '0' && startBoard[xcoord][ycoord] == "  ") {
+	                        	if(teamSet == 0)
+	                        		team = 'w';
+	                        	else
+	                        		team = 'b';
+	                        	startBoard[xcoord][ycoord] = "" + team + selectedPiece;
+	                        	//selectedPiece = '0';
+	                        	lastClicked[0] = -1;
+	                        	lastClicked[1] = -1;
+	                        }
+	                    	else {
+	                    		lastClicked[0] = xcoord;
+	                    		lastClicked[1] = ycoord;
+	                    		temp.Highlight();
+	                    	}
                     	}
                     	update();
                     }
