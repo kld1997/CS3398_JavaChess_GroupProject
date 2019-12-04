@@ -194,7 +194,8 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
          
   -      My artifacts are New.png in the img folder, and my artifacts in src are the files in the Engine, Options, and Online package
          as well SetOtherButtons.java, SetPiecesFrame.java, SetPiecesSelect.java, phScroll.java, and SetPiecesBoard.java in
-         the GUI package. Finally, i heavily edited the CustomMenu.java file in the Menu package.
+         the GUI package. These files make up the custom board mode and the scroll for the piece history. Finally, i heavily edited 
+         the CustomMenu.java file in the Menu package where I formatted the way in which you select the options for the custom mode.
          
 
 * Kieran Hsieh
