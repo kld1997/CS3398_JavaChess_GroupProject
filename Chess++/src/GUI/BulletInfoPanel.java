@@ -61,13 +61,13 @@ public class BulletInfoPanel extends GenericInfoPanel
         int tempSec, tempMin;
         if (currTeam == 0) {
             tempMin = Integer.parseInt(blackTime.getText().substring(0, blackTime.getText().indexOf(':')));
-            tempSec = Integer.parseInt(blackTime.getText().substring(blackTime.getText().indexOf(':') + 1)) + tempMin * 60;
+            tempSec = Integer.parseInt(blackTime.getText().substring(blackTime.getText().indexOf(':') + 1)) + tempMin * 60 + thisGui.gameBoard.options.getTimeInc()[0];
             bt.scheduleAtFixedRate(new ChessTimer(thisGui, blackTime, tempSec), 0, 1000);
             wt.cancel();
             wt = new Timer();
         } else {
             tempMin = Integer.parseInt(whiteTime.getText().substring(0, whiteTime.getText().indexOf(':')));
-            tempSec = Integer.parseInt(whiteTime.getText().substring(whiteTime.getText().indexOf(':') + 1)) + tempMin * 60;
+            tempSec = Integer.parseInt(whiteTime.getText().substring(whiteTime.getText().indexOf(':') + 1)) + tempMin * 60 + + thisGui.gameBoard.options.getTimeInc()[1];
             wt.scheduleAtFixedRate(new ChessTimer(thisGui, whiteTime, tempSec), 0, 1000);
             bt.cancel();
             bt = new Timer();
