@@ -190,7 +190,8 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
 
 * Kieran Hsieh
 
-  -      (Kierig cup's Review).
+  -      Added Builder piece(cut feature), old version under KieranTemp branch and Builder.java, Worked on rewind feature, found in rewind function on Board.java.
+  -      My next step will be to add a limit to the amount of pieces you can add in the custom board mode.
   
 * Guillermo Gomez
 
