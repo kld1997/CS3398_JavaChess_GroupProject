@@ -13,7 +13,7 @@
         <mkdir dir="build/jar"/>
         <jar destfile="build/jar/ChessMain.jar" basedir="build/classes">
             <manifest>
-                <attribute name="Main-Class" value="Main"/>
+                <attribute name="Main-Class" value="Main/Main"/>
             </manifest>
         </jar>
     </target>
