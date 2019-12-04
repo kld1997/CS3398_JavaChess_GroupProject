@@ -226,4 +226,6 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
          the ability to drag and drop pieces in addition to clicking to move.
         
 * Felipe Rodriguez
-  -      .
+-      I completed the GUI for the music player and was able to add the basic functionality for users to play with  
+         MusicPlayer.java
+  -      My next step will be to incorperate a method that will allow sounds to be played when a given piece is destroyed 
