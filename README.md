@@ -186,7 +186,16 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
 
 * Roy Grady
 
-  -      (Roy's Review)
+  -      In this sprint, I added the CPU AI with multiple difficulties using the minimax algorithm wth alpha beta pruning. I also added
+         new pieces such as the Archer Piece, the Jester Piece, and the Prince Piece. I fixed the rewind feature as well as made the
+         online mode work with the newest function. I reformatted the custom options menu and implemmented a custom board option which
+         allows users to make their own board setup as well as select which pieces can be promoted to and whose turn it is at the
+         beginning. Lastly, I made the icons for the new pieces and made the visuals for the last move that was made.
+         
+  -      My artifacts are New.png in the img folder, and my artifacts in src are the files in the Engine, Options, and Online package
+         as well SetOtherButtons.java, SetPiecesFrame.java, SetPiecesSelect.java, phScroll.java, and SetPiecesBoard.java in
+         the GUI package. Finally, i heavily edited the CustomMenu.java file in the Menu package.
+         
 
 * Kieran Hsieh
 
@@ -201,7 +210,7 @@ Created by [Guillermo Gomez](g_g224@txstate.edu)
   -      My next step will be to fully complete Profile creation. Bugs are still present in the the Profile but will be fixed for the next release. 
 
 * Kody Davis
-  -      (Kody-kin's Review)
+  -      (Kody Review)
         
 * Felipe Rodriguez
-  -      (NANI!?)
+  -      .
