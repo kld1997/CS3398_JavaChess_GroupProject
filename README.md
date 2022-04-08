@@ -1,4 +1,4 @@
-# CS3398--Maggia--F2019
+# CS3398--Maggia--Fall2019
 
 # Chess++
 
